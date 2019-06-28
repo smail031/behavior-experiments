@@ -23,6 +23,7 @@ delay_length = 1 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
+go_tone_freq = 500 #frequency of go tone
 
 reward_size = 0.01 #size of water reward, in mL
 
@@ -230,7 +231,7 @@ thread_R = threading.Thread(target = lick_port_R.lick, args = (1, 5))
 tone_L = Tones(L_tone_freq, 1)
 tone_R = Tones(R_tone_freq, 1)
 
-tone_go = Tones(500, 0.1)
+tone_go = Tones(go_tone_freq, 0.1)
 
 
 #------------------------------------------------------------------------------
@@ -292,8 +293,12 @@ for trial in trials:
     time.sleep(ITI_)
 
 
-data.store()
+data.store() #store the data
 
+#delete the .wav files created for the experiment
+os.system(f'rm {L_tone_freq}Hz.wav')
+os.system(f'rm {R_tone_freq}Hz.wav')
+os.system(f'rm {go_tone_freq}Hz.wav')
 
 #Clean up the GPIOs
 #GPIO.cleanup()
