@@ -18,6 +18,8 @@ import matplotlib.pyplot as plt
 #Set experimental parameters:
 #------------------------------------------------------------------------------
 
+mouse_number = input('mouse number: ' ) #asks user for mouse number
+
 num_trial = 100 #number of trials in this block
 delay_length = 1 #length of delay between sample tone and go cue, in sec
 
@@ -178,7 +180,7 @@ class Data():
       
     def store(self, filename = None):
         if filename is None:
-            filename = self.t_start + '.pkl'
+            filename = mouse_number + self.t_start + '.pkl'
         
         with open(filename, 'wb') as f:
             pickle.dump(self, f)
