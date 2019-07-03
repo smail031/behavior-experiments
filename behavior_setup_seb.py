@@ -11,7 +11,7 @@ import numpy as np
 import os
 import struct
 import threading
-import cPickle as pickle
+import _pickle as pickle
 import matplotlib.pyplot as plt
 
 #------------------------------------------------------------------------------
@@ -109,9 +109,9 @@ class Tones():
         #Create a string that will be the name of the .wav file
         self.name = str(frequency) + 'Hz'
         self.freq = frequency
-    
+ 
         #locally create a new .wav file
-        f = open(f'{self.name}.wav', 'wb')
+        f = open(f'{self.name}.wav','wb')
     
         #write the waveform to the .wav file
         for i in y:
