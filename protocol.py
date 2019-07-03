@@ -163,20 +163,20 @@ class Data():
         
         self.t_experiment = time.strftime("%a, %d %b %Y %H:%M:%S %Z", 
                                      time.localtime(time.time()))
-        self.t_start = np.empty(n_trials)
+        self.t_start = np.empty(n_trials) #start times of each trial
 
-        self.tone = [] #L or R
-        self.t_tone = np.empty(n_trials)
+        self.tone = np.empty(n_trials, dtype = str) #L or R
+        self.t_tone = np.empty(n_trials) 
         
-        self.lick_r = np.empty(n_trials, dtype = dict)
-        self.lick_l = np.empty_like(self.lick_r)
+        self.lick_r = np.empty(n_trials, dtype = dict) #stores licks from R lickport
+        self.lick_l = np.empty_like(self.lick_r) #stores licks from L lickport
         
 
         
-        self.v_rew_l = []
-        self.t_rew_l = np.empty(n_trials)
-        self.v_rew_r = []
-        self.t_rew_r = np.empty(n_trials)  
+        self.v_rew_l = np.empty(n_trials) #stores reward volumes from L lickport
+        self.t_rew_l = np.empty(n_trials) #stores reward times from L lickport
+        self.v_rew_r = np.empty(n_trials) #stores reward volumes from L lickport
+        self.t_rew_r = np.empty(n_trials) #stores reward times from L lickport
       
     def store(self, filename = None):
         if filename is None:
@@ -251,7 +251,7 @@ for trial in trials:
     thread_L.start() #Start threads for lick recording
     thread_R.start()
     
-    left_trial_ = np.random.rand() < 0.5
+    left_trial_ = np.random.rand() < 0.5 #decide if it will be a L or R trial
     
     if left_trial_ is True:
         data.tone[trial] = 'L' #Assign data type
