@@ -166,7 +166,7 @@ class Data():
       
     def store(self, filename = None):
         if filename is None:
-            filename = mouse_number + self.t_start + '.pkl'
+            filename = str(mouse_number) + str(self.t_experiment) + '.pkl'
         
         with open(filename, 'wb') as f:
             pickle.dump(self, f)
