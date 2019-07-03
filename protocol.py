@@ -9,7 +9,6 @@ import time
 import RPi.GPIO as GPIO
 import numpy as np
 import os
-import struct
 import threading
 import _pickle as pickle
 import matplotlib.pyplot as plt
@@ -100,28 +99,17 @@ class Tones():
 
     def __init__(self, frequency, tone_length):
         
-        sampling_rate = 44100
-        
-        #create the waveform
-        x = np.arange(sampling_rate * tone_length)
-        y = 100*np.sin(2 * np.pi * frequency *x / sampling_rate)
         
         #Create a string that will be the name of the .wav file
         self.name = str(frequency) + 'Hz'
         self.freq = frequency
- 
-        #locally create a new .wav file
-        f = open(f'{self.name}.wav','wb')
     
-        #write the waveform to the .wav file
-        for i in y:
-            f.write(struct.pack('b', int(i)))
-        f.close()
+        #create a waveform called self.name from frequency and tone_length
+        os.system(f'sox -V -r 44100 -n -b 8 -c 2 {self.name}.wav synth {tone_length} sin {frequency} vol -10dB')
     
     def play(self):
-        #play the waveform through using a system call
-        os.system("cd /home/pi/Desktop/behavior-experiments")
-        os.system(f"sox -t raw -r 44.1k -e signed -b 8 -c 1 {self.name}.wav -d")
+        #send the wav file to the sound card
+        os.system(f'play -V {self.name}.wav')
         
         
 class Data():
@@ -282,10 +270,10 @@ for trial in trials:
     #---------------
     #Post-trial data storage
     #---------------
-    data.lick_l[trial]['t'] = lick_port_L._t_licks
-    data.lick_l[trial]['volt'] = lick_port_L._licks
-    data.lick_r[trial]['t'] = lick_port_R._t_licks
-    data.lick_r[trial]['volt'] = lick_port_R._licks
+    data.lick_l[trial]['t'] = list(lick_port_L._t_licks)
+    data.lick_l[trial]['volt'] = list(lick_port_L._licks)
+    data.lick_r[trial]['t'] = list(lick_port_R._t_licks)
+    data.lick_r[trial]['volt'] = list(lick_port_R._licks)
     
     #Pause for the ITI before next trial 
     ITI_ = 1000
