@@ -218,10 +218,10 @@ thread_L = threading.Thread(target = lick_port_L.lick, args = (1, 5))
 thread_R = threading.Thread(target = lick_port_R.lick, args = (1, 5))
 
 #create tones
-tone_L = Tones(L_tone_freq, 1.1)
-tone_R = Tones(R_tone_freq, 1.1)
+tone_L = Tones(L_tone_freq, 1)
+tone_R = Tones(R_tone_freq, 1)
 
-tone_go = Tones(go_tone_freq, 1.1)
+tone_go = Tones(go_tone_freq, 0.75)
 
 
 #------------------------------------------------------------------------------
@@ -276,9 +276,9 @@ for trial in trials:
     data.lick_r[trial]['volt'] = list(lick_port_R._licks)
     
     #Pause for the ITI before next trial 
-    ITI_ = 1000
-    while ITI_ > 10:
-        ITI_ = np.random.exponential(scale = 2)
+    ITI_ = 1
+#    while ITI_ > 10:
+#        ITI_ = np.random.exponential(scale = 2)
         
     time.sleep(ITI_)
 
