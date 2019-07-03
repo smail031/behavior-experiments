@@ -276,7 +276,7 @@ for trial in trials:
     data.lick_r[trial]['volt'] = list(lick_port_R._licks)
     
     #Pause for the ITI before next trial 
-    ITI_ = 1
+    ITI_ = 1.5
 #    while ITI_ > 10:
 #        ITI_ = np.random.exponential(scale = 2)
         
