@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
-num_trial = 100 #number of trials in this block
+num_trial = 2 #number of trials in this block
 delay_length = 1 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
