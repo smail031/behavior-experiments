@@ -211,10 +211,6 @@ water_R = stim("water_R",26,GPIO.OUT)
 lick_port_L = stim("lick_L",30,GPIO.IN)
 lick_port_R = stim("lick_R",31,GPIO.IN)
 
-#create thread objects for left and right lickports
-thread_L = threading.Thread(target = lick_port_L.lick, args = (1, 5))
-thread_R = threading.Thread(target = lick_port_R.lick, args = (1, 5))
-
 #create tones
 tone_L = Tones(L_tone_freq, 1)
 tone_R = Tones(R_tone_freq, 1)
@@ -232,7 +228,11 @@ data = Data(num_trial)
 
 for trial in trials:
     data.t_start[trial] = time.time() #Set time at beginning of trial
-    
+
+    #create thread objects for left and right lickports
+    thread_L = threading.Thread(target = lick_port_L.lick, args = (1, 5))
+    thread_R = threading.Thread(target = lick_port_R.lick, args = (1, 5))
+
     
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -268,6 +268,10 @@ for trial in trials:
     #---------------
     #Post-trial data storage
     #---------------
+    #Make sure the threads are finished
+    thread_L.join()
+    thread_R.join()
+    
     data_list = [data.lick_l, data.lick_r]
     lick_list = [lick_port_L, lick_port_R]
     
