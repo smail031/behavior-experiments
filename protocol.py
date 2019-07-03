@@ -91,9 +91,7 @@ class stim(object):
                 self._t_licks.append(time.time())
                 
             #wait for next sample and update step
-            time.sleep(1/sampling_rate)
-            self.lickstep += 1
-                    
+            time.sleep(1/sampling_rate)                    
     
 class Tones():
 
@@ -109,7 +107,7 @@ class Tones():
     
     def play(self):
         #send the wav file to the sound card
-        os.system(f'play -V {self.name}.wav')
+        os.system(f'play -V0 {self.name}.wav')
         
         
 class Data():
@@ -270,10 +268,13 @@ for trial in trials:
     #---------------
     #Post-trial data storage
     #---------------
-    data.lick_l[trial]['t'] = list(lick_port_L._t_licks)
-    data.lick_l[trial]['volt'] = list(lick_port_L._licks)
-    data.lick_r[trial]['t'] = list(lick_port_R._t_licks)
-    data.lick_r[trial]['volt'] = list(lick_port_R._licks)
+    data_list = [data.lick_l, data.lick_r]
+    lick_list = [lick_port_L, lick_port_R]
+    
+    for ind, obj in enumerate(data_list):
+        obj[trial] = {}
+        obj[trial]['t'] = lick_list[ind]._t_licks
+        obj[trial]['volt'] = lick_list[ind]._licks
     
     #Pause for the ITI before next trial 
     ITI_ = 1.5
