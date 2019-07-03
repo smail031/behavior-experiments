@@ -120,7 +120,7 @@ class Tones():
     
     def play(self):
         #play the waveform through using a system call
-        os.system("cd /Users/sebastienmaille/Desktop/")
+        os.system("cd /home/pi/Desktop/behavior-experiments")
         os.system(f"sox -t raw -r 44.1k -e signed -b 8 -c 1 {self.name}.wav -d")
         
         
@@ -230,10 +230,10 @@ thread_L = threading.Thread(target = lick_port_L.lick, args = (1, 5))
 thread_R = threading.Thread(target = lick_port_R.lick, args = (1, 5))
 
 #create tones
-tone_L = Tones(L_tone_freq, 1)
-tone_R = Tones(R_tone_freq, 1)
+tone_L = Tones(L_tone_freq, 1.1)
+tone_R = Tones(R_tone_freq, 1.1)
 
-tone_go = Tones(go_tone_freq, 0.1)
+tone_go = Tones(go_tone_freq, 1.1)
 
 
 #------------------------------------------------------------------------------
