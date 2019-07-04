@@ -10,9 +10,25 @@ import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
-import _pickle as pickle
+#import _pickle as pickle
 import matplotlib.pyplot as plt
 import h5py
+
+#------------------------------------------------------------------------------
+#Set experimental parameters:
+#------------------------------------------------------------------------------
+
+mouse_number = input('mouse number: ' ) #asks user for mouse number
+
+num_trial = 2 #number of trials in this block
+delay_length = 1 #length of delay between sample tone and go cue, in sec
+
+L_tone_freq = 1000 #frequency of sample tone in left lick trials
+R_tone_freq = 4000 #frequency of sample tone in right lick trials
+go_tone_freq = 500 #frequency of go tone
+
+reward_size = 0.01 #size of water reward, in mL
+
 
 #------------------------------------------------------------------------------
 #Define some classes!
@@ -220,7 +236,6 @@ class Data():
                 contains time of reward (s) and its volume (uL)
             t_start.attrs['title'] = 'When the trial begins (s)'
             t_ends.attrs['title'] = 'When the trial ends (s)'
-
 
     def plot(self, trial):
         '''
