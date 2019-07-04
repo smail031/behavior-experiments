@@ -10,8 +10,9 @@ import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
-import _pickle as pickle
+#import _pickle as pickle
 import matplotlib.pyplot as plt
+import h5py
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
@@ -19,7 +20,11 @@ import matplotlib.pyplot as plt
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
+<<<<<<< HEAD
+num_trial = 5 #number of trials in this block
+=======
 num_trial = 2 #number of trials in this block
+>>>>>>> 16fbaceeba5b77359b2e09220417eb6394cbeced
 delay_length = 1 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
@@ -166,10 +171,23 @@ class Data():
       
     def store(self, filename = None):
         if filename is None:
-            filename = str(mouse_number) + str(self.t_experiment) + '.pkl'
+            filename = str(mouse_number) + str(self.t_experiment) + '.hdf5'
+            f = h5py.File(f'{filename}', 'w')
+            f.create_dataset('t_experiment', data = self.t_experiment)
+            f.create_dataset('t_start', data = self.t_start)
+#            f.create_dataset('tone', dtype = 'S', data = self.tone)
+            f.create_dataset('t_tone', data = self.t_tone)
+            f.create_dataset('vol_rew_L', data = self.v_rew_l)
+            f.create_dataset('t_rew_L', data = self.t_rew_l)
+            f.create_dataset('vol_rew_R', data = self.v_rew_r)
+            f.create_dataset('t_rew_R', data = self.t_rew_r)
+            
+            
+#        
+#        with open(filename, 'wb') as f:
+#            pickle.dump(self, f)
         
-        with open(filename, 'wb') as f:
-            pickle.dump(self, f)
+        
             
     def plot(self, trial):
         '''
