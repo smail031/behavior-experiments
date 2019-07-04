@@ -20,7 +20,7 @@ import h5py
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
-num_trial = 2 #number of trials in this block
+n_trials = 2 #number of trials in this block
 delay_length = 1 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
@@ -169,12 +169,12 @@ class Data():
         self.v_rew_r = np.empty(n_trials) #stores reward volumes from L lickport
         self.t_rew_r = np.empty(n_trials) #stores reward times from L lickport
 
-    def _pkl_store(self, filename = None):
-        if filename is None:
-            filename = str(mouse_number) + str(self.t_experiment) + '.pkl'
-
-        with open(filename, 'wb') as f:
-            pickle.dump(self, f)
+#    def _pkl_store(self, filename = None):
+#        if filename is None:
+#            filename = str(mouse_number) + str(self.t_experiment) + '.pkl'
+#
+#        with open(filename, 'wb') as f:
+#            pickle.dump(self, f)
 
     def store(self, filename = None):
         if filename is None:
@@ -220,7 +220,7 @@ class Data():
                 lick_l_t[trial] = self.lick_l[trial]['t']
                 lick_l_volt[trial] = self.lick_l[trial]['volt']
                 lick_r_t[trial] = self.lick_r[trial]['t']
-                lick_r_t[trial] = self.lick_r[trial]['volt']
+                lick_r_volt[trial] = self.lick_r[trial]['volt']
 
             #Finally, store metadata for each dataset/groups
             lick_l.attrs['title'] = 'Lick signal acquired from the left \
@@ -229,13 +229,13 @@ class Data():
                 lickport; contains times (s) and voltages (arb. units)'
             tone.attrs['title'] = 'Information about the delivered tones each \
                 trial; contains times (s) and tone-type (a string denoting \
-                whether the tone was large, small or nonexistent)
+                whether the tone was large, small or nonexistent)'
             rew_l.attrs['title'] = 'Reward delivered to the left lickport; \
-                contains time of reward (s) and its volume (uL)
+                contains time of reward (s) and its volume (uL)'
             rew_r.attrs['title'] = 'Reward delivered to the right lickport; \
-                contains time of reward (s) and its volume (uL)
+                contains time of reward (s) and its volume (uL)'
             t_start.attrs['title'] = 'When the trial begins (s)'
-            t_ends.attrs['title'] = 'When the trial ends (s)'
+            t_end.attrs['title'] = 'When the trial ends (s)'
 
     def plot(self, trial):
         '''
@@ -260,21 +260,21 @@ class Data():
 
 #******************************************************************************
 
-
-#---------------
-#Set experimental parameters:
-#---------------
-
-mouse_number = input('mouse number: ' ) #asks user for mouse number
-
-num_trial = 2 #number of trials in this block
-delay_length = 1 #length of delay between sample tone and go cue, in sec
-
-L_tone_freq = 1000 #frequency of sample tone in left lick trials
-R_tone_freq = 4000 #frequency of sample tone in right lick trials
-go_tone_freq = 500 #frequency of go tone
-
-reward_size = 0.01 #size of water reward, in mL
+#
+##---------------
+##Set experimental parameters:
+##---------------
+#
+#mouse_number = input('mouse number: ' ) #asks user for mouse number
+#
+#n_trial = 2 #number of trials in this block
+#delay_length = 1 #length of delay between sample tone and go cue, in sec
+#
+#L_tone_freq = 1000 #frequency of sample tone in left lick trials
+#R_tone_freq = 4000 #frequency of sample tone in right lick trials
+#go_tone_freq = 500 #frequency of go tone
+#
+#reward_size = 0.01 #size of water reward, in mL
 
 #----------------------------
 #Initialize class instances for experiment:
@@ -306,8 +306,8 @@ tone_go = Tones(go_tone_freq, 0.75)
 #----------------------------
 
 #Set the time for the beginning of the block
-trials = np.arange(num_trial)
-data = Data(num_trial)
+trials = np.arange(n_trials)
+data = Data(n_trials)
 
 for trial in trials:
     data._t_start_abs[trial] = time.time() #Set time at beginning of trial
