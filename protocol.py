@@ -258,24 +258,6 @@ class Data():
         plt.savefig('data_plt.pdf')
 
 
-#******************************************************************************
-
-#
-##---------------
-##Set experimental parameters:
-##---------------
-#
-#mouse_number = input('mouse number: ' ) #asks user for mouse number
-#
-#n_trial = 2 #number of trials in this block
-#delay_length = 1 #length of delay between sample tone and go cue, in sec
-#
-#L_tone_freq = 1000 #frequency of sample tone in left lick trials
-#R_tone_freq = 4000 #frequency of sample tone in right lick trials
-#go_tone_freq = 500 #frequency of go tone
-#
-#reward_size = 0.01 #size of water reward, in mL
-
 #----------------------------
 #Initialize class instances for experiment:
 #----------------------------
