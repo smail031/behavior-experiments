@@ -10,7 +10,7 @@ import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
-#import _pickle as pickle
+import getpass
 import matplotlib.pyplot as plt
 import h5py
 
@@ -105,11 +105,11 @@ class Tones():
         self.freq = frequency
 
         #create a waveform called self.name from frequency and tone_length
-        os.system(f'sox -V 0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {tone_length} sin {frequency} vol -10dB')
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {tone_length} sin {frequency} vol -10dB')
 
     def play(self):
         #send the wav file to the sound card
-        os.system(f'play -V 0 {self.name}.wav')
+        os.system(f'play -V0 {self.name}.wav')
 
 class Data():
 
@@ -184,7 +184,7 @@ class Data():
             #Set attributes of the file
             f.attrs['animal'] = mouse_number
             f.attrs['time_experiment'] = self.t_experiment
-            f.attrs['user'] = os.getlogin()
+            f.attrs['user'] = getpass.getuser()
 
             dt = h5py.vlen_dtype(np.dtype('int32')) #Predefine variable-length
                                                 #dtype for storing t, volt
