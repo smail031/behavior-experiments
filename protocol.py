@@ -150,6 +150,8 @@ class Data():
 
         self.t_experiment = time.strftime("%Y.%b.%d__%H:%M:%S",
                                      time.localtime(time.time()))
+        self.date_experiment = time.strftime("%Y.%b.%d",
+                                     time.localtime(time.time()))
         self.t_start = np.empty(n_trials) #start times of each trial
         self.t_end = np.empty(n_trials)
 
@@ -178,7 +180,7 @@ class Data():
 
     def store(self, filename = None):
         if filename is None:
-            filename = str(mouse_number) + str(self.t_experiment) + '.hdf5'
+            filename = str(mouse_number) + str(self.date_experiment) + '.hdf5'
 
         with h5py.File(filename, 'w') as f:
             #Set attributes of the file
@@ -186,8 +188,8 @@ class Data():
             f.attrs['time_experiment'] = self.t_experiment
             f.attrs['user'] = getpass.getuser()
 
-            dt = h5py.vlen_dtype(np.dtype('int32')) #Predefine variable-length
-                                                #dtype for storing t, volt
+            dt = h5py.special_dtype(vlen = np.dtype('int32')) #Predefine variable-length
+                                                            #dtype for storing t, volt
 
             t_start = f.create_dataset('t_start', data = self.t_start)
             t_end = f.create_dataset('t_end', data = self.t_end)
