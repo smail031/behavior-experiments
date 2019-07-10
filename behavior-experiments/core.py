@@ -237,7 +237,7 @@ class Data():
 
         plt.savefig('data_plt.pdf')
 
-class Stepper():
+class Stepper_motor():
     
     def __init__(self, enablePIN, directionPIN, stepPIN, emptyPIN):
         self.enablePIN = enablePIN
@@ -245,7 +245,7 @@ class Stepper():
         self.stepPIN = stepPIN
         self.emptyPIN = emptyPIN
  
-    def stepper(self):
+    def stepper(self, direction, steps):
         
         GPIO.setup(self.enablePIN, GPIO.OUT, initial=0)
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
@@ -255,7 +255,7 @@ class Stepper():
         if GPIO.input(self.emptyPIN):
             GPIO.output(self.enablePIN, 1)
             GPIO.output(self.directionPIN, 1)
-            for i in range(1600):
+            for i in range(steps):
                 GPIO.output(self.stepPIN, 1)
                 time.sleep(0.07)
                 GPIO.output(self.stepPIN, 0)
@@ -263,4 +263,15 @@ class Stepper():
         else:
             print('the syringe is empty')
     
-    def reward()
+    def reward(volume):
+        
+        steps = volume * 1600
+        self.stepper(1, steps)
+        
+    def fill(volume):
+        
+        steps = volume * 1600
+        self.stepper(0,steps)
+        
+
+        

@@ -5,12 +5,20 @@ Created on Mon Jun 24 15:48:29 2019
 
 @author: sebastienmaille
 """
+
+#In the first training protocol, the goal is for the animal to associate the 
+#lickports with reward delivery. Therefore, at regular intervals a go cue will
+#be played and water will be delivered randomly from one of the two lickports.
+#All data will still be collected during these trials.
+
+
 import time
 import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
 from .core import *
+
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
@@ -19,13 +27,29 @@ from .core import *
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
 n_trials = 2 #number of trials in this block
-delay_length = 1 #length of delay between sample tone and go cue, in sec
 
-L_tone_freq = 1000 #frequency of sample tone in left lick trials
-R_tone_freq = 4000 #frequency of sample tone in right lick trials
 go_tone_freq = 500 #frequency of go tone
 
 reward_size = 0.01 #size of water reward, in mL
+
+#----------------------------
+#Assign GPIO pins:
+#----------------------------
+
+servo_PWM = 17 #PWM pin for servo that adjusts lickport distance
+
+L_enablePIN = 23 #enable pin for left stepper motor
+L_directionPIN = 24 #direction pin for left stepper motor
+L_stepPIN = 25 #step pin for left stepper motor
+L_emptyPIN = 20 #empty switch pin for left stepper motor
+L_lickometer = 12 #input pin for lickometer (black wire)
+
+
+R_enablePIN = 10 #enable pin for right stepper motor
+R_directionPIN = 9 #direction pin for right stepper motor
+R_stepPIN = 11 #step pin for right stepper motor
+R_emptyPIN = 21 #empty switch pin for right stepper motor
+R_lickometer = 16 #input pin for lickometer (black wire)
 
 #----------------------------
 #Initialize class instances for experiment:
@@ -37,19 +61,15 @@ GPIO.setwarnings(False)
 #Set the mode of the pins (broadcom vs local)
 GPIO.setmode(GPIO.BCM)
 
-#Assign GPIOs
-TTL = Stim("TTL",16,GPIO.OUT)
+#create Stepper class instances for left and right reward delivery
+water_L = Stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
+water_R = Stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
-water_L = Stim("water_L",25,GPIO.OUT)
-water_R = Stim("water_R",26,GPIO.OUT)
+#create lickometer class instances for left and right lickometers
+lick_port_L = lickometer(L_lickometer)
+lick_port_R = lickometer(R_lickometer)
 
-lick_port_L = Stim("lick_L",30,GPIO.IN)
-lick_port_R = Stim("lick_R",31,GPIO.IN)
-
-#create tones
-tone_L = Tones(L_tone_freq, 1)
-tone_R = Tones(R_tone_freq, 1)
-
+#create tone
 tone_go = Tones(go_tone_freq, 0.75)
 
 #----------------------------
@@ -74,11 +94,9 @@ for trial in trials:
     left_trial_ = np.random.rand() < 0.5 #decide if it will be a L or R trial
 
     if left_trial_ is True:
-        data.tone[trial] = 'L' #Assign data type
+        data.tone[trial] = 'L' #Assign trial type
         data.t_tone[trial] = time.time() - data._t_start_abs[trial]
-        tone_L.play() #Play left tone
 
-        time.sleep(delay_length) #Sleep for some delay
 
         tone_go.play() #Play go tone
 
@@ -91,9 +109,6 @@ for trial in trials:
     else:
         data.tone[trial] = 'R' #Assign data type
         data.t_tone[trial] = time.time() - data._t_start_abs[trial]
-        tone_R.play() #Play left tone
-
-        time.sleep(delay_length) #Sleep for some delay
 
         tone_go.play() #Play go tone
 
@@ -120,7 +135,7 @@ for trial in trials:
         obj[trial]['volt'] = lick_list[ind]._licks
 
     #Pause for the ITI before next trial
-    ITI_ = 1.5
+    ITI_ = 2.5
 #    while ITI_ > 10:
 #        ITI_ = np.random.exponential(scale = 2)
 
@@ -129,10 +144,8 @@ for trial in trials:
 
 data.store() #store the data
 
-#delete the .wav files created for the experiment
-os.system(f'rm {L_tone_freq}Hz.wav')
-os.system(f'rm {R_tone_freq}Hz.wav')
+#delete the .wav file created for the experiment
 os.system(f'rm {go_tone_freq}Hz.wav')
 
 #Clean up the GPIOs
-#GPIO.cleanup()
+GPIO.cleanup()
