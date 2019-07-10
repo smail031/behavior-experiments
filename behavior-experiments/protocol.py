@@ -171,12 +171,6 @@ class Data():
         self.v_rew_r = np.empty(n_trials) #stores reward volumes from L lickport
         self.t_rew_r = np.empty(n_trials) #stores reward times from L lickport
 
-#    def _pkl_store(self, filename = None):
-#        if filename is None:
-#            filename = str(mouse_number) + str(self.t_experiment) + '.pkl'
-#
-#        with open(filename, 'wb') as f:
-#            pickle.dump(self, f)
 
     def store(self, filename = None):
         if filename is None:
@@ -258,6 +252,29 @@ class Data():
         ax.plot([self.t_rew_r, self.t_rew_r], [0, 5], 'b', linewidth = 2)
 
         plt.savefig('data_plt.pdf')
+
+def stepper():
+    
+    enablePIN = 23
+    directionPIN = 24
+    stepPIN = 25
+    emptyPIN = 20
+ 
+    GPIO.setup(enablePIN, GPIO.OUT, initial=0)
+    GPIO.setup(directionPIN, GPIO.OUT, initial=0)
+    GPIO.setup(stepPIN, GPIO.OUT, initial=0)
+    GPIO.setup(emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+ 
+    if GPIO.input(emptyPIN):
+        GPIO.output(enablePIN, 1)
+        GPIO.output(directionPIN, 1)
+        for i in range(1600):
+            GPIO.output(stepPIN, 1)
+            time.sleep(0.07)
+            GPIO.output(stepPIN, 0)
+            time.sleep(0.07)
+    else:
+        print('the syringe is empty')
 
 
 #----------------------------
