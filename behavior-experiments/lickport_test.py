@@ -12,7 +12,7 @@ GPIO.setwarnings(False)
 
 class lickport():
     
-    def __init(self, lickport_pin, side):
+    def __init__(self, lickport_pin, side):
         
         self.lickport_pin = lickport_pin
         self.side = side
