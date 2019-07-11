@@ -18,7 +18,7 @@ import h5py
 #Define some classes!
 #------------------------------------------------------------------------------
 
-class Stim(object):
+class stim(object):
 
     def __init__(self,name,pin,io):
         self.name = name
@@ -27,7 +27,6 @@ class Stim(object):
         self.GPIOsetup()
         self._licks = []
         self._t_licks = []
-        self.lickstep = 0
         self.num_samples = 0
 
     def __str__(self):
@@ -37,49 +36,8 @@ class Stim(object):
         #Set up the GPIO pins you will be using as inputs or outputs
         GPIO.setup(self.pin, self.io)
 
-    def reward(self, size, rate = 1 ):
 
-        #size            - Size of reward in ml
-        #rate            - Rate of flow in ml/sec
-
-        #Calculate the reward_delay (duration of reward delivery) based on the given parameters
-        reward_delay = 1/rate * size
-
-        #Turn on the water dispenser
-        GPIO.output(self.pin, True)
-
-        #You'll have to account for the time it
-        #takes for the water to get to the mouthpiece
-        #Control the size of the reward
-        time.sleep(reward_delay)
-
-        #Turn off the water dispenser
-        GPIO.output(self.pin, False)
-
-    def lick(self, sampling_rate, sampling_duration):
-        #records the licks at a given sampling rate
-        self._licks = []
-        self._t_licks = []
-
-        #calculate the number of samples needed
-        self.num_samples = int(sampling_duration * sampling_rate)
-
-        for i in range(self.num_samples):
-
-            if GPIO.input(self.pin):
-                #register lick
-                self._licks.append(1)
-                self._t_licks.append(time.time())
-
-            else:
-                #register no lick
-                self._licks.append(0)
-                self._t_licks.append(time.time())
-
-            #wait for next sample and update step
-            time.sleep(1/sampling_rate)
-
-class Tones():
+class tones():
 
     def __init__(self, frequency, tone_length):
 
@@ -91,11 +49,11 @@ class Tones():
         #create a waveform called self.name from frequency and tone_length
         os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {tone_length} sin {frequency} vol -10dB')
 
-    def play(self):
+    def Play(self):
         #send the wav file to the sound card
         os.system(f'play -V0 {self.name}.wav')
 
-class Data():
+class data():
 
     def __init__(self, n_trials):
         '''
@@ -156,7 +114,7 @@ class Data():
         self.t_rew_r = np.empty(n_trials) #stores reward times from L lickport
 
 
-    def store(self, filename = None):
+    def Store(self, filename = None):
         if filename is None:
             filename = str(mouse_number) + str(self.date_experiment) + '.hdf5'
 
@@ -217,7 +175,7 @@ class Data():
             t_start.attrs['title'] = 'When the trial begins (s)'
             t_end.attrs['title'] = 'When the trial ends (s)'
 
-    def plot(self, trial):
+    def Plot(self, trial):
         '''
         parameters
         --------
@@ -237,7 +195,7 @@ class Data():
 
         plt.savefig('data_plt.pdf')
 
-class Stepper_motor():
+class stepper():
     
     def __init__(self, enablePIN, directionPIN, stepPIN, emptyPIN):
         self.enablePIN = enablePIN
@@ -245,7 +203,7 @@ class Stepper_motor():
         self.stepPIN = stepPIN
         self.emptyPIN = emptyPIN
  
-    def stepper(self, direction, steps):
+    def Motor(self, direction, steps):
         
         GPIO.setup(self.enablePIN, GPIO.OUT, initial=0)
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
@@ -263,15 +221,67 @@ class Stepper_motor():
         else:
             print('the syringe is empty')
     
-    def reward(volume):
+    def Reward(self, volume):
         
         steps = volume * 1600
-        self.stepper(1, steps)
+        self.motor(1, steps)
         
-    def fill(volume):
+    def Fill(self, volume):
         
         steps = volume * 1600
-        self.stepper(0,steps)
+        self.motor(0,steps)
+
+class lickometer():
+    
+    def __init__(self, pin):
+        self._licks = []
+        self._t_licks = []
+        self.num_samples = 0
+        self.pin = pin
+        self.GPIO_setup()
+        
+    def GPIO_setup(self):
+        #Set up the GPIO pin you will be using as input
+        GPIO.setup(self.pin, GPIO.IN)
+        
+    def Lick(self, sampling_rate, sampling_duration):
+        #records the licks at a given sampling rate
+        self._licks = []
+        self._t_licks = []
+
+        #calculate the number of samples needed
+        self.num_samples = int(sampling_duration * sampling_rate)
+
+        for i in range(self.num_samples):
+
+            if GPIO.input(self.pin):
+                #register lick
+                self._licks.append(1)
+                self._t_licks.append(time.time())
+
+            else:
+                #register no lick
+                self._licks.append(0)
+                self._t_licks.append(time.time())
+
+            #wait for next sample and update step
+            time.sleep(1/sampling_rate)
+
+class servo():
+    #Controls a servo that will adjust the lickport position relative to the 
+    #animal.
+    
+    def __init__(self, pin):
+        self.pin = pin
+        self.GPIO_setup()
+        
+    def GPIO_setup(self):
+        #Set up the GPIO pin you will be using as input
+        GPIO.setup(self.pin, GPIO.OUT)
+    
+    def Adjust(self):
+         
+        p = GPIO.PWM(self.pin, 50)  # GPIO 17 for PWM with 50Hz
+        p.start(3.5)  # Initialization
         
 
-        
