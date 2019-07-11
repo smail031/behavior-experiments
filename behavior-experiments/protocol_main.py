@@ -76,7 +76,7 @@ tone_go = core.tones(go_tone_freq, 0.75)
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(n_trials)
+data = core.data(n_trials, mouse_number)
 
 for trial in trials:
     data._t_start_abs[trial] = time.time() #Set time at beginning of trial

@@ -55,7 +55,7 @@ class tones():
 
 class data():
 
-    def __init__(self, n_trials):
+    def __init__(self, n_trials, mouse_number):
         '''
         Creates an instance of the class Data which will store parameters for
         each trial, including lick data and trial type information.
@@ -89,38 +89,40 @@ class data():
             Stores time of reward onset
 
         '''
-
+        
+        self.mouse_number = mouse_number
+        self.n_trials = n_trials
+        
         self.t_experiment = time.strftime("%Y.%b.%d__%H:%M:%S",
                                      time.localtime(time.time()))
         self.date_experiment = time.strftime("%Y.%b.%d",
                                      time.localtime(time.time()))
-        self.t_start = np.empty(n_trials) #start times of each trial
-        self.t_end = np.empty(n_trials)
+        self.t_start = np.empty(self.n_trials) #start times of each trial
+        self.t_end = np.empty(self.n_trials)
 
-        self._t_start_abs = np.empty(n_trials) #Internal var. storing abs.
+        self._t_start_abs = np.empty(self.n_trials) #Internal var. storing abs.
                             #start time in seconds for direct comparison with
                             #time.time()
 
-        self.tone = np.empty(n_trials, dtype = str) #L or R
-        self.t_tone = np.empty(n_trials)
+        self.tone = np.empty(self.n_trials, dtype = 'S1') #L or R
+        self.t_tone = np.empty(self.n_trials)
 
-        self.lick_r = np.empty(n_trials, dtype = dict) #stores licks from R lickport
+        self.lick_r = np.empty(self.n_trials, dtype = dict) #stores licks from R lickport
         self.lick_l = np.empty_like(self.lick_r) #stores licks from L lickport
 
 
-        self.v_rew_l = np.empty(n_trials) #stores reward volumes from L lickport
-        self.t_rew_l = np.empty(n_trials) #stores reward times from L lickport
-        self.v_rew_r = np.empty(n_trials) #stores reward volumes from L lickport
-        self.t_rew_r = np.empty(n_trials) #stores reward times from L lickport
-
-
+        self.v_rew_l = np.empty(self.n_trials) #stores reward volumes from L lickport
+        self.t_rew_l = np.empty(self.n_trials) #stores reward times from L lickport
+        self.v_rew_r = np.empty(self.n_trials) #stores reward volumes from L lickport
+        self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
+        
     def Store(self, filename = None):
         if filename is None:
-            filename = str(mouse_number) + str(self.date_experiment) + '.hdf5'
+            filename = str(self.mouse_number) + str(self.date_experiment) + '.hdf5'
 
         with h5py.File(filename, 'w') as f:
             #Set attributes of the file
-            f.attrs['animal'] = mouse_number
+            f.attrs['animal'] = self.mouse_number
             f.attrs['time_experiment'] = self.t_experiment
             f.attrs['user'] = getpass.getuser()
 
@@ -141,20 +143,20 @@ class data():
 
             #Preinitialize datasets for each sub-datatype within licks, tones
             #and rewards
-            lick_l_t = lick_l.create_dataset('t', (n_trials,), dtype = dt)
-            lick_l_volt = lick_l.create_dataset('volt', (n_trials,), dtype = dt)
-            lick_r_t = lick_r.create_dataset('t', (n_trials,), dtype = dt)
-            lick_r_volt = lick_r.create_dataset('volt', (n_trials,), dtype = dt)
+            lick_l_t = lick_l.create_dataset('t', (self.n_trials,), dtype = dt)
+            lick_l_volt = lick_l.create_dataset('volt', (self.n_trials,), dtype = dt)
+            lick_r_t = lick_r.create_dataset('t', (self.n_trials,), dtype = dt)
+            lick_r_volt = lick_r.create_dataset('volt', (self.n_trials,), dtype = dt)
 
-            tone_t = tone.create_dataset('t', data = self.t_tone, dtype = 'f16')
-            tone_type = tone.create_dataset('type', data = self.tone)
+            tone_t = tone.create_dataset('t', data = self.t_tone, dtype = 'f8')
+            tone_type = tone.create_dataset('type', data = self.tone, dtype = 'S1')
 
             rew_l_t = rew_l.create_dataset('t', data = self.t_rew_l)
             rew_l_v = rew_l.create_dataset('vol', data = self.v_rew_l)
             rew_r_t = rew_r.create_dataset('t', data = self.t_rew_r)
             rew_r_v = rew_r.create_dataset('vol', data = self.v_rew_r)
 
-            for trial in range(n_trials):
+            for trial in range(self.n_trials):
                 lick_l_t[trial] = self.lick_l[trial]['t']
                 lick_l_volt[trial] = self.lick_l[trial]['volt']
                 lick_r_t[trial] = self.lick_r[trial]['t']
@@ -213,7 +215,7 @@ class stepper():
         if GPIO.input(self.emptyPIN):
             GPIO.output(self.enablePIN, 1)
             GPIO.output(self.directionPIN, 1)
-            for i in range(steps):
+            for i in range(int(steps)):
                 GPIO.output(self.stepPIN, 1)
                 time.sleep(0.07)
                 GPIO.output(self.stepPIN, 0)
@@ -224,12 +226,12 @@ class stepper():
     def Reward(self, volume):
         
         steps = volume * 1600
-        self.motor(1, steps)
+        self.Motor(1, steps)
         
     def Fill(self, volume):
         
         steps = volume * 1600
-        self.motor(0,steps)
+        self.Motor(0,steps)
 
 class lickometer():
     
