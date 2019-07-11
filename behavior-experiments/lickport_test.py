@@ -3,8 +3,9 @@ import time
 
 lickport_pin = 12
 
-
+GPIO.setmode(GPIO.BCM)
 GPIO.setup(lickport_pin, GPIO.IN)
+
 
 
 def Lick(sampling_rate, sampling_duration):
@@ -32,4 +33,4 @@ def Lick(sampling_rate, sampling_duration):
         #wait for next sample and update step
         time.sleep(1/sampling_rate)
 
-Lick(1, 10)
+Lick(1, 40)
