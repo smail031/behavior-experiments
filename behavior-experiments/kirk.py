@@ -16,6 +16,7 @@ emptyPIN = 20
  
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
+
 GPIO.setup(enablePIN, GPIO.OUT, initial=0)
 GPIO.setup(directionPIN, GPIO.OUT, initial=0)
 GPIO.setup(stepPIN, GPIO.OUT, initial=0)

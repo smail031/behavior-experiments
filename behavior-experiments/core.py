@@ -213,13 +213,13 @@ class stepper():
         GPIO.setup(self.emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
      
         if GPIO.input(self.emptyPIN):
-            GPIO.output(self.enablePIN, 1)
+            GPIO.output(self.enablePIN, 0)
             GPIO.output(self.directionPIN, 1)
             for i in range(int(steps)):
                 GPIO.output(self.stepPIN, 1)
-                time.sleep(0.07)
+                time.sleep(0.0005)
                 GPIO.output(self.stepPIN, 0)
-                time.sleep(0.07)
+                time.sleep(0.0005)
         else:
             print('the syringe is empty')
     

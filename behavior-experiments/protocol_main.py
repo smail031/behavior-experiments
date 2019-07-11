@@ -56,6 +56,10 @@ GPIO.setwarnings(False)
 #Set the mode of the pins (broadcom vs local)
 GPIO.setmode(GPIO.BCM)
 
+#set the enable pins for L and R stepper motors to 1 to prevent overheating
+GPIO.output(L_enablePIN, 1)
+GPIO.output(R_enablePIN, 1)
+
 #create Stepper class instances for left and right reward delivery
 water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
 water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
