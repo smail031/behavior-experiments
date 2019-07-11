@@ -33,4 +33,4 @@ def Lick(sampling_rate, sampling_duration):
         #wait for next sample and update step
         time.sleep(1/sampling_rate)
 
-Lick(1, 40)
+Lick(20, 40)
