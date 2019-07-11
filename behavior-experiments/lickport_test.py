@@ -4,6 +4,7 @@ import time
 lickport_pin = 12
 
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 GPIO.setup(lickport_pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
 
 
