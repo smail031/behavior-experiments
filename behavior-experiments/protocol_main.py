@@ -10,7 +10,7 @@ import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
-from .core import *
+import core
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
@@ -28,6 +28,25 @@ go_tone_freq = 500 #frequency of go tone
 reward_size = 0.01 #size of water reward, in mL
 
 #----------------------------
+#Assign GPIO pins:
+#----------------------------
+
+servo_PWM = 17 #PWM pin for servo that adjusts lickport distance
+
+L_enablePIN = 23 #enable pin for left stepper motor
+L_directionPIN = 24 #direction pin for left stepper motor
+L_stepPIN = 25 #step pin for left stepper motor
+L_emptyPIN = 20 #empty switch pin for left stepper motor
+L_lickometer = 12 #input pin for lickometer (black wire)
+
+
+R_enablePIN = 10 #enable pin for right stepper motor
+R_directionPIN = 9 #direction pin for right stepper motor
+R_stepPIN = 11 #step pin for right stepper motor
+R_emptyPIN = 21 #empty switch pin for right stepper motor
+R_lickometer = 16 #input pin for lickometer (black wire)
+
+#----------------------------
 #Initialize class instances for experiment:
 #----------------------------
 
@@ -37,20 +56,19 @@ GPIO.setwarnings(False)
 #Set the mode of the pins (broadcom vs local)
 GPIO.setmode(GPIO.BCM)
 
-#Assign GPIOs
-TTL = Stim("TTL",16,GPIO.OUT)
+#create Stepper class instances for left and right reward delivery
+water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
+water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
-water_L = Stim("water_L",25,GPIO.OUT)
-water_R = Stim("water_R",26,GPIO.OUT)
-
-lick_port_L = Stim("lick_L",30,GPIO.IN)
-lick_port_R = Stim("lick_R",31,GPIO.IN)
+#create lickometer class instances for left and right lickometers
+lick_port_L = core.lickometer(L_lickometer)
+lick_port_R = core.lickometer(R_lickometer)
 
 #create tones
-tone_L = Tones(L_tone_freq, 1)
-tone_R = Tones(R_tone_freq, 1)
+tone_L = core.tones(L_tone_freq, 1)
+tone_R = core.tones(R_tone_freq, 1)
 
-tone_go = Tones(go_tone_freq, 0.75)
+tone_go = core.tones(go_tone_freq, 0.75)
 
 #----------------------------
 #Initialize experiment
@@ -58,15 +76,15 @@ tone_go = Tones(go_tone_freq, 0.75)
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = Data(n_trials)
+data = core.data(n_trials)
 
 for trial in trials:
     data._t_start_abs[trial] = time.time() #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.lick, args = (1, 5))
-    thread_R = threading.Thread(target = lick_port_R.lick, args = (1, 5))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1, 5))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1, 5))
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -76,30 +94,30 @@ for trial in trials:
     if left_trial_ is True:
         data.tone[trial] = 'L' #Assign data type
         data.t_tone[trial] = time.time() - data._t_start_abs[trial]
-        tone_L.play() #Play left tone
+        tone_L.Play() #Play left tone
 
         time.sleep(delay_length) #Sleep for some delay
 
-        tone_go.play() #Play go tone
+        tone_go.Play() #Play go tone
 
         data.t_rew_l[trial] = time.time() - data._t_start_abs[trial]
         data.v_rew_l[trial] = 5
-        water_L.reward(reward_size) #Deliver L reward
+        water_L.Reward(reward_size) #Deliver L reward
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
 
     else:
         data.tone[trial] = 'R' #Assign data type
         data.t_tone[trial] = time.time() - data._t_start_abs[trial]
-        tone_R.play() #Play left tone
+        tone_R.Play() #Play left tone
 
-        time.sleep(delay_length) #Sleep for some delay
+        time.sleep(delay_length) #Sleep for delay_length
 
-        tone_go.play() #Play go tone
+        tone_go.Play() #Play go tone
 
         data.t_rew_r[trial] = time.time() - data._t_start_abs[trial]
         data.v_rew_r[trial] = 5
-        water_R.reward(reward_size) #Deliver L reward
+        water_R.Reward(reward_size) #Deliver L reward
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
 
@@ -127,7 +145,7 @@ for trial in trials:
     time.sleep(ITI_)
 
 
-data.store() #store the data
+data.Store() #store the data
 
 #delete the .wav files created for the experiment
 os.system(f'rm {L_tone_freq}Hz.wav')
@@ -135,4 +153,4 @@ os.system(f'rm {R_tone_freq}Hz.wav')
 os.system(f'rm {go_tone_freq}Hz.wav')
 
 #Clean up the GPIOs
-#GPIO.cleanup()
+GPIO.cleanup()
