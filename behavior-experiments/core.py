@@ -197,9 +197,9 @@ class stepper():
         
         for i in range(int(steps)): #move in "direction" for "steps"
             GPIO.output(self.stepPIN, 1)
-            time.sleep(0.0005)
+            time.sleep(0.0001)
             GPIO.output(self.stepPIN, 0)
-            time.sleep(0.0005)
+            time.sleep(0.0001)
             
         GPIO.output(self.enablePIN, 1) #disable stepper (to prevent overheating)
     

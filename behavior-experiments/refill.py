@@ -8,6 +8,7 @@ Created on Fri Jul 12 10:32:10 2019
 
 import core
 import RPi.GPIO as GPIO
+import threading
 
 #setup GPIOs
 GPIO.setwarnings(False)
@@ -45,9 +46,12 @@ elif side == 'R':
 elif side =='B':
     left = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
     right = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
-
-    left.Refill()
-    right.Refill()
+    
+    left_thread = threading.Thread(target = left.Refill)
+    right_thread = threading.Thread(target = right.Refill)
+    
+    left_thread.start()
+    right_thread.start()
 
 else:
     print('Not recognized.')
