@@ -25,12 +25,13 @@ GPIO.setup(emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 if GPIO.input(emptyPIN):
     GPIO.output(enablePIN, 0)
     GPIO.output(directionPIN, 1)
-    for i in range(800):
+    for i in range(1600):
         GPIO.output(stepPIN, 1)
         time.sleep(0.0005)
         GPIO.output(stepPIN, 0)
         time.sleep(0.0005)
 #    GPIO.cleanup()
 else:
+    print('empty')
     GPIO.output(enablePIN, 1)
 GPIO.output(enablePIN, 1)

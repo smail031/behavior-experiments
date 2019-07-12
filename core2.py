@@ -204,18 +204,17 @@ class stepper():
         self.directionPIN = directionPIN
         self.stepPIN = stepPIN
         self.emptyPIN = emptyPIN
+ 
+    def Motor(self, direction, steps):
         
         GPIO.setup(self.enablePIN, GPIO.OUT, initial=0)
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.stepPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
- 
-    def Motor(self, direction, steps):
-    
      
         if GPIO.input(self.emptyPIN):
             GPIO.output(self.enablePIN, 0)
-            GPIO.output(self.directionPIN, direction)
+            GPIO.output(self.directionPIN, 1)
             for i in range(int(steps)):
                 GPIO.output(self.stepPIN, 1)
                 time.sleep(0.0005)
@@ -226,39 +225,13 @@ class stepper():
     
     def Reward(self, volume):
         
-        steps = volume * 1600
+        steps = volume * 5000
         self.Motor(1, steps)
         
     def Fill(self, volume):
         
-        steps = volume * 1600
+        steps = volume * 5000
         self.Motor(0,steps)
-        
-    def Full_fill(self):
-        
-        GPIO.output(self.enablePIN, 0)
-        GPIO.output(self.directionPIN, 1)
-        
-        while GPIO.input(self.emptyPIN):
-            GPIO.output(self.stepPIN, 1)
-            time.sleep(0.0005)
-            GPIO.output(self.stepPIN, 0)
-            time.sleep(0.0005)
-        
-        print('syringe is empty')
-        
-        GPIO.output(self.directionPIN, 0)
-        
-        for i in range(96000):
-            GPIO.output(self.stepPIN, 1)
-            time.sleep(0.0005)
-            GPIO.output(self.stepPIN, 0)
-            time.sleep(0.0005)
-        
-        
-        
-        
-    
 
 class lickometer():
     

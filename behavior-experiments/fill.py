@@ -7,6 +7,10 @@ Created on Fri Jul 12 10:32:10 2019
 """
 
 import core
+import RPi.GPIO as GPIO
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
 
 #----------------------------
 #Assign GPIO pins:
@@ -29,5 +33,11 @@ R_emptyPIN = 21 #empty switch pin for right stepper motor
 left = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
 right = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
+
+#left.Reward(1)
 left.Full_fill()
-right.Full_fill()
+##right.Full_fill()
+
+GPIO.output(left.enablePIN, 1)
+#GPIO.output(right.enablePIN, 1)
+

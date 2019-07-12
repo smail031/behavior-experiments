@@ -18,7 +18,7 @@ import core
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
-n_trials = 2 #number of trials in this block
+n_trials = 10 #number of trials in this block
 delay_length = 1 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
@@ -57,8 +57,8 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 #set the enable pins for L and R stepper motors to 1 to prevent overheating
-GPIO.output(L_enablePIN, 1)
-GPIO.output(R_enablePIN, 1)
+GPIO.setup(L_enablePIN, GPIO.OUT, initial = 1)
+GPIO.setup(R_enablePIN, GPIO.OUT, initial = 1)
 
 #create Stepper class instances for left and right reward delivery
 water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
