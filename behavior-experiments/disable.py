@@ -12,6 +12,10 @@ Created on Fri Jul 12 14:42:52 2019
 #EasyDrivers are plugged in.
 
 import core
+import RPi.GPIO as GPIO
+
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
 
 L_enablePIN = 23 #enable pin for left stepper motor
 L_directionPIN = 24 #direction pin for left stepper motor
@@ -28,5 +32,6 @@ R_emptyPIN = 21 #empty switch pin for right stepper motor
 left = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
 right = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
+#Call Disable method from class stepper to set enablePIN to 1 (disabled)
 left.Disable()
 right.Disable()

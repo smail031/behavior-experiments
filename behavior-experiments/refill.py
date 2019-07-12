@@ -7,6 +7,11 @@ Created on Fri Jul 12 10:32:10 2019
 """
 
 import core
+import RPi.GPIO as GPIO
+
+#setup GPIOs
+GPIO.setwarnings(False)
+GPIO.setmode(GPIO.BCM)
 
 #----------------------------
 #Assign GPIO pins:
