@@ -128,6 +128,7 @@ for trial in trials:
     #---------------
     #Post-trial data storage
     #---------------
+    
     #Make sure the threads are finished
     thread_L.join()
     thread_R.join()

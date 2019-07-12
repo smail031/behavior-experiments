@@ -7,10 +7,6 @@ Created on Fri Jul 12 10:32:10 2019
 """
 
 import core
-import RPi.GPIO as GPIO
-
-GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BCM)
 
 #----------------------------
 #Assign GPIO pins:
@@ -27,17 +23,26 @@ R_directionPIN = 9 #direction pin for right stepper motor
 R_stepPIN = 11 #step pin for right stepper motor
 R_emptyPIN = 21 #empty switch pin for right stepper motor
 
+#----------------------------
+#Ask which side and call refill:
+#----------------------------
 
+side = input('Which side would you like to refill? (L/R/B): ' ) #asks user which side
 
-#Create instances of class core.stepper for the left and right steppers
-left = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
-right = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
+if side == 'L':
+    left = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
+    left.Refill()
 
+elif side == 'R':
+    right = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
+    right.Refill()
+    
+elif side =='B':
+    left = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
+    right = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
-#left.Reward(1)
-left.Full_fill()
-##right.Full_fill()
+    left.Refill()
+    right.Refill()
 
-GPIO.output(left.enablePIN, 1)
-#GPIO.output(right.enablePIN, 1)
-
+else:
+    print('Not recognized.')

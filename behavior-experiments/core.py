@@ -18,25 +18,6 @@ import h5py
 #Define some classes!
 #------------------------------------------------------------------------------
 
-class stim(object):
-
-    def __init__(self,name,pin,io):
-        self.name = name
-        self.pin = pin
-        self.io = io
-        self.GPIOsetup()
-        self._licks = []
-        self._t_licks = []
-        self.num_samples = 0
-
-    def __str__(self):
-        return'The {} {} associated to pin {}'.format(self.io,self.name,self.pin)
-
-    def GPIOsetup (self):
-        #Set up the GPIO pins you will be using as inputs or outputs
-        GPIO.setup(self.pin, self.io)
-
-
 class tones():
 
     def __init__(self, frequency, tone_length):
@@ -211,55 +192,41 @@ class stepper():
         GPIO.setup(self.emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
  
     def Motor(self, direction, steps):
-    
-     
-        if GPIO.input(self.emptyPIN):
-            GPIO.output(self.enablePIN, 0)
-            GPIO.output(self.directionPIN, direction)
-            for i in range(int(steps)):
-                GPIO.output(self.stepPIN, 1)
-                time.sleep(0.0005)
-                GPIO.output(self.stepPIN, 0)
-                time.sleep(0.0005)
-        else:
-            print('the syringe is empty')
+        GPIO.output(self.enablePIN, 0) #enable the stepper motor
+        GPIO.output(self.directionPIN, direction) #set direction
+        
+        for i in range(int(steps)): #move in "direction" for "steps"
+            GPIO.output(self.stepPIN, 1)
+            time.sleep(0.0005)
+            GPIO.output(self.stepPIN, 0)
+            time.sleep(0.0005)
+            
+        GPIO.output(self.enablePIN, 1) #disable stepper (to prevent overheating)
     
     def Reward(self, volume):
+        steps = volume * 1600 #Calculate the number of steps needed to deliver
+                                #"volume".
+        if GPIO.input(self.emptyPIN): 
+            self.Motor(1, steps) #push syringe for "steps" until the empty pin
+                                    #is activated.            
+        else:
+            print('the syringe is empty')
         
-        steps = volume * 1600
-        self.Motor(1, steps)
-        
-    def Fill(self, volume):
-        
-        steps = volume * 1600
-        self.Motor(0,steps)
-        
-    def Full_fill(self):
-        
-        GPIO.output(self.enablePIN, 0)
-        GPIO.output(self.directionPIN, 1)
-        
-        while GPIO.input(self.emptyPIN):
-            GPIO.output(self.stepPIN, 1)
-            time.sleep(0.0005)
-            GPIO.output(self.stepPIN, 0)
-            time.sleep(0.0005)
-        
-        print('syringe is empty')
-        
-        GPIO.output(self.directionPIN, 0)
-        
-        for i in range(96000):
-            GPIO.output(self.stepPIN, 1)
-            time.sleep(0.0005)
-            GPIO.output(self.stepPIN, 0)
-            time.sleep(0.0005)
-        
-        
-        
-        
-    
+    def Refill(self):
 
+        while GPIO.input(self.emptyPIN): #Push syringe and check every 200
+                                        #whether the empty pin is activated.
+            self.Motor(1, 200)
+        
+        print('the syringe is empty')
+        
+        self.Motor(0, 24000) #Pull the syringe for 24000 steps, ~3mL.
+        
+    def Disable(self):
+        
+        GPIO.output(self.enablePIN, 1) #disable stepper (to prevent overheating)
+        
+        
 class lickometer():
     
     def __init__(self, pin):
