@@ -34,6 +34,7 @@ class tones():
         #send the wav file to the sound card
         os.system(f'play -V0 {self.name}.wav')
 
+
 class data():
 
     def __init__(self, n_trials, mouse_number):
@@ -85,12 +86,15 @@ class data():
                             #start time in seconds for direct comparison with
                             #time.time()
 
-        self.tone = np.empty(self.n_trials, dtype = 'S1') #L or R
-        self.t_tone = np.empty(self.n_trials)
-
+        self.tone = np.empty(self.n_trials, dtype = 'S1') #L or R, stores the trial types
+        self.t_tone = np.empty(self.n_trials) # stores the tone times relative
+                                        #to trial start.
+        
+        self.response = np.empty(self.n_trials, dtype = 'S1') #L, R, or N, stores 
+                                        #the animal's responses for each trial.
+         
         self.lick_r = np.empty(self.n_trials, dtype = dict) #stores licks from R lickport
         self.lick_l = np.empty_like(self.lick_r) #stores licks from L lickport
-
 
         self.v_rew_l = np.empty(self.n_trials) #stores reward volumes from L lickport
         self.t_rew_l = np.empty(self.n_trials) #stores reward times from L lickport
@@ -177,6 +181,7 @@ class data():
         ax.plot([self.t_rew_r, self.t_rew_r], [0, 5], 'b', linewidth = 2)
 
         plt.savefig('data_plt.pdf')
+
 
 class stepper():
     
