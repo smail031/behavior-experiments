@@ -191,7 +191,7 @@ class stepper():
         self.stepPIN = stepPIN
         self.emptyPIN = emptyPIN
         
-        GPIO.setup(self.enablePIN, GPIO.OUT, initial=0)
+        GPIO.setup(self.enablePIN, GPIO.OUT, initial=1)
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.stepPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -206,10 +206,10 @@ class stepper():
             GPIO.output(self.stepPIN, 0)
             time.sleep(0.0001)
             
-        GPIO.output(self.enablePIN, 1) #disable stepper (to prevent overheating)
+        self.Disable() #disable stepper (to prevent overheating)
     
-    def Reward(self, volume):
-        steps = volume * 1600 #Calculate the number of steps needed to deliver
+    def Reward(self,):
+        steps = 500 #Calculate the number of steps needed to deliver
                                 #"volume".
         if GPIO.input(self.emptyPIN): 
             self.Motor(1, steps) #push syringe for "steps" until the empty pin
