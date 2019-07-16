@@ -85,7 +85,7 @@ trials = np.arange(n_trials)
 data = core.data(n_trials, mouse_number)
 
 for trial in trials:
-    data._t_start_abs[trial] = time.time() #Set time at beginning of trial
+    data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
@@ -100,7 +100,7 @@ for trial in trials:
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
         data.tone[trial] = 'L' #Assign data type
-        data.t_tone[trial] = time.time() - data._t_start_abs[trial]
+        data.t_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_L.Play() #Play left tone
 
         time.sleep(delay_length) #Sleep for some delay
@@ -110,7 +110,7 @@ for trial in trials:
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
         response = False
-        response_start = time.time()
+        response_start = time.time()*1000
         
         while response == False:
             if sum(lick_port_R._licks[(length_R-1):]) > 0:
@@ -119,19 +119,19 @@ for trial in trials:
             elif sum(lick_port_L._licks[(length_L-1):]) > 0:
                 response = 'L'
 
-            elif time.time() - response_start > response_delay:
+            elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
 
         if response == 'L':
-            data.t_rew_l[trial] = time.time() - data._t_start_abs[trial]
+            data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_l[trial] = 5
             water_L.Reward() #Deliver L reward
-            data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
+            data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #Right trial:--------------------------------------------------------------
     else:
         data.tone[trial] = 'R' #Assign data type
-        data.t_tone[trial] = time.time() - data._t_start_abs[trial]
+        data.t_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_R.Play() #Play left tone
 
         time.sleep(delay_length) #Sleep for delay_length
@@ -141,7 +141,7 @@ for trial in trials:
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
         response = False
-        response_start = time.time()
+        response_start = time.time()*1000
         
         while response == False:
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
@@ -150,14 +150,14 @@ for trial in trials:
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
                 response = 'R'
 
-            elif time.time() - response_start > response_delay:
+            elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
         
         if response == 'R':
-            data.t_rew_r[trial] = time.time() - data._t_start_abs[trial]
+            data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_r[trial] = 5
             water_R.Reward() #Deliver R reward   
-            data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
+            data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #---------------
     #Post-trial data storage

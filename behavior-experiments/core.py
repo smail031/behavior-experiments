@@ -258,12 +258,12 @@ class lickometer():
             if GPIO.input(self.pin):
                 #register lick
                 self._licks.append(1)
-                self._t_licks.append(time.time())
+                self._t_licks.append(time.time()*1000)
 
             else:
                 #register no lick
                 self._licks.append(0)
-                self._t_licks.append(time.time())
+                self._t_licks.append(time.time()*1000)
 
             #wait for next sample and update step
             time.sleep(1/sampling_rate)
