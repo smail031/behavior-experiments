@@ -89,8 +89,8 @@ for trial in trials:
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (200, 5))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (200, 5))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -195,6 +195,3 @@ data.Store() #store the data
 os.system(f'rm {L_tone_freq}Hz.wav')
 os.system(f'rm {R_tone_freq}Hz.wav')
 os.system(f'rm {go_tone_freq}Hz.wav')
-
-#Clean up the GPIOs
-GPIO.cleanup()
