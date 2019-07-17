@@ -173,13 +173,13 @@ for trial in trials:
     lick_port_R._t_licks -= data._t_start_abs[trial]
     
     #Store and process the data
-    data_list = [data.lick_l, data.lick_r]
-    lick_list = [lick_port_L, lick_port_R]
+    storage_list = [data.lick_l, data.lick_r]
+    rawdata_list = [lick_port_L, lick_port_R]
 
-    for ind, obj in enumerate(data_list):
-        obj[trial] = {}
-        obj[trial]['t'] = lick_list[ind]._t_licks
-        obj[trial]['volt'] = lick_list[ind]._licks
+    for ind, storage in enumerate(storage_list):
+        storage[trial] = {}
+        storage[trial]['t'] = rawdata_list[ind]._t_licks
+        storage[trial]['volt'] = rawdata_list[ind]._licks
 
     #Pause for the ITI before next trial
     ITI_ = 1.5
