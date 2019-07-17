@@ -9,7 +9,7 @@ import numpy as np
 import h5py
 import matplotlib.pyplot as plt
 
-f = h5py.File('seb2019.Jul.17.hdf5', 'r')
+f = h5py.File('200Hz2019.Jul.17.hdf5', 'r')
 
 lick_l = f['lick_l']
 

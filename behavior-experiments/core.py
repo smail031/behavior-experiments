@@ -111,9 +111,11 @@ class data():
             f.attrs['time_experiment'] = self.t_experiment
             f.attrs['user'] = getpass.getuser()
 
-            dt = h5py.special_dtype(vlen = np.dtype('int32')) #Predefine variable-length
+            dtint = h5py.special_dtype(vlen = np.dtype('int32')) #Predefine variable-length
                                                             #dtype for storing t, volt
-
+            dtfloat = h5py.special_dtype(vlen = np.dtype('float'))
+            
+            
             t_start = f.create_dataset('t_start', data = self.t_start)
             t_end = f.create_dataset('t_end', data = self.t_end)
 
@@ -128,10 +130,10 @@ class data():
 
             #Preinitialize datasets for each sub-datatype within licks, tones
             #and rewards
-            lick_l_t = lick_l.create_dataset('t', (self.n_trials,), dtype = dt)
-            lick_l_volt = lick_l.create_dataset('volt', (self.n_trials,), dtype = dt)
-            lick_r_t = lick_r.create_dataset('t', (self.n_trials,), dtype = dt)
-            lick_r_volt = lick_r.create_dataset('volt', (self.n_trials,), dtype = dt)
+            lick_l_t = lick_l.create_dataset('t', (self.n_trials,), dtype = dtfloat)
+            lick_l_volt = lick_l.create_dataset('volt', (self.n_trials,), dtype = dtint)
+            lick_r_t = lick_r.create_dataset('t', (self.n_trials,), dtype = dtfloat)
+            lick_r_volt = lick_r.create_dataset('volt', (self.n_trials,), dtype = dtint)
 
             tone_t = tone.create_dataset('t', data = self.t_tone, dtype = 'f8')
             tone_type = tone.create_dataset('type', data = self.tone, dtype = 'S1')
