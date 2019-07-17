@@ -189,7 +189,9 @@ for trial in trials:
     time.sleep(ITI_)
 
 
-data.Store() #store the data
+data.Store() #store the data in a .hdf5 file
+data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
+                #then copy to the lab google drive.
 
 #delete the .wav files created for the experiment
 os.system(f'rm {L_tone_freq}Hz.wav')

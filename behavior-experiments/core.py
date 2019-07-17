@@ -101,11 +101,11 @@ class data():
         self.v_rew_r = np.empty(self.n_trials) #stores reward volumes from L lickport
         self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
         
-    def Store(self, filename = None):
-        if filename is None:
-            filename = str(self.mouse_number) + str(self.date_experiment) + '.hdf5'
+        self.filename = str(self.mouse_number) + str(self.date_experiment) + '.hdf5'
+        
+    def Store(self):
 
-        with h5py.File(filename, 'w') as f:
+        with h5py.File(self.filename, 'w') as f:
             #Set attributes of the file
             f.attrs['animal'] = self.mouse_number
             f.attrs['time_experiment'] = self.t_experiment
@@ -164,6 +164,11 @@ class data():
             t_start.attrs['title'] = 'When the trial begins (s)'
             t_end.attrs['title'] = 'When the trial ends (s)'
 
+    def Rclone(self):
+        os.system(f'mv ~/Desktop/behavior-experiments/behavior-experiments/{self.filename} /Desktop/temporary-data')
+        os.system('rclone copy /home/pi/Desktop/temporary-data gdrive:Behaviour')
+        
+        
     def Plot(self, trial):
         '''
         parameters
