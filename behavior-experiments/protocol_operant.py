@@ -89,8 +89,8 @@ for trial in trials:
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (40, 5))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (40, 5))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (200, 5))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (200, 5))
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
