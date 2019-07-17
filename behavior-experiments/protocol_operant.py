@@ -166,7 +166,12 @@ for trial in trials:
     #Make sure the threads are finished
     thread_L.join()
     thread_R.join()
-
+    
+    #subtract lick timestamps from start of trial so that integers are not too
+    #big for storage.
+    lick_port_L._t_licks -= data._t_start_abs
+    lick_port_R._t_licks -= data._t_start_abs
+    
     #Store and process the data
     data_list = [data.lick_l, data.lick_r]
     lick_list = [lick_port_L, lick_port_R]
