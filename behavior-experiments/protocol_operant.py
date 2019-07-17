@@ -169,8 +169,8 @@ for trial in trials:
     
     #subtract lick timestamps from start of trial so that integers are not too
     #big for storage.
-    lick_port_L._t_licks -= data._t_start_abs
-    lick_port_R._t_licks -= data._t_start_abs
+    lick_port_L._t_licks -= data._t_start_abs[trial]
+    lick_port_R._t_licks -= data._t_start_abs[trial]
     
     #Store and process the data
     data_list = [data.lick_l, data.lick_r]
