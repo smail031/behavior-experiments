@@ -165,7 +165,7 @@ class data():
             t_end.attrs['title'] = 'When the trial ends (s)'
 
     def Rclone(self):
-        os.system(f'mv ~/Desktop/behavior-experiments/behavior-experiments/{self.filename} /Desktop/temporary-data')
+        os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{self.filename} /home/pi/Desktop/temporary-data')
         os.system('rclone copy /home/pi/Desktop/temporary-data gdrive:Behaviour')
         
         
