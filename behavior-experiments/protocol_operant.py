@@ -92,11 +92,12 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
+    left_trial_ = np.random.rand() < 0.5 #decide if it will be a L or R trial
+
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
-    left_trial_ = np.random.rand() < 0.5 #decide if it will be a L or R trial
-
+    time.sleep(0.5)
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
         data.tone[trial] = 'L' #Assign data type
@@ -126,7 +127,7 @@ for trial in trials:
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_l[trial] = 5
             water_L.Reward() #Deliver L reward
-            data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
+        data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #Right trial:--------------------------------------------------------------
     else:
@@ -157,7 +158,7 @@ for trial in trials:
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_r[trial] = 5
             water_R.Reward() #Deliver R reward   
-            data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
+        data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #---------------
     #Post-trial data storage
