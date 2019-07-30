@@ -37,13 +37,15 @@ for ind, key in enumerate(lick_keys):
         _licks = np.argwhere(_d_lick_v > 0).flatten()
         _values = np.full(len(_licks), trial)
         
-        ax[ind].scatter(_licks, _values, marker = '|')
-        _tone_on = f['tone']['t'][trial]*1000
-        ax[ind].fill_between([_tone_on, _tone_on + 1000], [trial-1, trial-1], 
-          [trial, trial],
-          facecolor = [0.8, 0.1, 0.2, 0.3])
+        _tone_on = f['tone']['t'][trial]
+        ax[ind].fill_between([_tone_on, _tone_on + 1000], [trial-0.5, trial-0.5], 
+          [trial+0.5, trial+0.5],
+          facecolor = '#ff0000', alpha = 0.2)
+        ax[ind].scatter(_licks, _values, marker = '|', color = '#5d5d5d', s = 60)
+
+        
     
-    ax[ind].set_ylim([1,num_trials])
+    ax[ind].set_ylim([0,num_trials])
     ax[ind].set_xlim([0, None])
     ax[ind].set_xticks([0, 1000, 2000, 3000, 4000, 5000])
     ax[ind].set_xlabel('Time (ms)')

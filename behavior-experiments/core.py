@@ -28,7 +28,7 @@ class tones():
         self.freq = frequency
 
         #create a waveform called self.name from frequency and tone_length
-        os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {tone_length} sin {frequency} vol -10dB')
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {tone_length} sin {frequency} vol -20dB')
 
     def Play(self):
         #send the wav file to the sound card
