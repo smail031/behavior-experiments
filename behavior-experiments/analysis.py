@@ -55,4 +55,4 @@ for ind, key in enumerate(lick_keys):
     _title_str = key[-1].upper() + ' Licks'
     ax[ind].set_title(_title_str)
 
-fig.savefig('test.pdf')
+#fig.savefig('test.pdf')
