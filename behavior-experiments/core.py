@@ -286,10 +286,12 @@ class servo():
     def GPIO_setup(self):
         #Set up the GPIO pin you will be using as input
         GPIO.setup(self.pin, GPIO.OUT)
+        self.position = GPIO.PWM(self.pin, 50)  # GPIO 17 for PWM with 50Hz
+        self.position.start(0)  # Initialization
     
-    def Adjust(self):
-         
-        p = GPIO.PWM(self.pin, 50)  # GPIO 17 for PWM with 50Hz
-        p.start(3.5)  # Initialization
+    def Adjust(self, PWM):
+        
+        self.position.ChangeDutyCycle(PWM)
+
         
 
