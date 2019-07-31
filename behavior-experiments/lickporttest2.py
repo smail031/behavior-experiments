@@ -9,6 +9,7 @@ Created on Wed Jul 31 15:27:52 2019
 import RPi.GPIO as GPIO
 import time
 import threading
+import matplotlib.pyplot as plt
 
 
 
@@ -42,13 +43,13 @@ class lickport():
                 #register lick
                 self._licks.append(1)
                 self._t_licks.append(time.time())
-                print(f'{self.side} lick')
+                #print(f'{self.side} lick')
     
             else:
                 #register no lick
                 self._licks.append(0)
                 self._t_licks.append(time.time())
-                print('No lick')
+                #print('No lick')
     
             #wait for next sample and update step
             time.sleep(1/sampling_rate)
@@ -61,3 +62,7 @@ thread_R = threading.Thread(target = right.Lick, args = (20, 5))
 
 #thread_L.start()
 thread_R.start()
+
+time.sleep(6)
+print(right._licks)
+plt.plot(right._licks)
