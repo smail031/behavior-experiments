@@ -35,3 +35,5 @@ right = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 #Call Disable method from class stepper to set enablePIN to 1 (disabled)
 left.Disable()
 right.Disable()
+
+print('Disabled.')
