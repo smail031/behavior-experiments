@@ -20,7 +20,7 @@ import core
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
 n_trials = 10 #number of trials in this block
-delay_length = 1 #length of delay between sample tone and go cue, in sec
+delay_length = 3 #length of delay between sample tone and go cue, in sec
 response_delay = 1 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
@@ -127,6 +127,7 @@ for trial in trials:
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_l[trial] = 5
             water_L.Reward() #Deliver L reward
+            
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #Right trial:--------------------------------------------------------------
@@ -157,7 +158,8 @@ for trial in trials:
         if response == 'R':
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_r[trial] = 5
-            water_R.Reward() #Deliver R reward   
+            water_R.Reward() #Deliver R reward
+            
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #---------------
