@@ -19,7 +19,7 @@ import core
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
-n_trials = 10 #number of trials in this block
+n_trials = 5 #number of trials in this block
 delay_length = 3 #length of delay between sample tone and go cue, in sec
 response_delay = 1 #length of time for animals to give response
 
