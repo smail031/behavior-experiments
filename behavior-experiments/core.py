@@ -241,7 +241,7 @@ class stepper():
         
 class lickometer():
     
-    def __init__(self, pin):
+    def __init__(self, pin,):
         self._licks = []
         self._t_licks = []
         self.num_samples = 0
