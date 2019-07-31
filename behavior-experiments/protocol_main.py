@@ -106,7 +106,7 @@ for trial in trials:
 
         data.t_rew_l[trial] = time.time() - data._t_start_abs[trial]
         data.v_rew_l[trial] = 5
-        water_L.Reward(reward_size) #Deliver L reward
+        water_L.Reward() #Deliver L reward
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
 
@@ -121,7 +121,7 @@ for trial in trials:
 
         data.t_rew_r[trial] = time.time() - data._t_start_abs[trial]
         data.v_rew_r[trial] = 5
-        water_R.Reward(reward_size) #Deliver L reward
+        water_R.Reward() #Deliver L reward
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
 
