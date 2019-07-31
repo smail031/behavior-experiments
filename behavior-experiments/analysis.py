@@ -13,7 +13,7 @@ import matplotlib.gridspec as gridspec
 
 filename = input('Filename: ')
 #trial = input('Trial: ')
-num_trials = 10
+num_trials = 5
 
 f = h5py.File(filename, 'r')
 
