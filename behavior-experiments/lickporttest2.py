@@ -43,13 +43,13 @@ class lickport():
                 #register lick
                 self._licks.append(1)
                 self._t_licks.append(time.time())
-                #print(f'{self.side} lick')
+                print(f'{self.side} lick')
     
             else:
                 #register no lick
                 self._licks.append(0)
                 self._t_licks.append(time.time())
-                #print('No lick')
+                print('No lick')
     
             #wait for next sample and update step
             time.sleep(1/sampling_rate)

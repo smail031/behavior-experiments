@@ -13,7 +13,7 @@ import matplotlib.gridspec as gridspec
 
 filename = input('Filename: ')
 #trial = input('Trial: ')
-num_trials = 10
+num_trials = 5
 
 f = h5py.File(filename, 'r')
 
@@ -41,13 +41,13 @@ for ind, key in enumerate(lick_keys):
         ax[ind].fill_between([_tone_on, _tone_on + 1000], [trial-0.5, trial-0.5], 
           [trial+0.5, trial+0.5],
           facecolor = '#ff0000', alpha = 0.2)
-        ax[ind].scatter(_licks, _values, marker = '|', color = '#5d5d5d', s = 60)
+        ax[ind].scatter(_licks, _values, marker = '_', color = '#5d5d5d', s = 2)
 
         
     
     ax[ind].set_ylim([0,num_trials])
     ax[ind].set_xlim([0, None])
-    ax[ind].set_xticks([0, 1000, 2000, 3000, 4000, 5000])
+#    ax[ind].set_xticks([0, 1000, 2000, 3000, 4000, 5000])
     ax[ind].set_xlabel('Time (ms)')
     ax[ind].set_ylabel('Trials')
 

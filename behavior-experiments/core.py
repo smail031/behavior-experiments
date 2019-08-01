@@ -250,7 +250,7 @@ class lickometer():
         
     def GPIO_setup(self):
         #Set up the GPIO pin you will be using as input
-        GPIO.setup(self.pin, GPIO.IN)
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
         
     def Lick(self, sampling_rate, sampling_duration):
         #records the licks at a given sampling rate
