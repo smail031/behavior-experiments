@@ -17,7 +17,7 @@ num_trials = 5
 
 f = h5py.File(filename, 'r')
 
-plt.style.use('fivethirtyeight')
+plt.style.use('seaborn-pastel')
 
 fig = plt.figure(figsize = (10, 6), constrained_layout = True)
 gs = gridspec.GridSpec(nrows = 1, ncols = 2, width_ratios = [1, 1], figure = fig)
@@ -41,7 +41,7 @@ for ind, key in enumerate(lick_keys):
         ax[ind].fill_between([_tone_on, _tone_on + 1000], [trial-0.5, trial-0.5], 
           [trial+0.5, trial+0.5],
           facecolor = '#ff0000', alpha = 0.2)
-        ax[ind].scatter(_licks, _values, marker = '_', color = '#5d5d5d', s = 2)
+        ax[ind].scatter(_licks, _values, marker = '|', color = '#5d5d5d', s = 40)
 
         
     
