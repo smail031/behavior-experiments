@@ -23,34 +23,50 @@ fig = plt.figure(figsize = (10, 6), constrained_layout = True)
 gs = gridspec.GridSpec(nrows = 1, ncols = 2, width_ratios = [1, 1], figure = fig)
 
 
-###################
+#################
 lick_keys = ['lick_l', 'lick_r']
 ax = []
+
+#transform trial types from "L/R" to "0/1" to simplify plotting
+trial_types = []
+for trial in range(num_trials):
+    if 'L' in str(f['tone']['type'][trial]):
+        trial_types.append(0)
+    elif 'R' in str(f['tone']['type'][trial]):
+        trial_types.append(1)
 
 for ind, key in enumerate(lick_keys):
 
     ax.append(fig.add_subplot(gs[0, ind]))
+    _all_licks = []
+
     for trial in range(num_trials):
 
-        _lick_v = f[key]['volt'] [trial]
-        _d_lick_v = np.diff(_lick_v)
-        _licks = np.argwhere(_d_lick_v > 0).flatten()
-        _values = np.full(len(_licks), trial)
+        _lick_v = f[key]['volt'][trial] #raw lick data
+        _d_lick_v = np.diff(_lick_v) #1st derivative of raw lick data
+        _licks = np.argwhere(_d_lick_v > 0).flatten() #find indices where the
+                                    #derivative of raw lick data goes above 0
+        _all_licks.append(_licks)
+
+        if trial_types[trial] == ind:
+            ax[ind].fill_between([0,5000], [trial-0.5, trial-0.5],
+              [trial+0.5, trial+0.5],
+              facecolor = '#e1e1e1') #will show trial types on plots.
+
         _tone_on = f['tone']['t'][trial]
         ax[ind].fill_between([_tone_on, _tone_on + 1000], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
-          facecolor = '#ff0000', alpha = 0.2)
-        ax[ind].scatter(_licks, _values, marker = '|', color = '#5d5d5d', s = 40)
+          facecolor = '#ffb0b0') #Will show on plot where tones were played.
 
-    ax[ind].set_ylim([-1,num_trials]+1)
+    plt.eventplot(_all_licks, linelengths=0.2, colors = '#5d5d5d') #creates raster
+
+    #set axis limits, labels and title.
+    ax[ind].set_ylim([None,num_trials])
     ax[ind].set_xlim([0, None])
-#    ax[ind].set_xticks([0, 1000, 2000, 3000, 4000, 5000])
+    ax[ind].set_xticks([0, 1000, 2000, 3000, 4000, 5000])
     ax[ind].set_xlabel('Time (ms)')
     ax[ind].set_ylabel('Trials')
-
-
     _title_str = key[-1].upper() + ' Licks'
     ax[ind].set_title(_title_str)
 
 plt.show(block=True)
-#fig.savefig('test.pdf')
