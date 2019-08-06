@@ -19,7 +19,7 @@ import core
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
-n_trials = 10 #number of trials in this block
+n_trials = 30 #number of trials in this block
 response_delay = 3000
 
 go_tone_freq = 500 #frequency of go tone
@@ -79,8 +79,8 @@ for trial in trials:
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (20, 4))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (20, 4))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 4))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 4))
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -146,6 +146,4 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
 
 #delete the .wav files created for the experiment
-os.system(f'rm {L_tone_freq}Hz.wav')
-os.system(f'rm {R_tone_freq}Hz.wav')
 os.system(f'rm {go_tone_freq}Hz.wav')
