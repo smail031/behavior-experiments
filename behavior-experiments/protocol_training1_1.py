@@ -12,6 +12,7 @@ import numpy as np
 import os
 import threading
 import core
+from picamera import PiCamera
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
@@ -66,6 +67,8 @@ lick_port_R = core.lickometer(R_lickometer)
 
 tone_go = core.tones(go_tone_freq, 0.75)
 
+camera = PiCamera()
+
 #----------------------------
 #Initialize experiment
 #----------------------------
@@ -74,6 +77,8 @@ tone_go = core.tones(go_tone_freq, 0.75)
 trials = np.arange(n_trials)
 data = core.data(n_trials, mouse_number)
 total_reward = 0
+
+camera.start_preview()
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
@@ -143,6 +148,7 @@ for trial in trials:
     ITI_ = 1.5
     time.sleep(ITI_)
 
+camera.stop_preview()
 
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and

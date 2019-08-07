@@ -19,9 +19,10 @@ import core
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
-n_trials = 5 #number of trials in this block
-delay_length = 3 #length of delay between sample tone and go cue, in sec
-response_delay = 1 #length of time for animals to give response
+n_trials = int(input('How many trials?: ' )) #number of trials in this block
+
+delay_length = 0 #length of delay between sample tone and go cue, in sec
+response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
@@ -84,6 +85,11 @@ tone_go = core.tones(go_tone_freq, 0.75)
 trials = np.arange(n_trials)
 data = core.data(n_trials, mouse_number)
 
+total_reward_L = 0
+total_reward_R = 0
+
+left_trial_ = True
+
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
@@ -92,12 +98,8 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (20, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (20, 5))
 
-    left_trial = True
     if float(trial/3).is_integer():
-        left_trial = not left_trial
-
-    total_reward_L = 0
-    total_reward_R = 0
+        left_trial_ = not left_trial_
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
