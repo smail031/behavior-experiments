@@ -12,10 +12,9 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
 filename = input('Filename: ')
-#trial = input('Trial: ')
-num_trials = 15
-
 f = h5py.File(filename, 'r')
+
+num_trials = len(f['lick_l']['volt'])
 
 plt.style.use('seaborn-pastel')
 
@@ -48,17 +47,17 @@ for ind, key in enumerate(lick_keys):
                                     #derivative of raw lick data goes above 0
         _all_licks.append(_licks)
 
-        if trial_types[trial] == ind:
+        if len(trial_types) != 0 and trial_types[trial] == ind:
             ax[ind].fill_between([0,5000], [trial-0.5, trial-0.5],
               [trial+0.5, trial+0.5],
               facecolor = '#e1e1e1') #will show trial types on plots.
 
         _tone_on = f['tone']['t'][trial]
-        ax[ind].fill_between([_tone_on, _tone_on + 1000], [trial-0.5, trial-0.5],
+        ax[ind].fill_between([_tone_on, _tone_on + 750], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
           facecolor = '#ffb0b0') #Will show on plot where tones were played.
 
-    plt.eventplot(_all_licks, linelengths=0.2, colors = '#5d5d5d') #creates raster
+    plt.eventplot(_all_licks, linelengths=0.5, colors = '#5d5d5d') #creates raster
 
     #set axis limits, labels and title.
     ax[ind].set_ylim([None,num_trials])
