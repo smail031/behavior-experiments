@@ -19,7 +19,7 @@ import core
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
-n_trials = 30 #number of trials in this block
+n_trials = int(input('How many trials?: ' )) #number of trials in this block
 response_delay = 3000
 
 go_tone_freq = 500 #frequency of go tone
@@ -73,6 +73,7 @@ tone_go = core.tones(go_tone_freq, 0.75)
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
 data = core.data(n_trials, mouse_number)
+total_reward = 0
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
@@ -101,12 +102,14 @@ for trial in trials:
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_r[trial] = 10
             water_R.Reward() #Deliver L reward
+            total_reward += 10
 
         elif sum(lick_port_L._licks[(length_L-1):]) > 0:
             response = 'L'
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_l[trial] = 10
             water_L.Reward() #Deliver L reward
+            total_reward += 10
 
         elif time.time()*1000 - response_start > response_delay:
             response = 'N'
@@ -147,3 +150,5 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 
 #delete the .wav files created for the experiment
 os.system(f'rm {go_tone_freq}Hz.wav')
+
+print(f'Total reward: {total_reward} uL')
