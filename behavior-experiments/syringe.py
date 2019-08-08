@@ -33,14 +33,15 @@ stepperL = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
 stepperR = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
 syringe = True
-while syringe == True
+while syringe == True:
 
     side = input('Which side? (L/R/Q): ')
-    steps = input('How many steps?: ')
 
     if side == 'L':
+        steps = input('How many steps?: ')
         stepperL.Motor(1, steps)
     elif side == 'R':
+        steps = input('How many steps?: ')
         stepperR.Motor(1, steps)
     elif side == 'Q':
         syringe = False
