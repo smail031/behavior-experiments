@@ -23,16 +23,15 @@ import core
 #------------------------------------------------------------------------------
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
+block_number = input('block number: ' ) #asks user for block number (for file storage)
+n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
-n_trials = 5 #number of trials in this block
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 1 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
 go_tone_freq = 500 #frequency of go tone
-
-#reward_size = 0.01 #size of water reward, in mL
 
 #----------------------------
 #Assign GPIO pins:
@@ -87,7 +86,7 @@ tone_go = core.tones(go_tone_freq, 0.75)
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(n_trials, mouse_number)
+data = core.data(n_trials, mouse_number, block_number)
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial

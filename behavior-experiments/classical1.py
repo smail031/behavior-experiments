@@ -21,6 +21,7 @@ from picamera import PiCamera
 #------------------------------------------------------------------------------
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
+block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
 go_tone_freq = 500 #frequency of go tone
@@ -77,7 +78,7 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(n_trials)
+data = core.data(n_trials, mouse_number, block_number)
 
 for trial in trials:
     data._t_start_abs[trial] = time.time() #Set time at beginning of trial
