@@ -12,6 +12,7 @@ import numpy as np
 import os
 import threading
 import core
+from picamera import PiCamera
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
@@ -77,9 +78,13 @@ tone_R = core.tones(R_tone_freq, 1)
 
 tone_go = core.tones(go_tone_freq, 0.75)
 
+camera = PiCamera() #create camera object
+
 #----------------------------
 #Initialize experiment
 #----------------------------
+
+camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
@@ -201,6 +206,7 @@ for trial in trials:
 
     time.sleep(ITI_)
 
+camera.stop_preview()
 
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and

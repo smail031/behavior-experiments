@@ -73,12 +73,15 @@ camera = PiCamera()
 #Initialize experiment
 #----------------------------
 
+camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
+
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
 data = core.data(n_trials, mouse_number)
-total_reward = 0
 
-camera.start_preview()
+#start L and R reward counters
+total_reward_L = 0
+total_reward_R = 0
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
@@ -107,14 +110,14 @@ for trial in trials:
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_r[trial] = 10
             water_R.Reward() #Deliver L reward
-            total_reward += 10
+            total_reward_R += 10
 
         elif sum(lick_port_L._licks[(length_L-1):]) > 0:
             response = 'L'
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_l[trial] = 10
             water_L.Reward() #Deliver L reward
-            total_reward += 10
+            total_reward_L += 10
 
         elif time.time()*1000 - response_start > response_delay:
             response = 'N'
@@ -157,4 +160,5 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 #delete the .wav files created for the experiment
 os.system(f'rm {go_tone_freq}Hz.wav')
 
-print(f'Total reward: {total_reward} uL')
+print(f'Total L reward: {total_reward_L} uL')
+print(f'Total R reward: {total_reward_R} uL')
