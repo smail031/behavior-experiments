@@ -5,6 +5,11 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
+#In this protocol, a sample cue is immediately followed by a "go" cue. During
+#the response period, first lickport that registers a lick determines the animal's
+#response. Correct responses trigger reward delivery from the correct port, while
+#incorrect or null responses are unrewarded. Trial types (L/R) are determined
+#randomly prior to every trial.
 
 import time
 import RPi.GPIO as GPIO
@@ -107,16 +112,16 @@ for trial in trials:
         time.sleep(delay_length) #Sleep for some delay
 
         tone_go.Play() #Play go tone
-        
+
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
         response = False
         response_start = time.time()*1000
-        
+
         while response == False:
             if sum(lick_port_R._licks[(length_R-1):]) > 0:
                 response = 'R'
-            
+
             elif sum(lick_port_L._licks[(length_L-1):]) > 0:
                 response = 'L'
 
@@ -127,7 +132,7 @@ for trial in trials:
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_l[trial] = 5
             water_L.Reward() #Deliver L reward
-            
+
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #Right trial:--------------------------------------------------------------
@@ -139,42 +144,42 @@ for trial in trials:
         time.sleep(delay_length) #Sleep for delay_length
 
         tone_go.Play() #Play go tone
-        
+
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
         response = False
         response_start = time.time()*1000
-        
+
         while response == False:
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
                 response = 'L'
-            
+
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
                 response = 'R'
 
             elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
-        
+
         if response == 'R':
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
             data.v_rew_r[trial] = 5
             water_R.Reward() #Deliver R reward
-            
+
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #---------------
     #Post-trial data storage
     #---------------
-    
+
     #Make sure the threads are finished
     thread_L.join()
     thread_R.join()
-    
+
     #subtract lick timestamps from start of trial so that integers are not too
     #big for storage.
     lick_port_L._t_licks -= data._t_start_abs[trial]
     lick_port_R._t_licks -= data._t_start_abs[trial]
-    
+
     #Store and process the data
     storage_list = [data.lick_l, data.lick_r]
     rawdata_list = [lick_port_L, lick_port_R]

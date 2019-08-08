@@ -5,6 +5,11 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
+#In this protocol, a sample cue is immediately followed by a "go" cue. During the
+#response period, licks registered by the incorrect lickport will be ignored,
+#while any licks registered by the correct lickport will trigger reward delivery
+#through that port (even if the incorrect port was licked first). Trial types
+#(L/R) alternate every 3 trials.
 
 import time
 import RPi.GPIO as GPIO
