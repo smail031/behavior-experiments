@@ -25,7 +25,7 @@ import core
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 
 n_trials = 5 #number of trials in this block
-delay_length = 3 #length of delay between sample tone and go cue, in sec
+delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 1 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
@@ -195,6 +195,7 @@ for trial in trials:
 #        ITI_ = np.random.exponential(scale = 2)
 
     time.sleep(ITI_)
+
 
 
 data.Store() #store the data in a .hdf5 file

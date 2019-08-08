@@ -5,6 +5,9 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
+#In this protocol, a "go" cue is presented at the beginning of each trial,
+#without a preceding sample cue. During the subsequent response period, the
+#first lickport to report a lick will immediately deliver a reward.
 
 import time
 import RPi.GPIO as GPIO
@@ -19,8 +22,8 @@ from picamera import PiCamera
 #------------------------------------------------------------------------------
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
-
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
+
 response_delay = 3000
 
 go_tone_freq = 500 #frequency of go tone

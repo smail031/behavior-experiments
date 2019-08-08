@@ -5,12 +5,8 @@ Created on Mon Jun 24 15:48:29 2019
 
 @author: sebastienmaille
 """
-
-#In the first training protocol, the goal is for the animal to associate the 
-#lickports with reward delivery. Therefore, at regular intervals a go cue will
-#be played and water will be delivered randomly from one of the two lickports.
-#All data will still be collected during these trials.
-
+#In this protocol, a "go" cue is immediately followed by reward delivery from
+#one of the two ports. Trial types (L/R) are determined randomly prior to each trial.
 
 import time
 import RPi.GPIO as GPIO
@@ -18,15 +14,14 @@ import numpy as np
 import os
 import threading
 import core
-
+from picamera import PiCamera
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
 #------------------------------------------------------------------------------
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
-
-n_trials = 2 #number of trials in this block
+n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
 go_tone_freq = 500 #frequency of go tone
 
@@ -72,9 +67,13 @@ lick_port_R = core.lickometer(R_lickometer)
 #create tone
 tone_go = core.tones(go_tone_freq, 0.75)
 
+camera = PiCamera()
+
 #----------------------------
 #Initialize experiment
 #----------------------------
+
+camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
@@ -141,11 +140,11 @@ for trial in trials:
 
     time.sleep(ITI_)
 
+camera.stop_preview()
 
 data.Store() #store the data
+data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
+                #then copy to the lab google drive.
 
 #delete the .wav file created for the experiment
 os.system(f'rm {go_tone_freq}Hz.wav')
-
-#Clean up the GPIOs
-GPIO.cleanup()

@@ -5,27 +5,30 @@ Created on Mon Jun 24 15:48:29 2019
 
 @author: sebastienmaille
 """
+#In this protocol, a sample cue is immediately followed by a "go", which itself
+#is followed by reward delivery from the corresponding port. A delay can be
+#introduced between sample and go cues by changing the "delay_length"" variable.
+
 import time
 import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
 import core
+from picamera import PiCamera
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
 #------------------------------------------------------------------------------
 
 mouse_number = input('mouse number: ' ) #asks user for mouse number
+n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
-n_trials = 10 #number of trials in this block
-delay_length = 1 #length of delay between sample tone and go cue, in sec
+delay_length = 0 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
 go_tone_freq = 500 #frequency of go tone
-
-reward_size = 0.01 #size of water reward, in mL
 
 #----------------------------
 #Assign GPIO pins:
@@ -74,9 +77,13 @@ tone_R = core.tones(R_tone_freq, 1)
 
 tone_go = core.tones(go_tone_freq, 0.75)
 
+camera = PiCamera()
+
 #----------------------------
 #Initialize experiment
 #----------------------------
+
+camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
@@ -128,11 +135,11 @@ for trial in trials:
     #---------------
     #Post-trial data storage
     #---------------
-    
+
     #Make sure the threads are finished
     thread_L.join()
     thread_R.join()
-    
+
     print(lick_port_L._licks)
     print(lick_port_R._licks)
 
@@ -152,13 +159,13 @@ for trial in trials:
 
     time.sleep(ITI_)
 
+camera.stop_preview()
 
 data.Store() #store the data
+data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
+                #then copy to the lab google drive.
 
 #delete the .wav files created for the experiment
 os.system(f'rm {L_tone_freq}Hz.wav')
 os.system(f'rm {R_tone_freq}Hz.wav')
 os.system(f'rm {go_tone_freq}Hz.wav')
-
-#Clean up the GPIOs
-GPIO.cleanup()
