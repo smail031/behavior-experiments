@@ -8,6 +8,10 @@ Created on Fri Jul 12 15:38:32 2019
 
 import core
 import RPi.GPIO as GPIO
+from picamera import PiCamera
+
+camera = PiCamera()
+camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -25,15 +29,22 @@ R_stepPIN = 11 #step pin for right stepper motor
 R_emptyPIN = 21 #empty switch pin for right stepper motor
 R_lickometer = 16 #input pin for lickometer (black wire)
 
-side = input('Which side? (L/R): ')
+stepperL = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
+stepperR = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
-if side == 'L':
-    stepper = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
-elif side == 'R':
-    stepper = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
-else:
-    print('Not recognized.')
+syringe = True
+while syringe == True
 
-steps = input('How many steps?: ')
+    side = input('Which side? (L/R/Q): ')
+    steps = input('How many steps?: ')
 
-stepper.Motor(1, steps)
+    if side == 'L':
+        stepperL.Motor(1, steps)
+    elif side == 'R':
+        stepperR.Motor(1, steps)
+    elif side == 'Q':
+        syringe = False
+    else:
+        print('Not recognized.')
+
+camera.stop_preview()
