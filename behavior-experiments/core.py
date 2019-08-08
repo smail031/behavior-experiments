@@ -37,7 +37,7 @@ class tones():
 
 class data():
 
-    def __init__(self, n_trials, mouse_number):
+    def __init__(self, n_trials, mouse_number, block_number):
         '''
         Creates an instance of the class Data which will store parameters for
         each trial, including lick data and trial type information.
@@ -46,7 +46,8 @@ class data():
         -------
         n_trials  : int
             Specifies the number of trials to initialize
-
+        block_number : str
+            Specifies the current trial block number for proper file storage
 
         Info
         --------
@@ -74,6 +75,7 @@ class data():
 
         self.mouse_number = mouse_number
         self.n_trials = n_trials
+        self.block_number = block_number
 
         self.t_experiment = time.strftime("%Y.%b.%d__%H:%M:%S",
                                      time.localtime(time.time()))
@@ -101,7 +103,7 @@ class data():
         self.v_rew_r = np.empty(self.n_trials) #stores reward volumes from L lickport
         self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
 
-        self.filename = str(self.mouse_number) + str(self.date_experiment) + '.hdf5'
+        self.filename = str(self.mouse_number) + 'block' str(self.block_number) + str(self.date_experiment) + '.hdf5'
 
     def Store(self):
 
