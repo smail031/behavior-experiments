@@ -71,10 +71,10 @@ class data():
             Stores time of reward onset
 
         '''
-        
+
         self.mouse_number = mouse_number
         self.n_trials = n_trials
-        
+
         self.t_experiment = time.strftime("%Y.%b.%d__%H:%M:%S",
                                      time.localtime(time.time()))
         self.date_experiment = time.strftime("%Y.%b.%d",
@@ -86,13 +86,13 @@ class data():
                             #start time in seconds for direct comparison with
                             #time.time()
 
-        self.tone = np.empty(self.n_trials, dtype = 'S1') #L or R, stores the trial types
+        self.;tone = np.empty(self.n_trials, dtype = 'S1') #L or R, stores the trial types
         self.t_tone = np.empty(self.n_trials) # stores the tone times relative
                                         #to trial start.
-        
-        self.response = np.empty(self.n_trials, dtype = 'S1') #L, R, or N, stores 
+
+        self.response = np.empty(self.n_trials, dtype = 'S1') #L, R, or N, stores
                                         #the animal's responses for each trial.
-         
+
         self.lick_r = np.empty(self.n_trials, dtype = dict) #stores licks from R lickport
         self.lick_l = np.empty_like(self.lick_r) #stores licks from L lickport
 
@@ -100,10 +100,13 @@ class data():
         self.t_rew_l = np.empty(self.n_trials) #stores reward times from L lickport
         self.v_rew_r = np.empty(self.n_trials) #stores reward volumes from L lickport
         self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
-        
+
         self.filename = str(self.mouse_number) + str(self.date_experiment) + '.hdf5'
-        
+
     def Store(self):
+
+        if os.path.exists(self.filename) and not force:
+            raise IOError(f'File {self.filename} already exists.')
 
         with h5py.File(self.filename, 'w') as f:
             #Set attributes of the file
@@ -114,8 +117,8 @@ class data():
             dtint = h5py.special_dtype(vlen = np.dtype('int32')) #Predefine variable-length
                                                             #dtype for storing t, volt
             dtfloat = h5py.special_dtype(vlen = np.dtype('float'))
-            
-            
+
+
             t_start = f.create_dataset('t_start', data = self.t_start)
             t_end = f.create_dataset('t_end', data = self.t_end)
 
@@ -167,8 +170,8 @@ class data():
     def Rclone(self):
         os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{self.filename} /home/pi/Desktop/temporary-data')
         os.system('rclone copy /home/pi/Desktop/temporary-data gdrive:Behaviour')
-        
-        
+
+
     def Plot(self, trial):
         '''
         parameters
@@ -191,67 +194,67 @@ class data():
 
 
 class stepper():
-    
+
     def __init__(self, enablePIN, directionPIN, stepPIN, emptyPIN):
         self.enablePIN = enablePIN
         self.directionPIN = directionPIN
         self.stepPIN = stepPIN
         self.emptyPIN = emptyPIN
-        
+
         GPIO.setup(self.enablePIN, GPIO.OUT, initial=1)
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.stepPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
- 
+
     def Motor(self, direction, steps):
         GPIO.output(self.enablePIN, 0) #enable the stepper motor
         GPIO.output(self.directionPIN, direction) #set direction
-        
+
         for i in range(int(steps)): #move in "direction" for "steps"
             GPIO.output(self.stepPIN, 1)
             time.sleep(0.0001)
             GPIO.output(self.stepPIN, 0)
             time.sleep(0.0001)
-            
+
         self.Disable() #disable stepper (to prevent overheating)
-    
+
     def Reward(self,):
-        steps = 450 #Calculate the number of steps needed to deliver
+        steps = 500 #Calculate the number of steps needed to deliver
                                 #"volume".
-        if GPIO.input(self.emptyPIN): 
+        if GPIO.input(self.emptyPIN):
             self.Motor(1, steps) #push syringe for "steps" until the empty pin
-                                    #is activated.            
+                                    #is activated.
         else:
             print('the syringe is empty')
-        
+
     def Refill(self):
 
         while GPIO.input(self.emptyPIN): #Push syringe and check every 200
                                         #whether the empty pin is activated.
             self.Motor(1, 200)
-        
+
         print('the syringe is empty')
-        
+
         self.Motor(0, 96000) #Pull the syringe for 96000 steps, ~3mL.
-        
+
     def Disable(self):
-        
+
         GPIO.output(self.enablePIN, 1) #disable stepper (to prevent overheating)
-        
-        
+
+
 class lickometer():
-    
+
     def __init__(self, pin,):
         self._licks = []
         self._t_licks = []
         self.num_samples = 0
         self.pin = pin
         self.GPIO_setup()
-        
+
     def GPIO_setup(self):
         #Set up the GPIO pin you will be using as input
         GPIO.setup(self.pin, GPIO.IN, pull_up_down = GPIO.PUD_DOWN)
-        
+
     def Lick(self, sampling_rate, sampling_duration):
         #records the licks at a given sampling rate
         self._licks = []
@@ -276,22 +279,19 @@ class lickometer():
             time.sleep(1/sampling_rate)
 
 class servo():
-    #Controls a servo that will adjust the lickport position relative to the 
+    #Controls a servo that will adjust the lickport position relative to the
     #animal.
-    
+
     def __init__(self, pin):
         self.pin = pin
         self.GPIO_setup()
-        
+
     def GPIO_setup(self):
         #Set up the GPIO pin you will be using as input
         GPIO.setup(self.pin, GPIO.OUT)
         self.position = GPIO.PWM(self.pin, 50)  # GPIO 17 for PWM with 50Hz
         self.position.start(0)  # Initialization
-    
+
     def Adjust(self, PWM):
-        
+
         self.position.ChangeDutyCycle(PWM)
-
-        
-
