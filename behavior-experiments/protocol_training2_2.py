@@ -158,7 +158,7 @@ for trial in trials:
 
         while response == False:
 
-            elif sum(lick_port_R._licks[(length_R-1):]) > 0:
+            if sum(lick_port_R._licks[(length_R-1):]) > 0:
                 response = 'R'
 
             elif time.time()*1000 - response_start > response_delay:
