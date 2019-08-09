@@ -88,7 +88,7 @@ class data():
                             #start time in seconds for direct comparison with
                             #time.time()
 
-        self.;tone = np.empty(self.n_trials, dtype = 'S1') #L or R, stores the trial types
+        self.tone = np.empty(self.n_trials, dtype = 'S1') #L or R, stores the trial types
         self.t_tone = np.empty(self.n_trials) # stores the tone times relative
                                         #to trial start.
 
@@ -103,7 +103,7 @@ class data():
         self.v_rew_r = np.empty(self.n_trials) #stores reward volumes from L lickport
         self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
 
-        self.filename = str(self.mouse_number) + 'block' str(self.block_number) + str(self.date_experiment) + '.hdf5'
+        self.filename = str(self.mouse_number) + 'block' + str(self.block_number) + str(self.date_experiment) + '.hdf5'
 
     def Store(self):
 
@@ -221,7 +221,7 @@ class stepper():
         self.Disable() #disable stepper (to prevent overheating)
 
     def Reward(self,):
-        steps = 500 #Calculate the number of steps needed to deliver
+        steps = 400 #Calculate the number of steps needed to deliver
                                 #"volume".
         if GPIO.input(self.emptyPIN):
             self.Motor(1, steps) #push syringe for "steps" until the empty pin

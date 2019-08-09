@@ -142,9 +142,6 @@ for trial in trials:
     thread_L.join()
     thread_R.join()
 
-    print(lick_port_L._licks)
-    print(lick_port_R._licks)
-
     #Store and process the data
     data_list = [data.lick_l, data.lick_r]
     lick_list = [lick_port_L, lick_port_R]
