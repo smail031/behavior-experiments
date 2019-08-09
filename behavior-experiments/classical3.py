@@ -91,11 +91,6 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 trials = np.arange(n_trials)
 data = core.data(n_trials, mouse_number, block_number)
 
-total_reward_L = 0
-total_reward_R = 0
-
-left_trial_ = True
-
 for trial in trials:
     data._t_start_abs[trial] = time.time() #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
@@ -107,8 +102,7 @@ for trial in trials:
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
-    if float(trial/3).is_integer(): #alternate trial types every 3 trials.
-        left_trial_ = not left_trial_
+    left_trial_ = np.random.rand() < 0.5 #decide if it will be a L or R trial
 
     if left_trial_ is True:
         data.tone[trial] = 'L' #Assign data type
@@ -120,9 +114,8 @@ for trial in trials:
         tone_go.Play() #Play go tone
 
         data.t_rew_l[trial] = time.time() - data._t_start_abs[trial]
-        data.v_rew_l[trial] = 8
+        data.v_rew_l[trial] = 5
         water_L.Reward() #Deliver L reward
-        total_reward_L += 8
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
 
@@ -138,7 +131,6 @@ for trial in trials:
         data.t_rew_r[trial] = time.time() - data._t_start_abs[trial]
         data.v_rew_r[trial] = 5
         water_R.Reward() #Deliver L reward
-        total_reward_R += 8
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
 
@@ -176,6 +168,3 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 os.system(f'rm {L_tone_freq}Hz.wav')
 os.system(f'rm {R_tone_freq}Hz.wav')
 os.system(f'rm {go_tone_freq}Hz.wav')
-
-print(f'Total L reward: {total_reward_L} uL')
-print(f'Total R reward: {total_reward_R} uL')
