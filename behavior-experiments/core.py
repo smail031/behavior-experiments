@@ -77,9 +77,9 @@ class data():
         self.n_trials = n_trials
         self.block_number = block_number
 
-        self.t_experiment = time.strftime("%Y.%b.%d__%H:%M:%S",
+        self.t_experiment = time.strftime("%Y-%m-%d__%H:%M:%S",
                                      time.localtime(time.time()))
-        self.date_experiment = time.strftime("%Y.%b.%d",
+        self.date_experiment = time.strftime("%Y-%m-%d",
                                      time.localtime(time.time()))
         self.t_start = np.empty(self.n_trials) #start times of each trial
         self.t_end = np.empty(self.n_trials)
@@ -103,7 +103,7 @@ class data():
         self.v_rew_r = np.empty(self.n_trials) #stores reward volumes from L lickport
         self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
 
-        self.filename = str(self.mouse_number) + 'block' + str(self.block_number) + "." + str(self.date_experiment) + '.hdf5'
+        self.filename = str(self.mouse_number) + '_' + str(self.date_experiment) + '_' + 'block' + str(self.block_number) + '.hdf5'
 
     def Store(self):
 
@@ -171,7 +171,7 @@ class data():
 
     def Rclone(self):
         os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{self.filename} /home/pi/Desktop/temporary-data')
-        os.system('rclone copy /home/pi/Desktop/temporary-data gdrive:Dual_Lickport')
+        os.system(f'rclone copy /home/pi/Desktop/temporary-data{self.filename} gdrive:/Sébastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}')
 
 
     def Plot(self, trial):
