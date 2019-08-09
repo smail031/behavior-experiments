@@ -171,6 +171,8 @@ class data():
 
     def Rclone(self):
         os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{self.filename} /home/pi/Desktop/temporary-data')
+        os.system(f'rlone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{self.mouse_number})
+        os.system(f'rlone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment})
         os.system(f'rclone copy /home/pi/Desktop/temporary-data{self.filename} gdrive:/Sébastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}')
 
 
