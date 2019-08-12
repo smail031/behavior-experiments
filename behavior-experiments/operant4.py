@@ -8,8 +8,8 @@ Created on Mon Jul 15 16:57:22 2019
 #In this protocol, a sample cue is immediately followed by a "go" cue. During
 #the response period, first lickport that registers a lick determines the animal's
 #response. Correct responses trigger reward delivery from the correct port, while
-#incorrect or null responses are unrewarded. Trial types (L/R) are determined
-#randomly prior to every trial.
+#incorrect or null responses are unrewarded. Trial types (L/R) alternate every
+#3 trials.
 
 import time
 import RPi.GPIO as GPIO
@@ -17,6 +17,7 @@ import numpy as np
 import os
 import threading
 import core
+from picamera import PiCamera
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
@@ -27,11 +28,13 @@ block_number = input('block number: ' ) #asks user for block number (for file st
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
-response_delay = 1 #length of time for animals to give response
+response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
 go_tone_freq = 500 #frequency of go tone
+
+#reward_size = 0.01 #size of water reward, in mL
 
 #----------------------------
 #Assign GPIO pins:
@@ -80,13 +83,22 @@ tone_R = core.tones(R_tone_freq, 1)
 
 tone_go = core.tones(go_tone_freq, 0.75)
 
+camera = PiCamera() #create camera object
+
 #----------------------------
 #Initialize experiment
 #----------------------------
 
+camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
+
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
 data = core.data(n_trials, mouse_number, block_number)
+
+total_reward_L = 0
+total_reward_R = 0
+
+left_trial_ = True
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
@@ -96,7 +108,8 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (20, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (20, 5))
 
-    left_trial_ = np.random.rand() < 0.5 #decide if it will be a L or R trial
+    if float(trial/3).is_integer():
+        left_trial_ = not left_trial_
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -129,8 +142,9 @@ for trial in trials:
 
         if response == 'L':
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_l[trial] = 5
+            data.v_rew_l[trial] = 10
             water_L.Reward() #Deliver L reward
+            total_reward_L += 10
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
@@ -161,8 +175,10 @@ for trial in trials:
 
         if response == 'R':
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_r[trial] = 5
+            data.v_rew_r[trial] = 10
             water_R.Reward() #Deliver R reward
+            total_reward_R += 10
+
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
@@ -195,7 +211,7 @@ for trial in trials:
 
     time.sleep(ITI_)
 
-
+camera.stop_preview()
 
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
@@ -205,3 +221,6 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 os.system(f'rm {L_tone_freq}Hz.wav')
 os.system(f'rm {R_tone_freq}Hz.wav')
 os.system(f'rm {go_tone_freq}Hz.wav')
+
+print(f'Total L reward: {total_reward_L} uL')
+print(f'Total R reward: {total_reward_R} uL')
