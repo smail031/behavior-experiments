@@ -97,6 +97,7 @@ data = core.data(n_trials, mouse_number, block_number)
 
 total_reward_L = 0
 total_reward_R = 0
+performance = 0
 
 left_trial_ = True
 
@@ -140,9 +141,10 @@ for trial in trials:
 
         if response == 'L':
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_l[trial] = 10
+            data.v_rew_l[trial] = 5
             water_L.Reward() #Deliver L reward
-            total_reward_L += 10
+            total_reward_L += 5
+            performance += 1
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
@@ -171,10 +173,10 @@ for trial in trials:
 
         if response == 'R':
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_r[trial] = 10
+            data.v_rew_r[trial] = 5
             water_R.Reward() #Deliver R reward
-            total_reward_R += 10
-
+            total_reward_R += 5
+            performance += 1
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
@@ -220,3 +222,4 @@ os.system(f'rm {go_tone_freq}Hz.wav')
 
 print(f'Total L reward: {total_reward_L} uL')
 print(f'Total R reward: {total_reward_R} uL')
+print(f'Performance: {performance}/{n_trials}')
