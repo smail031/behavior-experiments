@@ -10,9 +10,26 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import os
 
-filename = input('Filename: ')
-f = h5py.File(filename, 'r')
+# mouse_number = input('Mouse: ')
+# date_experiment = input('Date of experiment (yyyy-mm-dd): ')
+# block_number = input('Block number: ')
+#
+# os.system(f'cd /Volumes/GoogleDrive/Shared\ drives/Beique\ Lab/Data/Raspberry\ PI\ Data/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}')
+#
+# os.system('pwd')
+
+# filename = f'{mouse_number}_{date_experiment}_block{block_number}.hdf5'
+
+file = 'test6.png'
+
+filename = f'/Users/sebastienmaille/behavior-experiments/behavior-experiments/{file}'
+
+# filename = f'/Volumes/GoogleDrive/My\ Drive/{file}'
+os.system('open test6.png')
+
+# f = h5py.File(filename, 'r')
 
 num_trials = len(f['lick_l']['volt'])
 
