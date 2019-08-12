@@ -91,6 +91,9 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 trials = np.arange(n_trials)
 data = core.data(n_trials, mouse_number, block_number)
 
+total_reward_L = 0
+total_reward_R = 0
+
 for trial in trials:
     data._t_start_abs[trial] = time.time() #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
@@ -118,7 +121,9 @@ for trial in trials:
         water_L.Reward() #Deliver L reward
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
-
+        
+        total_reward_L += 5
+        
     else:
         data.tone[trial] = 'R' #Assign data type
         data.t_tone[trial] = time.time() - data._t_start_abs[trial]
@@ -133,6 +138,8 @@ for trial in trials:
         water_R.Reward() #Deliver L reward
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
+
+        total_reward_R += 5
 
     #---------------
     #Post-trial data storage
@@ -168,3 +175,6 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 os.system(f'rm {L_tone_freq}Hz.wav')
 os.system(f'rm {R_tone_freq}Hz.wav')
 os.system(f'rm {go_tone_freq}Hz.wav')
+
+print(f'Total L reward: {total_reward_L} uL')
+print(f'Total R reward: {total_reward_R} uL')
