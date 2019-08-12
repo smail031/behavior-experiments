@@ -99,11 +99,11 @@ total_reward_L = 0
 total_reward_R = 0
 performance = 0
 
-left_trial_ = np.random.rand() < 0.5
-
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
+
+    left_trial_ = np.random.rand() < 0.5
 
     #create thread objects for left and right lickports
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (20, 5))
