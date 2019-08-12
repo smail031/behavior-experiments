@@ -112,16 +112,16 @@ for trial in trials:
         if sum(lick_port_R._licks[(length_R-1):]) > 0:
             response = 'R'
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_r[trial] = 10
+            data.v_rew_r[trial] = 5
             water_R.Reward() #Deliver L reward
-            total_reward_R += 10
+            total_reward_R += 5
 
         elif sum(lick_port_L._licks[(length_L-1):]) > 0:
             response = 'L'
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_l[trial] = 10
+            data.v_rew_l[trial] = 5
             water_L.Reward() #Deliver L reward
-            total_reward_L += 10
+            total_reward_L += 5
 
         elif time.time()*1000 - response_start > response_delay:
             response = 'N'
