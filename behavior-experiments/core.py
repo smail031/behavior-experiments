@@ -118,6 +118,7 @@ class data():
             #Set attributes of the file
             f.attrs['animal'] = self.mouse_number
             f.attrs['time_experiment'] = self.t_experiment
+            f.attrs['protocol_description'] = self.protocol_description
             f.attrs['user'] = getpass.getuser()
 
             dtint = h5py.special_dtype(vlen = np.dtype('int32')) #Predefine variable-length

@@ -102,7 +102,6 @@ total_reward_L = 0
 total_reward_R = 0
 
 left_trial_ = True
-seb = True
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
@@ -127,6 +126,7 @@ for trial in trials:
 
         time.sleep(delay_length) #Sleep for some delay
 
+        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_go.Play() #Play go tone
 
         length_L = len(lick_port_L._licks)
@@ -146,8 +146,8 @@ for trial in trials:
 
         if response == 'L':
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_l[trial] = reward_size
             water_L.Reward() #Deliver L reward
+            data.v_rew_l[trial] = reward_size
             total_reward_L += reward_size
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -160,6 +160,7 @@ for trial in trials:
 
         time.sleep(delay_length) #Sleep for delay_length
 
+        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_go.Play() #Play go tone
 
         length_L = len(lick_port_L._licks)
