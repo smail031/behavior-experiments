@@ -99,8 +99,8 @@ for trial in trials:
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (20, 5))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (20, 5))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 4))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 4))
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -121,9 +121,9 @@ for trial in trials:
         water_L.Reward() #Deliver L reward
 
         data.t_end[trial] = time.time() - data._t_start_abs[0] #store end time
-        
+
         total_reward_L += 5
-        
+
     else:
         data.tone[trial] = 'R' #Assign data type
         data.t_tone[trial] = time.time() - data._t_start_abs[trial]

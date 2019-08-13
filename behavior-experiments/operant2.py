@@ -106,8 +106,8 @@ for trial in trials:
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (20, 5))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (20, 5))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 4))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 4))
 
     if float(trial/3).is_integer():
         left_trial_ = not left_trial_

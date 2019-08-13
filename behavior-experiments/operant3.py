@@ -106,8 +106,8 @@ for trial in trials:
     left_trial_ = np.random.rand() < 0.5
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (20, 5))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (20, 5))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 4))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 4))
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
