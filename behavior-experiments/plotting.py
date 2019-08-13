@@ -17,7 +17,7 @@ mouse_number = input('Mouse: ')
 date_experiment = input('Date of experiment (yyyy-mm-dd or today): ')
 block_number = input('Block number: ')
 
-if date_experiment == 'today',
+if date_experiment == 'today':
     date_experiment = time.strftime("%Y-%m-%d", time.localtime(time.time()))
 
 file = f'/Volumes/GoogleDrive/Shared drives/Beique Lab/Data/Raspberry PI Data/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}/{mouse_number}_{date_experiment}_block{block_number}.hdf5'
@@ -39,9 +39,9 @@ ax = []
 #transform trial types from "L/R" to "0/1" to simplify plotting
 trial_types = []
 for trial in range(num_trials):
-    if 'L' in str(f['tone']['type'][trial]):
+    if 'L' in str(f['sample_tone']['type'][trial]):
         trial_types.append(0)
-    elif 'R' in str(f['tone']['type'][trial]):
+    elif 'R' in str(f['sample_tone']['type'][trial]):
         trial_types.append(1)
 
 for ind, key in enumerate(lick_keys):
@@ -62,7 +62,7 @@ for ind, key in enumerate(lick_keys):
               [trial+0.5, trial+0.5],
               facecolor = '#e1e1e1') #will show trial types on plots.
 
-        _tone_on = f['tone']['t'][trial]
+        _tone_on = f['sample_tone']['t'][trial]
         ax[ind].fill_between([_tone_on, _tone_on + 750], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
           facecolor = '#ffb0b0') #Will show on plot where tones were played.

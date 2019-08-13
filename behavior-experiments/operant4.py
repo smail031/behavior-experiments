@@ -150,6 +150,7 @@ for trial in trials:
             data.v_rew_l[trial] = reward_size
             total_reward_L += reward_size
 
+        data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #Right trial:--------------------------------------------------------------
@@ -184,7 +185,7 @@ for trial in trials:
             water_R.Reward() #Deliver R reward
             total_reward_R += reward_size
 
-
+        data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #---------------
@@ -218,6 +219,9 @@ for trial in trials:
 
 camera.stop_preview()
 
+print(f'Total L reward: {total_reward_L} uL')
+print(f'Total R reward: {total_reward_R} uL')
+
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
@@ -226,6 +230,3 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 os.system(f'rm {L_tone_freq}Hz.wav')
 os.system(f'rm {R_tone_freq}Hz.wav')
 os.system(f'rm {go_tone_freq}Hz.wav')
-
-print(f'Total L reward: {total_reward_L} uL')
-print(f'Total R reward: {total_reward_R} uL')

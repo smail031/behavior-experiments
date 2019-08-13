@@ -104,8 +104,11 @@ class data():
 
         self.v_rew_l = np.empty(self.n_trials) #stores reward volumes from L lickport
         self.t_rew_l = np.empty(self.n_trials) #stores reward times from L lickport
+        self.t_rew_l.fill(np.nan) #fills t_rew_l with nan since not all trials will be rewarded.
         self.v_rew_r = np.empty(self.n_trials) #stores reward volumes from L lickport
         self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
+        self.t_rew_r.fill(np.nan) #fills t_rew_r with nan since not all trials will be rewarded.
+
 
         self.filename = str(self.mouse_number) + '_' + str(self.date_experiment) + '_' + 'block' + str(self.block_number) + '.hdf5'
 
@@ -157,9 +160,9 @@ class data():
             go_tone_length = go_tone.create_dataset('length', data = self.go_tone_length)
 
             rew_l_t = rew_l.create_dataset('t', data = self.t_rew_l)
-            rew_l_v = rew_l.create_dataset('volt', data = self.v_rew_l)
+            rew_l_v = rew_l.create_dataset('volume', data = self.v_rew_l)
             rew_r_t = rew_r.create_dataset('t', data = self.t_rew_r)
-            rew_r_v = rew_r.create_dataset('volt', data = self.v_rew_r)
+            rew_r_v = rew_r.create_dataset('volume', data = self.v_rew_r)
 
             for trial in range(self.n_trials):
                 lick_l_t[trial] = self.lick_l[trial]['t']
