@@ -11,10 +11,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import os
+import time
 
 mouse_number = input('Mouse: ')
-date_experiment = input('Date of experiment (yyyy-mm-dd): ')
+date_experiment = input('Date of experiment (yyyy-mm-dd or today): ')
 block_number = input('Block number: ')
+
+if date_experiment == 'today',
+    date_experiment = time.strftime("%Y-%m-%d", time.localtime(time.time()))
 
 file = f'/Volumes/GoogleDrive/Shared drives/Beique Lab/Data/Raspberry PI Data/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}/{mouse_number}_{date_experiment}_block{block_number}.hdf5'
 
