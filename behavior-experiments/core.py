@@ -76,6 +76,7 @@ class data():
         self.mouse_number = mouse_number
         self.n_trials = n_trials
         self.block_number = block_number
+        self.protocol_description = protocol_description
 
         self.t_experiment = time.strftime("%Y-%m-%d__%H:%M:%S",
                                      time.localtime(time.time()))
@@ -88,9 +89,12 @@ class data():
                             #start time in seconds for direct comparison with
                             #time.time()
 
-        self.tone = np.empty(self.n_trials, dtype = 'S1') #L or R, stores the trial types
-        self.t_tone = np.empty(self.n_trials) # stores the tone times relative
-                                        #to trial start.
+        self.sample_tone = np.empty(self.n_trials, dtype = 'S1') #L or R, stores the trial types
+        self.t_sample_tone = np.empty(self.n_trials) #stores the tone times relative to trial start.
+        self.sample_tone_length = sample_tone_length
+
+        self.t_go_tone = np.empty(self.n_trials) #stores the times of go tones.
+        self.go_tone_length = go_tone_length
 
         self.response = np.empty(self.n_trials, dtype = 'S1') #L, R, or N, stores
                                         #the animal's responses for each trial.
@@ -124,11 +128,15 @@ class data():
             t_start = f.create_dataset('t_start', data = self.t_start)
             t_end = f.create_dataset('t_end', data = self.t_end)
 
+            response = f.create_dataset('response', data = self.response, dtype = 'S1')
+
             #Create data groups for licks, tones and rewards.
             lick_l = f.create_group('lick_l')
             lick_r = f.create_group('lick_r')
 
-            tone = f.create_group('tone')
+            sample_tone = f.create_group('sample_tone')
+
+            go_tone = f.create_group('go_tone')
 
             rew_l = f.create_group('rew_l')
             rew_r = f.create_group('rew_r')
@@ -140,13 +148,17 @@ class data():
             lick_r_t = lick_r.create_dataset('t', (self.n_trials,), dtype = dtfloat)
             lick_r_volt = lick_r.create_dataset('volt', (self.n_trials,), dtype = dtint)
 
-            tone_t = tone.create_dataset('t', data = self.t_tone, dtype = 'f8')
-            tone_type = tone.create_dataset('type', data = self.tone, dtype = 'S1')
+            sample_tone_t = sample_tone.create_dataset('t', data = self.t_sample_tone, dtype = 'f8')
+            sample_tone_type = sample_tone.create_dataset('type', data = self.sample_tone, dtype = 'S1')
+            sample_tone_length = sample_tone.create_dataset('length', data = self.sample_tone_length), dtype = 'f8')
+
+            go_tone_t = go_tone.create_dataset('t', data = self.t_go_tone)
+            go_tone_length = go_tone.create_dataset('length', data = self.go_tone_length)
 
             rew_l_t = rew_l.create_dataset('t', data = self.t_rew_l)
-            rew_l_v = rew_l.create_dataset('vol', data = self.v_rew_l)
+            rew_l_v = rew_l.create_dataset('volt', data = self.v_rew_l)
             rew_r_t = rew_r.create_dataset('t', data = self.t_rew_r)
-            rew_r_v = rew_r.create_dataset('vol', data = self.v_rew_r)
+            rew_r_v = rew_r.create_dataset('volt', data = self.v_rew_r)
 
             for trial in range(self.n_trials):
                 lick_l_t[trial] = self.lick_l[trial]['t']

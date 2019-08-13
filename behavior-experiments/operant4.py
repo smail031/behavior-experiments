@@ -5,11 +5,11 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
-#In this protocol, a sample cue is immediately followed by a "go" cue. During
-#the response period, first lickport that registers a lick determines the animal's
-#response. Correct responses trigger reward delivery from the correct port, while
-#incorrect or null responses are unrewarded. Trial types (L/R) alternate every
-#3 trials.
+protocol_description = '''In this protocol, a sample cue is immediately followed by a 'go' cue. During
+the response period, first lickport that registers a lick determines the animal's
+response. Correct responses trigger reward delivery from the correct port, while
+incorrect or null responses are unrewarded. Trial types (L/R) alternate every
+3 trials.'''
 
 import time
 import RPi.GPIO as GPIO
@@ -32,9 +32,12 @@ response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-go_tone_freq = 500 #frequency of go tone
+sample_tone_length = 1 #length of sample tone
 
-#reward_size = 0.01 #size of water reward, in mL
+go_tone_freq = 500 #frequency of go tone
+go_tone_length = 0.75
+
+reward_size = 5 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:
@@ -78,10 +81,10 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 #create tones
-tone_L = core.tones(L_tone_freq, 1)
-tone_R = core.tones(R_tone_freq, 1)
+tone_L = core.tones(L_tone_freq, sample_tone_length)
+tone_R = core.tones(R_tone_freq, sample_tone_length)
 
-tone_go = core.tones(go_tone_freq, 0.75)
+tone_go = core.tones(go_tone_freq, go_tone_length)
 
 camera = PiCamera() #create camera object
 
@@ -99,6 +102,7 @@ total_reward_L = 0
 total_reward_R = 0
 
 left_trial_ = True
+seb = True
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
@@ -142,9 +146,9 @@ for trial in trials:
 
         if response == 'L':
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_l[trial] = 10
+            data.v_rew_l[trial] = reward_size
             water_L.Reward() #Deliver L reward
-            total_reward_L += 10
+            total_reward_L += reward_size
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
@@ -175,9 +179,9 @@ for trial in trials:
 
         if response == 'R':
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_r[trial] = 10
+            data.v_rew_r[trial] = reward_size
             water_R.Reward() #Deliver R reward
-            total_reward_R += 10
+            total_reward_R += reward_size
 
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
