@@ -37,7 +37,7 @@ class tones():
 
 class data():
 
-    def __init__(self, n_trials, mouse_number, block_number):
+    def __init__(self, protocol_description, n_trials, mouse_number, block_number, sample_tone_length, go_tone_length):
         '''
         Creates an instance of the class Data which will store parameters for
         each trial, including lick data and trial type information.
@@ -103,9 +103,11 @@ class data():
         self.lick_l = np.empty_like(self.lick_r) #stores licks from L lickport
 
         self.v_rew_l = np.empty(self.n_trials) #stores reward volumes from L lickport
+        self.v_rew_l.fill(np.nan)
         self.t_rew_l = np.empty(self.n_trials) #stores reward times from L lickport
         self.t_rew_l.fill(np.nan) #fills t_rew_l with nan since not all trials will be rewarded.
         self.v_rew_r = np.empty(self.n_trials) #stores reward volumes from L lickport
+        self.v_rew_r.fill(np.nan)
         self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
         self.t_rew_r.fill(np.nan) #fills t_rew_r with nan since not all trials will be rewarded.
 
@@ -154,7 +156,7 @@ class data():
 
             sample_tone_t = sample_tone.create_dataset('t', data = self.t_sample_tone, dtype = 'f8')
             sample_tone_type = sample_tone.create_dataset('type', data = self.sample_tone, dtype = 'S1')
-            sample_tone_length = sample_tone.create_dataset('length', data = self.sample_tone_length), dtype = 'f8')
+            sample_tone_length = sample_tone.create_dataset('length', data = self.sample_tone_length, dtype = 'f8')
 
             go_tone_t = go_tone.create_dataset('t', data = self.t_go_tone)
             go_tone_length = go_tone.create_dataset('length', data = self.go_tone_length)
@@ -175,7 +177,7 @@ class data():
                 lickport; contains times (s) and voltages (arb. units)'
             lick_r.attrs['title'] = 'Lick signal acquired from the right \
                 lickport; contains times (s) and voltages (arb. units)'
-            tone.attrs['title'] = 'Information about the delivered tones each \
+            sample_tone.attrs['title'] = 'Information about the delivered tones each \
                 trial; contains times (s) and tone-type (a string denoting \
                 whether the tone was large, small or nonexistent)'
             rew_l.attrs['title'] = 'Reward delivered to the left lickport; \

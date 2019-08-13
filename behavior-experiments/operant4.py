@@ -96,7 +96,7 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(n_trials, mouse_number, block_number)
+data = core.data(protocol_description, n_trials, mouse_number, block_number, sample_tone_length, go_tone_length)
 
 total_reward_L = 0
 total_reward_R = 0
@@ -120,8 +120,8 @@ for trial in trials:
     time.sleep(0.5)
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
-        data.tone[trial] = 'L' #Assign data type
-        data.t_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        data.sample_tone[trial] = 'L' #Assign data type
+        data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_L.Play() #Play left tone
 
         time.sleep(delay_length) #Sleep for some delay
@@ -155,8 +155,8 @@ for trial in trials:
 
     #Right trial:--------------------------------------------------------------
     else:
-        data.tone[trial] = 'R' #Assign data type
-        data.t_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        data.sample_tone[trial] = 'R' #Assign data type
+        data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_R.Play() #Play left tone
 
         time.sleep(delay_length) #Sleep for delay_length
