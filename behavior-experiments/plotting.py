@@ -63,17 +63,19 @@ for ind, key in enumerate(lick_keys):
               facecolor = '#cce6ff') #will show trial types on plots.
 
         sample_tone_on = f['sample_tone']['t'][trial]
-        # sample_tone_length = f['sample_tone']['length']
+        sample_tone_end = f['sample_tone']['end'][trial]
         go_tone_on = f['go_tone']['t'][trial]
-        # go_tone_length = f['go_tone']['length']
+        go_tone_end = f['go_tone']['length'][trial]
         ax[ind].fill_between([sample_tone_on, sample_tone_on + 1000], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
           facecolor = '#dbdbdb') #Will show on plot where tones were played.
         ax[ind].fill_between([go_tone_on, go_tone_on + 750], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
           facecolor = '#dbdbdb') #Will show on plot where tones were played.
-        plt.plot([sample_tone_on + 1000, sample_tone_on + 1000], [trial-0.5, trial+0.5,], 'k-', lw = 1)
+        plt.plot([sample_tone_on, sample_tone_on], [trial-0.5, trial+0.5,], 'green', lw = 1)
+        plt.plot([sample_tone_end, sample_tone_end], [trial-0.5, trial+0.5,], 'blue', lw = 1)
         plt.plot([go_tone_on, go_tone_on], [trial-0.5, trial+0.5,], 'red', lw = 1)
+        plt.plot([go_tone_end, go_tone_end], [trial-0.5, trial+0.5,], 'orange', lw = 1)
 
     plt.eventplot(_all_licks, linelengths=0.8, colors = '#5d5d5d') #creates raster
 

@@ -123,12 +123,12 @@ for trial in trials:
         data.sample_tone[trial] = 'L' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_L.Play() #Play left tone
+        time.sleep(0.5)
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-
-        time.sleep(delay_length) #Sleep for some delay
 
         data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_go.Play() #Play go tone
+        time.sleep(0.5)
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         length_L = len(lick_port_L._licks)
