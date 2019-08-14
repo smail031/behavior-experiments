@@ -37,7 +37,7 @@ class tones():
 
 class data():
 
-    def __init__(self, protocol_description, n_trials, mouse_number, block_number, sample_tone_length, go_tone_length):
+    def __init__(self, protocol_description, n_trials, mouse_number, block_number):
         '''
         Creates an instance of the class Data which will store parameters for
         each trial, including lick data and trial type information.
@@ -91,10 +91,10 @@ class data():
 
         self.sample_tone = np.empty(self.n_trials, dtype = 'S1') #L or R, stores the trial types
         self.t_sample_tone = np.empty(self.n_trials) #stores the tone times relative to trial start.
-        self.sample_tone_length = sample_tone_length
+        self.sample_tone_end = np.empty(self.n_trials)
 
         self.t_go_tone = np.empty(self.n_trials) #stores the times of go tones.
-        self.go_tone_length = go_tone_length
+        self.go_tone_end = np.empty(self.n_trials)
 
         self.response = np.empty(self.n_trials, dtype = 'S1') #L, R, or N, stores
                                         #the animal's responses for each trial.
@@ -156,10 +156,10 @@ class data():
 
             sample_tone_t = sample_tone.create_dataset('t', data = self.t_sample_tone, dtype = 'f8')
             sample_tone_type = sample_tone.create_dataset('type', data = self.sample_tone, dtype = 'S1')
-            sample_tone_length = sample_tone.create_dataset('length', data = self.sample_tone_length, dtype = 'f8')
+            sample_tone_end = sample_tone.create_dataset('end', data = self.sample_tone_end, dtype = 'f8')
 
             go_tone_t = go_tone.create_dataset('t', data = self.t_go_tone)
-            go_tone_length = go_tone.create_dataset('length', data = self.go_tone_length)
+            go_tone_end = go_tone.create_dataset('length', data = self.go_tone_end)
 
             rew_l_t = rew_l.create_dataset('t', data = self.t_rew_l)
             rew_l_v = rew_l.create_dataset('volume', data = self.v_rew_l)

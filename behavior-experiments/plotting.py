@@ -60,22 +60,33 @@ for ind, key in enumerate(lick_keys):
         if len(trial_types) != 0 and trial_types[trial] == ind:
             ax[ind].fill_between([0,5000], [trial-0.5, trial-0.5],
               [trial+0.5, trial+0.5],
-              facecolor = '#e1e1e1') #will show trial types on plots.
+              facecolor = '#cce6ff') #will show trial types on plots.
 
-        _tone_on = f['sample_tone']['t'][trial]
-        ax[ind].fill_between([_tone_on, _tone_on + 750], [trial-0.5, trial-0.5],
+        sample_tone_on = f['sample_tone']['t'][trial]
+        # sample_tone_length = f['sample_tone']['length']
+        go_tone_on = f['go_tone']['t'][trial]
+        # go_tone_length = f['go_tone']['length']
+        ax[ind].fill_between([sample_tone_on, sample_tone_on + 1000], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
-          facecolor = '#ffb0b0') #Will show on plot where tones were played.
+          facecolor = '#dbdbdb') #Will show on plot where tones were played.
+        ax[ind].fill_between([go_tone_on, go_tone_on + 750], [trial-0.5, trial-0.5],
+          [trial+0.5, trial+0.5],
+          facecolor = '#dbdbdb') #Will show on plot where tones were played.
+        plt.plot([sample_tone_on + 1000, sample_tone_on + 1000], [trial-0.5, trial+0.5,], 'k-', lw = 1)
+        plt.plot([go_tone_on, go_tone_on], [trial-0.5, trial+0.5,], 'red', lw = 1)
 
-    plt.eventplot(_all_licks, linelengths=0.5, colors = '#5d5d5d') #creates raster
+    plt.eventplot(_all_licks, linelengths=0.8, colors = '#5d5d5d') #creates raster
 
     #set axis limits, labels and title.
-    ax[ind].set_ylim([None,num_trials])
-    ax[ind].set_xlim([0, None])
+    ax[ind].set_ylim([0,num_trials])
+    ax[ind].set_xlim([0, 4000])
     ax[ind].set_xticks([0, 1000, 2000, 3000, 4000, 5000])
     ax[ind].set_xlabel('Time (ms)')
     ax[ind].set_ylabel('Trials')
+    ax[ind].spines['top'].set_visible(False)
+    ax[ind].spines['right'].set_visible(False)
     _title_str = key[-1].upper() + ' Licks'
     ax[ind].set_title(_title_str)
+
 
 plt.show(block=True)
