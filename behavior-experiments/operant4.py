@@ -96,7 +96,7 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number, sample_tone_length, go_tone_length)
+data = core.data(protocol_description, n_trials, mouse_number, block_number)
 
 total_reward_L = 0
 total_reward_R = 0
@@ -123,12 +123,10 @@ for trial in trials:
         data.sample_tone[trial] = 'L' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_L.Play() #Play left tone
-        time.sleep(0.5)
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_go.Play() #Play go tone
-        time.sleep(0.5)
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         length_L = len(lick_port_L._licks)
@@ -162,8 +160,6 @@ for trial in trials:
         tone_R.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-
-        time.sleep(delay_length) #Sleep for delay_length
 
         data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_go.Play() #Play go tone
