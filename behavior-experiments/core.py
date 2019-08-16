@@ -41,7 +41,7 @@ class tones():
 
     def Delete(self):
         # Delete the wav file
-        os.system(f'rm {self.name}.wav)
+        os.system(f'rm {self.name}.wav')
 
 
 class data():

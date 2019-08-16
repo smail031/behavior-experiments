@@ -149,9 +149,14 @@ for trial in trials:
                 water_L.Reward() #Deliver L reward
                 data.v_rew_l[trial] = reward_size
                 total_reward_L += reward_size
+                performance += 1
 
             elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
+            
+            else:
+                current_time = time.time()*1000- response_start
+                print(current_time)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -185,9 +190,14 @@ for trial in trials:
                 data.v_rew_r[trial] = reward_size
                 water_R.Reward() #Deliver R reward
                 total_reward_R += reward_size
+                performance += 1
 
             elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
+            
+            else:
+                current_time = time.time()*1000- response_start
+                print(current_time)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -214,7 +224,7 @@ for trial in trials:
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
 
-    print(f'Performance: {performance}/{trial})
+    print(f'Performance: {performance}/{trial+1}')
 
     #Pause for the ITI before next trial
     ITI_ = 1.5
