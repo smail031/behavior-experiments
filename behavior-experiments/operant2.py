@@ -5,11 +5,12 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
-#In this protocol, a sample cue is immediately followed by a "go" cue. During the
-#response period, licks registered by the incorrect lickport will be ignored,
-#while any licks registered by the correct lickport will trigger reward delivery
-#through that port (even if the incorrect port was licked first). Trial types
-#(L/R) alternate every 3 trials.
+protocol_description = '''In this protocol, a sample cue is immediately followed by a "go" cue. During the
+response period, licks registered by the incorrect lickport will be ignored,
+while any licks registered by the correct lickport will trigger reward delivery
+through that port (even if the incorrect port was licked first). Trial types
+(L/R) alternate every 3 trials.'''
+
 
 import time
 import RPi.GPIO as GPIO
@@ -18,6 +19,7 @@ import os
 import threading
 import core
 from picamera import PiCamera
+from pygame import mixer
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
@@ -32,9 +34,12 @@ response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-go_tone_freq = 500 #frequency of go tone
+sample_tone_length = 0.8 #length of sample tone
 
-#reward_size = 0.01 #size of water reward, in mL
+go_tone_freq = 500 #frequency of go tone
+go_tone_length = 0.2
+
+reward_size = 5 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:
@@ -69,6 +74,9 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(L_enablePIN, GPIO.OUT, initial = 1)
 GPIO.setup(R_enablePIN, GPIO.OUT, initial = 1)
 
+#initialize the mixer (for tones) at the proper sampling rate.
+mixer.init(frequency = 44100)
+
 #create Stepper class instances for left and right reward delivery
 water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
 water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
@@ -78,10 +86,10 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 #create tones
-tone_L = core.tones(L_tone_freq, 1)
-tone_R = core.tones(R_tone_freq, 1)
+tone_L = core.tones(L_tone_freq, sample_tone_length)
+tone_R = core.tones(R_tone_freq, sample_tone_length)
 
-tone_go = core.tones(go_tone_freq, 0.75)
+tone_go = core.tones(go_tone_freq, go_tone_length)
 
 camera = PiCamera() #create camera object
 
@@ -93,11 +101,11 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(n_trials, mouse_number, block_number)
+data = core.data(protocol_description, n_trials, mouse_number, block_number)
 
 total_reward_L = 0
 total_reward_R = 0
-performance = 0
+performance = 0 #will store the total number of correct responses.
 
 left_trial_ = True
 
@@ -106,8 +114,8 @@ for trial in trials:
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 4))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 4))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
     if float(trial/3).is_integer():
         left_trial_ = not left_trial_
@@ -118,13 +126,14 @@ for trial in trials:
     time.sleep(0.5)
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
-        data.tone[trial] = 'L' #Assign data type
-        data.t_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        data.sample_tone[trial] = 'L' #Assign data type
+        data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_L.Play() #Play left tone
+        data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-        time.sleep(delay_length) #Sleep for some delay
-
+        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_go.Play() #Play go tone
+        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
@@ -141,22 +150,26 @@ for trial in trials:
 
         if response == 'L':
             data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_l[trial] = 5
             water_L.Reward() #Deliver L reward
-            total_reward_L += 5
-            performance += 1
+            data.v_rew_l[trial] = reward_size
+            total_reward_L += reward_size
 
+        data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #Right trial:--------------------------------------------------------------
     else:
-        data.tone[trial] = 'R' #Assign data type
-        data.t_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        data.sample_tone[trial] = 'R' #Assign data type
+        data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_R.Play() #Play left tone
+        data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+
 
         time.sleep(delay_length) #Sleep for delay_length
 
+        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_go.Play() #Play go tone
+        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
@@ -173,11 +186,11 @@ for trial in trials:
 
         if response == 'R':
             data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_r[trial] = 5
+            data.v_rew_r[trial] = reward_size
             water_R.Reward() #Deliver R reward
-            total_reward_R += 5
-            performance += 1
+            total_reward_R += reward_size
 
+        data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
     #---------------
@@ -202,6 +215,8 @@ for trial in trials:
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
 
+    print(f'Performance: {performance}/{trial})
+
     #Pause for the ITI before next trial
     ITI_ = 1.5
 #    while ITI_ > 10:
@@ -211,15 +226,14 @@ for trial in trials:
 
 camera.stop_preview()
 
+print(f'Total L reward: {total_reward_L} uL')
+print(f'Total R reward: {total_reward_R} uL')
+
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
 
 #delete the .wav files created for the experiment
-os.system(f'rm {L_tone_freq}Hz.wav')
-os.system(f'rm {R_tone_freq}Hz.wav')
-os.system(f'rm {go_tone_freq}Hz.wav')
-
-print(f'Total L reward: {total_reward_L} uL')
-print(f'Total R reward: {total_reward_R} uL')
-print(f'Performance: {performance}/{n_trials}')
+tone_L.Delete()
+tone_R.Delete()
+tone_go.Delete()
