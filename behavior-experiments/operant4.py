@@ -16,8 +16,10 @@ import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
+import core_pygame
 import core
 from picamera import PiCamera
+from pygame import mixer
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
@@ -32,10 +34,10 @@ response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-sample_tone_length = 1 #length of sample tone
+sample_tone_length = 0.8 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
-go_tone_length = 0.4
+go_tone_length = 0.2
 
 reward_size = 5 #size of water rewards in uL
 
@@ -72,6 +74,9 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setup(L_enablePIN, GPIO.OUT, initial = 1)
 GPIO.setup(R_enablePIN, GPIO.OUT, initial = 1)
 
+#initialize the mixer (for tones) at the proper sampling rate.
+mixer.init(frequency = 44100)
+
 #create Stepper class instances for left and right reward delivery
 water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
 water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
@@ -81,10 +86,10 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 #create tones
-tone_L = core.tones(L_tone_freq, sample_tone_length)
-tone_R = core.tones(R_tone_freq, sample_tone_length)
+tone_L = core_pygame.tones(L_tone_freq, sample_tone_length)
+tone_R = core_pygame.tones(R_tone_freq, sample_tone_length)
 
-tone_go = core.tones(go_tone_freq, go_tone_length)
+tone_go = core_pygame.tones(go_tone_freq, go_tone_length)
 
 camera = PiCamera() #create camera object
 
@@ -160,6 +165,8 @@ for trial in trials:
         tone_R.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
+
+        time.sleep(delay_length) #Sleep for delay_length
 
         data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_go.Play() #Play go tone

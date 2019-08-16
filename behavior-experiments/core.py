@@ -12,6 +12,7 @@ import os
 import getpass
 import matplotlib.pyplot as plt
 import h5py
+from pygame import mixer
 
 
 #------------------------------------------------------------------------------
@@ -26,15 +27,17 @@ class tones():
         #Create a string that will be the name of the .wav file
         self.name = str(frequency) + 'Hz'
         self.freq = frequency
+        self.length = tone_length
 
         #create a waveform called self.name from frequency and tone_length
-        os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {tone_length} sin {frequency} vol -20dB')
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {self.length} sin {self.freq} vol -20dB')
 
-        # self.sound = mixer.Sound(f'{self.name}.wav')
+        self.sound = mixer.Sound(f'{self.name}.wav')
 
     def Play(self):
-        #send the wav file to the sound card
-        os.system(f'play -V0 {self.name}.wav')
+        #play the .wav file and wait for it to end.
+        self.sound.play()
+        time.sleep(self.length)
 
 
 class data():
