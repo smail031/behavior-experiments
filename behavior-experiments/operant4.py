@@ -145,15 +145,13 @@ for trial in trials:
 
             elif sum(lick_port_L._licks[(length_L-1):]) > 0:
                 response = 'L'
+                data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
+                water_L.Reward() #Deliver L reward
+                data.v_rew_l[trial] = reward_size
+                total_reward_L += reward_size
 
             elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
-
-        if response == 'L':
-            data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-            water_L.Reward() #Deliver L reward
-            data.v_rew_l[trial] = reward_size
-            total_reward_L += reward_size
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -183,15 +181,13 @@ for trial in trials:
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
                 response = 'R'
+                data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
+                data.v_rew_r[trial] = reward_size
+                water_R.Reward() #Deliver R reward
+                total_reward_R += reward_size
 
             elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
-
-        if response == 'R':
-            data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-            data.v_rew_r[trial] = reward_size
-            water_R.Reward() #Deliver R reward
-            total_reward_R += reward_size
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
