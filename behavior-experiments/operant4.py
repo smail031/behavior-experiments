@@ -16,7 +16,6 @@ import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
-import core_pygame
 import core
 from picamera import PiCamera
 from pygame import mixer
@@ -86,10 +85,10 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 #create tones
-tone_L = core_pygame.tones(L_tone_freq, sample_tone_length)
-tone_R = core_pygame.tones(R_tone_freq, sample_tone_length)
+tone_L = core.tones(L_tone_freq, sample_tone_length)
+tone_R = core.tones(R_tone_freq, sample_tone_length)
 
-tone_go = core_pygame.tones(go_tone_freq, go_tone_length)
+tone_go = core.tones(go_tone_freq, go_tone_length)
 
 camera = PiCamera() #create camera object
 
@@ -105,6 +104,7 @@ data = core.data(protocol_description, n_trials, mouse_number, block_number)
 
 total_reward_L = 0
 total_reward_R = 0
+performance = 0 #will store the total number of correct responses.
 
 left_trial_ = True
 
@@ -218,6 +218,8 @@ for trial in trials:
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
 
+    print(f'Performance: {performance}/{trial})
+
     #Pause for the ITI before next trial
     ITI_ = 1.5
 #    while ITI_ > 10:
@@ -235,6 +237,6 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
 
 #delete the .wav files created for the experiment
-os.system(f'rm {L_tone_freq}Hz.wav')
-os.system(f'rm {R_tone_freq}Hz.wav')
-os.system(f'rm {go_tone_freq}Hz.wav')
+tone_L.Delete()
+tone_R.Delete()
+tone_go.Delete()
