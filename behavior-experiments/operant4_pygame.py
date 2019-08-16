@@ -16,6 +16,7 @@ import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
+import core_pygame
 import core
 from picamera import PiCamera
 from pygame import mixer
@@ -33,10 +34,10 @@ response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-sample_tone_length = 1 #length of sample tone
+sample_tone_length = 0.8 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
-go_tone_length = 0.75
+go_tone_length = 0.2
 
 reward_size = 5 #size of water rewards in uL
 
@@ -85,10 +86,10 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 #create tones
-tone_L = core.tones(L_tone_freq, sample_tone_length)
-tone_R = core.tones(R_tone_freq, sample_tone_length)
+tone_L = core_pygame.tones(L_tone_freq, sample_tone_length)
+tone_R = core_pygame.tones(R_tone_freq, sample_tone_length)
 
-tone_go = core.tones(go_tone_freq, go_tone_length)
+tone_go = core_pygame.tones(go_tone_freq, go_tone_length)
 
 camera = PiCamera() #create camera object
 
@@ -100,7 +101,7 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number, sample_tone_length, go_tone_length)
+data = core.data(protocol_description, n_trials, mouse_number, block_number)
 
 total_reward_L = 0
 total_reward_R = 0

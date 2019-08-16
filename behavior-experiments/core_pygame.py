@@ -12,6 +12,7 @@ import os
 import getpass
 import matplotlib.pyplot as plt
 import h5py
+from pygame import mixer
 
 
 #------------------------------------------------------------------------------

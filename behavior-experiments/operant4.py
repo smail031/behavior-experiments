@@ -35,7 +35,7 @@ R_tone_freq = 4000 #frequency of sample tone in right lick trials
 sample_tone_length = 1 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
-go_tone_length = 0.75
+go_tone_length = 0.4
 
 reward_size = 5 #size of water rewards in uL
 
