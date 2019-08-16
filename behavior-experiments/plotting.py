@@ -33,7 +33,7 @@ gs = gridspec.GridSpec(nrows = 1, ncols = 2, width_ratios = [1, 1], figure = fig
 
 
 #################
-lick_keys = ['lick_l', 'lick_r']
+sides = ['l', 'r']
 ax = []
 
 #transform trial types from "L/R" to "0/1" to simplify plotting
@@ -44,14 +44,14 @@ for trial in range(num_trials):
     elif 'R' in str(f['sample_tone']['type'][trial]):
         trial_types.append(1)
 
-for ind, key in enumerate(lick_keys):
+for ind, key in enumerate(sides):
 
     ax.append(fig.add_subplot(gs[0, ind]))
     _all_licks = []
 
     for trial in range(num_trials):
 
-        _lick_v = f[key]['volt'][trial] #raw lick data
+        _lick_v = f[f'lick_{key}']['volt'][trial] #raw lick data
         _d_lick_v = np.diff(_lick_v) #1st derivative of raw lick data
         _licks = np.argwhere(_d_lick_v > 0).flatten() #find indices where the
                                     #derivative of raw lick data goes above 0
@@ -62,33 +62,42 @@ for ind, key in enumerate(lick_keys):
               [trial+0.5, trial+0.5],
               facecolor = '#cce6ff') #will show trial types on plots.
 
-        sample_tone_on = f['sample_tone']['t'][trial]
-        sample_tone_end = f['sample_tone']['end'][trial]
-        go_tone_on = f['go_tone']['t'][trial]
-        go_tone_end = f['go_tone']['length'][trial]
+        sample_tone_on = 500
+        sample_tone_end = 1500
+        go_tone_on = 1500
+        go_tone_end = 2250
         ax[ind].fill_between([sample_tone_on, sample_tone_on + 1000], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
-          facecolor = '#dbdbdb') #Will show on plot where tones were played.
+          facecolor = '#dbdbdb', alpha = 0.6) #Will show on plot where tones were played.
         ax[ind].fill_between([go_tone_on, go_tone_on + 750], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
-          facecolor = '#dbdbdb') #Will show on plot where tones were played.
-        plt.plot([sample_tone_on, sample_tone_on], [trial-0.5, trial+0.5,], 'green', lw = 1)
-        plt.plot([sample_tone_end, sample_tone_end], [trial-0.5, trial+0.5,], 'blue', lw = 1)
-        plt.plot([go_tone_on, go_tone_on], [trial-0.5, trial+0.5,], 'red', lw = 1)
-        plt.plot([go_tone_end, go_tone_end], [trial-0.5, trial+0.5,], 'orange', lw = 1)
+          facecolor = '#dbdbdb', alpha = 0.6) #Will show on plot where tones were played.
+        plt.plot([sample_tone_on, sample_tone_on], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
+        plt.plot([sample_tone_end, sample_tone_end], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
+        plt.plot([go_tone_on, go_tone_on], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
+        plt.plot([go_tone_end, go_tone_end], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
 
-    plt.eventplot(_all_licks, linelengths=0.8, colors = '#5d5d5d') #creates raster
+
+    plt.eventplot(_all_licks, linelengths=0.8, linewidths = 0.8, colors = 'black') #creates raster
+    reward_times = np.empty(num_trials)
+    reward_times.fill(np.nan)
+    reward_times = np.hstack((reward_times,f[f'rew_{key}']['t']))
+    # print(reward_times)
+    plt.eventplot(reward_times, linelengths=0.8, colors = 'green')
 
     #set axis limits, labels and title.
     ax[ind].set_ylim([0,num_trials])
     ax[ind].set_xlim([0, 4000])
-    ax[ind].set_xticks([0, 1000, 2000, 3000, 4000, 5000])
+    ax[ind].set_xticks([0, 1000, 2000, 3000, 4000])
     ax[ind].set_xlabel('Time (ms)')
     ax[ind].set_ylabel('Trials')
     ax[ind].spines['top'].set_visible(False)
     ax[ind].spines['right'].set_visible(False)
     _title_str = key[-1].upper() + ' Licks'
-    ax[ind].set_title(_title_str)
+    ax[ind].set_title(_title_str, y = 1.01)
+
+    ax[ind].text((sample_tone_on + sample_tone_end)/2,num_trials, 'sample', horizontalalignment = 'center')
+    ax[ind].text((go_tone_on + go_tone_end)/2, num_trials, 'go', horizontalalignment = 'center')
 
 
 plt.show(block=True)
