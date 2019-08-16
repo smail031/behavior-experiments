@@ -39,6 +39,10 @@ class tones():
         self.sound.play()
         time.sleep(self.length)
 
+    def Delete(self):
+        # Delete the wav file
+        os.system(f'rm {self.name}.wav)
+
 
 class data():
 
