@@ -79,11 +79,8 @@ for ind, key in enumerate(sides):
 
 
     plt.eventplot(_all_licks, linelengths=0.8, linewidths = 0.8, colors = 'black') #creates raster
-    reward_times = np.empty(num_trials)
-    reward_times.fill(np.nan)
-    reward_times = np.hstack((reward_times,f[f'rew_{key}']['t']))
-    # print(reward_times)
-    plt.eventplot(reward_times, linelengths=0.8, colors = 'green')
+    reward_times = np.expand_dims(f[f'rew_{key}']['t'], 1)
+    plt.eventplot(reward_times, linelengths=1, colors = '#00c907')
 
     #set axis limits, labels and title.
     ax[ind].set_ylim([0,num_trials])
