@@ -62,14 +62,14 @@ for ind, key in enumerate(sides):
               [trial+0.5, trial+0.5],
               facecolor = '#cce6ff') #will show trial types on plots.
 
-        sample_tone_on = 500
-        sample_tone_end = 1500
-        go_tone_on = 1500
-        go_tone_end = 2250
-        ax[ind].fill_between([sample_tone_on, sample_tone_on + 1000], [trial-0.5, trial-0.5],
+        sample_tone_on = f['sample_tone']['t'][trial]
+        sample_tone_end = f['sample_tone']['end'][trial]
+        go_tone_on = f['go_tone']['t'][trial]
+        go_tone_end = f['go_tone']['length'][trial]
+        ax[ind].fill_between([sample_tone_on, sample_tone_end], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
           facecolor = '#dbdbdb', alpha = 0.6) #Will show on plot where tones were played.
-        ax[ind].fill_between([go_tone_on, go_tone_on + 750], [trial-0.5, trial-0.5],
+        ax[ind].fill_between([go_tone_on, go_tone_end], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
           facecolor = '#dbdbdb', alpha = 0.6) #Will show on plot where tones were played.
         plt.plot([sample_tone_on, sample_tone_on], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
