@@ -16,7 +16,7 @@ import RPi.GPIO as GPIO
 import numpy as np
 import os
 import threading
-import core
+import core_licked
 from picamera import PiCamera
 from pygame import mixer
 
@@ -81,8 +81,8 @@ water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
 water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
 #create lickometer class instances for left and right lickometers
-lick_port_L = core.lickometer(L_lickometer)
-lick_port_R = core.lickometer(R_lickometer)
+lick_port_L = core_licked.lickometer(L_lickometer)
+lick_port_R = core_licked.lickometer(R_lickometer)
 
 #create tones
 tone_L = core.tones(L_tone_freq, sample_tone_length)
