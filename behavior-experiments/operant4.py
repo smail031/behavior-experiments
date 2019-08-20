@@ -134,23 +134,24 @@ for trial in trials:
         tone_go.Play() #Play go tone
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-        lick_port_L.reset_has_licked()
-        lick_port_R.reset_has_licked()
         response = 'N'
+        length_L = len(lick_port_L._licks)
+        length_R = len(lick_port_R._licks)
         resp_window_end = time.time()*1000 + response_delay
 
         while time.time() * 1000 < resp_window_end:
-            if lick_port_R.has_licked():
-                response = 'R'
-                break
 
-            elif lick_port_L.has_licked():
+            if sum(lick_port_L._licks[(length_L-1):]) > 0:
                 response = 'L'
                 data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-                water_L.Reward() #Deliver L reward
                 data.v_rew_l[trial] = reward_size
+                water_L.Reward() #Deliver L reward
                 total_reward_L += reward_size
                 performance += 1
+                break
+
+            elif sum(lick_port_R._licks[(length_R-1):]) > 0:
+                response = 'R'
                 break
 
         data.response[trial] = response
@@ -170,16 +171,15 @@ for trial in trials:
         tone_go.Play() #Play go tone
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
+
+        response = 'N'
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        response = False
-        response_start = time.time()*1000
+        resp_window_end = time.time()*1000 + response_delay
 
-        while response == False:
-            if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                response = 'L'
+        while time.time() * 1000 < resp_window_end:
 
-            elif sum(lick_port_R._licks[(length_R-1):]) > 0:
+            if sum(lick_port_R._licks[(length_R-1):]) > 0:
                 response = 'R'
                 data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
                 data.v_rew_r[trial] = reward_size
@@ -187,8 +187,8 @@ for trial in trials:
                 total_reward_R += reward_size
                 performance += 1
 
-            elif time.time()*1000 - response_start > response_delay:
-                response = 'N'
+            elif sum(lick_port_L._licks[(length_L-1):]) > 0:
+                response = 'L'
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
