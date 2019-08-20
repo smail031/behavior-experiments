@@ -190,10 +190,6 @@ for trial in trials:
             elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
 
-            else:
-                current_time = time.time()*1000- response_start
-                print(current_time)
-
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 

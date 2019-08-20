@@ -17,6 +17,7 @@ import numpy as np
 import os
 import threading
 import core_licked
+import core
 from picamera import PiCamera
 from pygame import mixer
 
@@ -113,8 +114,8 @@ for trial in trials:
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (500, 5))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (500, 5))
 
     if float(trial/3).is_integer():
         left_trial_ = not left_trial_
@@ -140,17 +141,18 @@ for trial in trials:
         resp_window_end = time.time()*1000 + response_delay
 
         while time.time() * 1000 < resp_window_end:
-            if lick_port_R.has_licked():
-                response = 'R'
-                break
-
-            elif lick_port_L.has_licked():
+            
+            if lick_port_L.has_licked:
                 response = 'L'
                 data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
                 water_L.Reward() #Deliver L reward
                 data.v_rew_l[trial] = reward_size
                 total_reward_L += reward_size
                 performance += 1
+                break
+            
+            elif lick_port_R.has_licked:
+                response = 'R'
                 break
 
         data.response[trial] = response
@@ -189,10 +191,6 @@ for trial in trials:
 
             elif time.time()*1000 - response_start > response_delay:
                 response = 'N'
-
-            else:
-                current_time = time.time()*1000- response_start
-                print(current_time)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
