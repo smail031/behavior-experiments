@@ -233,9 +233,11 @@ for trial in trials:
                     response = 'R'
                     total_reward_R += reward_size
                     performance += 1
+                    break
 
                 elif sum(lick_port_L._licks[(length_L-1):]) > 0:
                     response = 'L'
+                    break
 
 
         data.response[trial] = response
@@ -264,7 +266,7 @@ for trial in trials:
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
 
-    print(f'Performance: {performance}/{trial}')
+    print(f'Performance: {performance}/{trial+1}')
 
     #Pause for the ITI before next trial
     ITI_ = 1.5
