@@ -127,6 +127,7 @@ for trial in trials:
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
         data.sample_tone[trial] = 'L' #Assign data type
+
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_L.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
@@ -182,6 +183,7 @@ for trial in trials:
     #Right trial:--------------------------------------------------------------
     else:
         data.sample_tone[trial] = 'R' #Assign data type
+
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_R.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
