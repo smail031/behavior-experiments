@@ -130,7 +130,7 @@ for trial in trials:
         early_lick = False
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        thread_tone_L = threading.Thread(target = tone_L.sound.play())
+        thread_tone_L = threading.Thread(target = tone_L.sound.play)
         thread_tone_L.start()
         # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
         length_L = len(lick_port_L._licks)
@@ -190,7 +190,7 @@ for trial in trials:
         early_lick = False
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        thread_tone_R = threading.Thread(target = tone_R.sound.play())
+        thread_tone_R = threading.Thread(target = tone_R.sound.play)
         thread_tone_R.start()
         # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
         length_L = len(lick_port_L._licks)
