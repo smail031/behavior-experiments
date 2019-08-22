@@ -28,7 +28,7 @@ mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
-delay_length = 2000 #length of delay between sample tone and go cue, in sec
+delay_length = 500 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
@@ -118,9 +118,6 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-
-    # thread_tone_R = threading.Thread(target = tone_R.sound.play())
-
     left_trial_ = np.random.rand() < 0.5
 
     thread_L.start() #Start threads for lick recording
@@ -135,13 +132,12 @@ for trial in trials:
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         thread_tone_L = threading.Thread(target = tone_L.sound.play())
         thread_tone_L.start()
-        # tone_L.Play() #Play left tone
         # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        delay_window_end = time.time()*1000 + delay_length
+        delay_window_end = time.time()*1000 + delay_length + sample_tone_length*1000
 
-        while time.time() * 1000 < delay_window_end:
+        while time.time()*1000 < delay_window_end:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
                 tone_L.sound.stop()
@@ -168,7 +164,7 @@ for trial in trials:
             length_R = len(lick_port_R._licks)
             response_window_end = time.time()*1000 + response_delay
 
-            while time.time() * 1000 < response_window_end:
+            while time.time()*1000 < response_window_end:
 
                 if sum(lick_port_L._licks[(length_L-1):]) > 0:
                     data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
@@ -189,26 +185,29 @@ for trial in trials:
 
     #Right trial:--------------------------------------------------------------
     else:
+
         data.sample_tone[trial] = 'R' #Assign data type
+        early_lick = False
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone_R.Play() #Play left tone
-        data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-
-        early_lick = False
+        thread_tone_R = threading.Thread(target = tone_R.sound.play())
+        thread_tone_R.start()
+        # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        delay_window_end = time.time()*1000 + delay_length
+        delay_window_end = time.time()*1000 + delay_length + sample_tone_length*1000
 
-        while time.time() * 1000 < delay_window_end:
+        while time.time()*1000 < delay_window_end:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
+                tone_R.sound.stop()
                 tone_delay.Play()
                 early_lick = True
                 response = 'X'
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
+                tone_R.sound.stop()
                 tone_delay.Play()
                 early_lick = True
                 response = 'X'
@@ -225,7 +224,8 @@ for trial in trials:
             length_R = len(lick_port_R._licks)
             response_window_end = time.time()*1000 + response_delay
 
-            while time.time() * 1000 < response_window_end:
+            while time.time()*1000 < response_window_end:
+
                 if sum(lick_port_R._licks[(length_R-1):]) > 0:
                     data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
                     water_R.Reward() #Deliver R reward
