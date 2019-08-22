@@ -118,8 +118,8 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    thread_tone_L = threading.Thread(target = tone_L.sound.play())
-    thread_tone_R = threading.Thread(target = tone_R.sound.play())
+
+    # thread_tone_R = threading.Thread(target = tone_R.sound.play())
 
     left_trial_ = np.random.rand() < 0.5
 
@@ -133,6 +133,7 @@ for trial in trials:
         early_lick = False
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        thread_tone_L = threading.Thread(target = tone_L.sound.play())
         thread_tone_L.start()
         # tone_L.Play() #Play left tone
         # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
