@@ -97,10 +97,10 @@ for ind, key in enumerate(sides):
         ax[ind].fill_between([go_tone_on, go_tone_end], [trial-0.5, trial-0.5],
           [trial+0.5, trial+0.5],
           facecolor = '#dbdbdb', alpha = 0.6) #Will show on plot where tones were played.
-        plt.plot([sample_tone_on, sample_tone_on], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
-        plt.plot([sample_tone_end, sample_tone_end], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
-        plt.plot([go_tone_on, go_tone_on], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
-        plt.plot([go_tone_end, go_tone_end], [trial-0.5, trial+0.5,], '#808080', lw = 0.5)
+        plt.plot([sample_tone_on, sample_tone_on], [trial-0.5, trial+0.5,], '#808080', lw = 0.4)
+        plt.plot([sample_tone_end, sample_tone_end], [trial-0.5, trial+0.5,], '#808080', lw = 0.4)
+        plt.plot([go_tone_on, go_tone_on], [trial-0.5, trial+0.5,], '#808080', lw = 0.4)
+        plt.plot([go_tone_end, go_tone_end], [trial-0.5, trial+0.5,], '#808080', lw = 0.4)
 
 
 
