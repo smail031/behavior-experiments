@@ -143,12 +143,14 @@ for trial in trials:
         while time.time() * 1000 < delay_window_end:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
+                tone_L.cut = True
                 tone_delay.Play()
                 early_lick = True
                 response = 'X'
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
+                tone_L.cut = True
                 tone_delay.Play()
                 early_lick = True
                 response = 'X'
@@ -182,6 +184,7 @@ for trial in trials:
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
+        thread_tone_L.join()
 
     #Right trial:--------------------------------------------------------------
     else:
@@ -236,6 +239,7 @@ for trial in trials:
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
+        thread_tone_R.join()
 
     #---------------
     #Post-trial data storage
@@ -244,8 +248,6 @@ for trial in trials:
     #Make sure the threads are finished
     thread_L.join()
     thread_R.join()
-    thread_tone_L.join()
-    thread_tone_R.join()
 
     #subtract lick timestamps from start of trial so that integers are not too
     #big for storage.
