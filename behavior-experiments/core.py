@@ -36,7 +36,7 @@ class tones():
     def Play(self):
         #play the .wav file and wait for it to end while self.cut is False
         self.sound.play()
-        time_end = time.time() + self.length
+        time.sleep(self.length)
 
     def Delete(self):
         # Delete the wav file
