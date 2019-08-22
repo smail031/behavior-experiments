@@ -41,7 +41,7 @@ class tones():
         time_end = time.time() + self.length
 
         while time.time() < time_end:
-            if cut = True:
+            if self.cut == True:
                 break
 
     def Delete(self):

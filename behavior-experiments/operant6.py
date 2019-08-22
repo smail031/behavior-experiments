@@ -239,7 +239,7 @@ for trial in trials:
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
-        thread_tone_R.join()
+        #thread_tone_R.join()
 
     #---------------
     #Post-trial data storage
