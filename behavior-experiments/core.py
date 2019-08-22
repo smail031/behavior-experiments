@@ -23,12 +23,10 @@ class tones():
 
     def __init__(self, frequency, tone_length):
 
-
         #Create a string that will be the name of the .wav file
         self.name = str(frequency) + 'Hz'
         self.freq = frequency
         self.length = tone_length
-        self.cut = False
 
         #create a waveform called self.name from frequency and tone_length
         os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {self.length} sin {self.freq} vol -20dB')
