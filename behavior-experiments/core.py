@@ -35,9 +35,14 @@ class tones():
         self.sound = mixer.Sound(f'{self.name}.wav')
 
     def Play(self):
-        #play the .wav file and wait for it to end.
+        #play the .wav file and wait for it to end while self.cut is False
+        self.cut = False
         self.sound.play()
-        time.sleep(self.length)
+        time_end = time.time() + self.length
+
+        while time.time() < time_end:
+            if cut = True:
+                break
 
     def Delete(self):
         # Delete the wav file
