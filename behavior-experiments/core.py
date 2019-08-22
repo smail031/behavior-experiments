@@ -28,6 +28,7 @@ class tones():
         self.name = str(frequency) + 'Hz'
         self.freq = frequency
         self.length = tone_length
+        self.cut = False
 
         #create a waveform called self.name from frequency and tone_length
         os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {self.length} sin {self.freq} vol -20dB')
@@ -36,13 +37,8 @@ class tones():
 
     def Play(self):
         #play the .wav file and wait for it to end while self.cut is False
-        self.cut = False
         self.sound.play()
         time_end = time.time() + self.length
-
-        while time.time() < time_end:
-            if self.cut == True:
-                break
 
     def Delete(self):
         # Delete the wav file

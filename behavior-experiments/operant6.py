@@ -35,7 +35,7 @@ L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
 sample_tone_length = 0.8 #length of sample tone
 
-delay_tone_freq = 12000
+delay_tone_freq = 8000
 delay_tone_length = 1
 
 go_tone_freq = 500 #frequency of go tone
@@ -118,8 +118,8 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    thread_tone_L = threading.Thread(target = tone_L.Play())
-    # thread_tone_R = threading.Thread(target = tone_R.Play())
+    thread_tone_L = threading.Thread(target = tone_L.sound.play())
+    thread_tone_R = threading.Thread(target = tone_R.sound.play())
 
     left_trial_ = np.random.rand() < 0.5
 
@@ -143,14 +143,14 @@ for trial in trials:
         while time.time() * 1000 < delay_window_end:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                tone_L.cut = True
+                tone_L.sound.stop()
                 tone_delay.Play()
                 early_lick = True
                 response = 'X'
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
-                tone_L.cut = True
+                tone_L.sound.stop()
                 tone_delay.Play()
                 early_lick = True
                 response = 'X'
