@@ -186,9 +186,11 @@ for trial in trials:
                 water_R.Reward() #Deliver R reward
                 total_reward_R += reward_size
                 performance += 1
+                break
 
             elif sum(lick_port_L._licks[(length_L-1):]) > 0:
                 response = 'L'
+                break
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
