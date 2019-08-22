@@ -119,7 +119,7 @@ for trial in trials:
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
     thread_tone_L = threading.Thread(target = tone_L.Play())
-    thread_tone_R = threading.Thread(target = tone_R.Play())
+    # thread_tone_R = threading.Thread(target = tone_R.Play())
 
     left_trial_ = np.random.rand() < 0.5
 
