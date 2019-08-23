@@ -204,7 +204,7 @@ for trial in trials:
 
         if response == 'N' or response == 'L':
             tone_wrong.Play()
-            ITI = 5
+            ITI_ = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -232,11 +232,6 @@ for trial in trials:
         storage[trial]['volt'] = rawdata_list[ind]._licks
 
     print(f'Performance: {performance}/{trial+1}')
-
-    #Pause for the ITI before next trial
-    ITI_ = 1.5
-#    while ITI_ > 10:
-#        ITI_ = np.random.exponential(scale = 2)
 
     time.sleep(ITI_)
 

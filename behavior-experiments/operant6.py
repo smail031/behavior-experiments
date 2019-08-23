@@ -28,7 +28,7 @@ mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
-delay_length = 500 #length of delay between sample tone and go cue, in sec
+delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
