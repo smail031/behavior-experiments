@@ -199,7 +199,7 @@ for trial in trials:
                 response = 'L'
                 break
 
-        if response == 'N' or response == 'R':
+        if response == 'N' or response == 'L':
             tone_wrong.Play()
 
         data.response[trial] = response
