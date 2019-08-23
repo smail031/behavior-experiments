@@ -38,6 +38,9 @@ sample_tone_length = 0.8 #length of sample tone
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.15
 
+wrong_tone_freq = 8000
+wrong_tone_length = 1
+
 reward_size = 5 #size of water rewards in uL
 
 #----------------------------
@@ -89,6 +92,7 @@ tone_L = core.tones(L_tone_freq, sample_tone_length)
 tone_R = core.tones(R_tone_freq, sample_tone_length)
 
 tone_go = core.tones(go_tone_freq, go_tone_length)
+tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 
 camera = PiCamera() #create camera object
 
@@ -103,8 +107,12 @@ trials = np.arange(n_trials)
 data = core.data(protocol_description, n_trials, mouse_number, block_number)
 
 total_reward_L = 0
+supp_reward_L = 0
 total_reward_R = 0
+supp_reward_R = 0
 performance = 0 #will store the total number of correct responses.
+rewarded_side = []
+rewarded_trials = []
 
 left_trial_ = True
 
@@ -148,11 +156,19 @@ for trial in trials:
                 water_L.Reward() #Deliver L reward
                 total_reward_L += reward_size
                 performance += 1
+                rewarded_side.append('L')
+                rewarded_trials.append(1)
+                ITI_ = 1
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
                 response = 'R'
                 break
+
+        if response == 'N' or response == 'R':
+            tone_wrong.Play()
+            rewarded_trials.append(0)
+            ITI_ = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -186,11 +202,19 @@ for trial in trials:
                 water_R.Reward() #Deliver R reward
                 total_reward_R += reward_size
                 performance += 1
+                rewarded_side.append('R')
+                rewarded_trials.append(1)
+                ITI_ = 1
                 break
 
             elif sum(lick_port_L._licks[(length_L-1):]) > 0:
                 response = 'L'
                 break
+
+        if response == 'N' or response == 'L':
+            tone_wrong.Play()
+            rewarded_trials.append(0)
+            ITI_ = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -219,10 +243,33 @@ for trial in trials:
 
     print(f'Performance: {performance}/{trial+1}')
 
-    #Pause for the ITI before next trial
-    ITI_ = 1.5
-#    while ITI_ > 10:
-#        ITI_ = np.random.exponential(scale = 2)
+    if sum(rewarded_trials[-8:]) == 0:
+        #if 8 unrewarded trials in a row, deliver rewards through both ports.
+        for i in range(2):
+            tone_L.Play()
+            water_L.Reward()
+            supp_reward_L += reward_size
+            time.sleep(1)
+            tone_R.Play()
+            water_R.Reward()
+            supp_reward_R += reward_size
+            time.sleep(1)
+
+    if rewarded_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
+        #if 5 rewards from L port in a row, deliver rewards through R port.
+        for i in range(4):
+            tone_R.Play()
+            water_R.Reward()
+            supp_reward_R += reward_size
+            time.sleep(1)
+
+    elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
+        #if 5 rewards from R port in a row, deliver rewards through L port
+        for i in range(4):
+            tone_L.Play()
+            water_R.Reward()
+            supp_reward_L += reward_size
+            time.sleep(1)
 
     time.sleep(ITI_)
 
