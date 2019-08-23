@@ -243,16 +243,18 @@ for trial in trials:
 
     print(f'Performance: {performance}/{trial+1}')
 
-    if sum(rewarded_trials[-8:]) == 0:
+    if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
         #if 8 unrewarded trials in a row, deliver rewards through both ports.
         for i in range(2):
             tone_L.Play()
             water_L.Reward()
             supp_reward_L += reward_size
+            rewarded_trials.append(1)
             time.sleep(1)
             tone_R.Play()
             water_R.Reward()
             supp_reward_R += reward_size
+            rewarded_trials.append(1)
             time.sleep(1)
 
     if rewarded_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
@@ -261,22 +263,25 @@ for trial in trials:
             tone_R.Play()
             water_R.Reward()
             supp_reward_R += reward_size
+            rewarded_side.append('R')
             time.sleep(1)
+
 
     elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         #if 5 rewards from R port in a row, deliver rewards through L port
         for i in range(4):
             tone_L.Play()
-            water_R.Reward()
+            water_L.Reward()
             supp_reward_L += reward_size
+            rewarded_side.append('L')
             time.sleep(1)
 
     time.sleep(ITI_)
 
 camera.stop_preview()
 
-print(f'Total L reward: {total_reward_L} uL')
-print(f'Total R reward: {total_reward_R} uL')
+print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
+print(f'Total R reward: {total_reward_R} uL + {supp_reward_R}')
 
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
