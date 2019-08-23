@@ -152,6 +152,7 @@ for trial in trials:
                 water_L.Reward() #Deliver L reward
                 total_reward_L += reward_size
                 performance += 1
+                ITI_ = 1
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
@@ -160,6 +161,7 @@ for trial in trials:
 
         if response == 'N' or response == 'R':
             tone_wrong.Play()
+            ITI_ = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -193,6 +195,7 @@ for trial in trials:
                 water_R.Reward() #Deliver R reward
                 total_reward_R += reward_size
                 performance += 1
+                ITI_ = 1
                 break
 
             elif sum(lick_port_L._licks[(length_L-1):]) > 0:
@@ -201,6 +204,7 @@ for trial in trials:
 
         if response == 'N' or response == 'L':
             tone_wrong.Play()
+            ITI = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
