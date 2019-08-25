@@ -309,9 +309,8 @@ for trial in trials:
             tone_R.Play()
             water_R.Reward()
             supp_reward_R += reward_size
-            rewarded_side.append('R')
             time.sleep(1)
-
+        rewarded_side.append('R')
 
     elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         #if 5 rewards from R port in a row, deliver rewards through L port
@@ -319,8 +318,8 @@ for trial in trials:
             tone_L.Play()
             water_L.Reward()
             supp_reward_L += reward_size
-            rewarded_side.append('L')
             time.sleep(1)
+        rewarded_side.append('L')
 
     time.sleep(ITI_)
 
