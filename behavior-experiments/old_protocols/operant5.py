@@ -28,18 +28,18 @@ mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
-delay_length = 0 #length of delay between sample tone and go cue, in sec
+
 response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
 sample_tone_length = 0.8 #length of sample tone
 
-wrong_tone_freq = 8000
-wrong_tone_length = 1
-
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.15
+
+wrong_tone_freq = 8000
+wrong_tone_length = 1
 
 reward_size = 5 #size of water rewards in uL
 
@@ -88,11 +88,11 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 #create tones
-tone_L = core.tones(L_tone_freq, sample_tone_length) #create left tone
-tone_R = core.tones(R_tone_freq, sample_tone_length) #create right tone
+tone_L = core.tones(L_tone_freq, sample_tone_length)
+tone_R = core.tones(R_tone_freq, sample_tone_length)
 
-tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length) #create early lick punishment tone
-tone_go = core.tones(go_tone_freq, go_tone_length) #create "go" tone
+tone_go = core.tones(go_tone_freq, go_tone_length)
+tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 
 camera = PiCamera() #create camera object
 
@@ -107,13 +107,14 @@ trials = np.arange(n_trials)
 data = core.data(protocol_description, n_trials, mouse_number, block_number)
 
 total_reward_L = 0
-supp_reward_L
+supp_reward_L = 0
 total_reward_R = 0
-supp_reward_R
+supp_reward_R = 0
 performance = 0 #will store the total number of correct responses.
 rewarded_side = []
 rewarded_trials = []
 
+left_trial_ = True
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
@@ -125,8 +126,6 @@ for trial in trials:
 
     left_trial_ = np.random.rand() < 0.5
 
-    ITI_ = 5 #ITI_ will be changed to 1 if response is correct
-
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
@@ -134,136 +133,90 @@ for trial in trials:
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
         data.sample_tone[trial] = 'L' #Assign data type
-        early_lick = False
-
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        thread_tone_L = threading.Thread(target = tone_L.sound.play)
-        thread_tone_L.start()
-        # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+        tone_L.Play() #Play left tone
+        data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+
+        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        tone_go.Play() #Play go tone
+        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+
+        response = 'N'
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        delay_window_end = time.time()*1000 + delay_length + sample_tone_length*1000
+        resp_window_end = time.time()*1000 + response_delay
 
-        while time.time()*1000 < delay_window_end:
+        while time.time() * 1000 < resp_window_end:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                tone_L.sound.stop()
-                tone_wrong.Play()
-                early_lick = True
-                response = 'X'
-                rewarded_trials.append(0)
+                response = 'L'
+                data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
+                data.v_rew_l[trial] = reward_size
+                water_L.Reward() #Deliver L reward
+                total_reward_L += reward_size
+                performance += 1
+                rewarded_side.append('L')
+                rewarded_trials.append(1)
+                ITI_ = 1
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
-                tone_L.sound.stop()
-                tone_wrong.Play()
-                early_lick = True
-                response = 'X'
-                rewarded_trials.append(0)
+                response = 'R'
                 break
 
-        if early_lick == False:
-
-            data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-            tone_go.Play() #Play go tone
-            data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-
-            response = 'N'
-            length_L = len(lick_port_L._licks)
-            length_R = len(lick_port_R._licks)
-            response_window_end = time.time()*1000 + response_delay
-
-            while time.time()*1000 < response_window_end:
-
-                if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                    data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-                    water_L.Reward() #Deliver L reward
-                    data.v_rew_l[trial] = reward_size
-                    response = 'L'
-                    total_reward_L += reward_size
-                    performance += 1
-                    rewarded_trials.append(1)
-                    rewarded_side.append('L')
-                    ITI_ = 1
-                    break
-
-                elif sum(lick_port_R._licks[(length_R-1):]) > 0:
-                    response = 'R'
-                    tone_wrong.Play()
-                    rewarded_trials.append(0)
-                    break
+        if response == 'N' or response == 'R':
+            tone_wrong.Play()
+            rewarded_trials.append(0)
+            ITI_ = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
-        thread_tone_L.join()
 
     #Right trial:--------------------------------------------------------------
     else:
-
         data.sample_tone[trial] = 'R' #Assign data type
-        early_lick = False
-
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        thread_tone_R = threading.Thread(target = tone_R.sound.play)
-        thread_tone_R.start()
-        # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+        tone_R.Play() #Play left tone
+        data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+
+
+        time.sleep(delay_length) #Sleep for delay_length
+
+        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        tone_go.Play() #Play go tone
+        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+
+
+        response = 'N'
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        delay_window_end = time.time()*1000 + delay_length + sample_tone_length*1000
+        resp_window_end = time.time()*1000 + response_delay
 
-        while time.time()*1000 < delay_window_end:
+        while time.time() * 1000 < resp_window_end:
 
-            if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                tone_R.sound.stop()
-                tone_wrong.Play()
-                early_lick = True
-                response = 'X'
-                rewarded_trials.append(0)
+            if sum(lick_port_R._licks[(length_R-1):]) > 0:
+                response = 'R'
+                data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
+                data.v_rew_r[trial] = reward_size
+                water_R.Reward() #Deliver R reward
+                total_reward_R += reward_size
+                performance += 1
+                rewarded_side.append('R')
+                rewarded_trials.append(1)
+                ITI_ = 1
                 break
 
-            elif sum(lick_port_R._licks[(length_R-1):]) > 0:
-                tone_R.sound.stop()
-                tone_wrong.Play()
-                early_lick = True
-                response = 'X'
-                rewarded_trials.append(0)
+            elif sum(lick_port_L._licks[(length_L-1):]) > 0:
+                response = 'L'
                 break
 
-        if early_lick == False:
-
-            data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-            tone_go.Play() #Play go tone
-            data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-
-            response = 'N'
-            length_L = len(lick_port_L._licks)
-            length_R = len(lick_port_R._licks)
-            response_window_end = time.time()*1000 + response_delay
-
-            while time.time()*1000 < response_window_end:
-
-                if sum(lick_port_R._licks[(length_R-1):]) > 0:
-                    data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-                    water_R.Reward() #Deliver R reward
-                    data.v_rew_r[trial] = reward_size
-                    response = 'R'
-                    rewarded_trials.append(1)
-                    rewarded_side.append('R')
-                    total_reward_R += reward_size
-                    performance += 1
-                    ITI_ = 1
-                    break
-
-                elif sum(lick_port_L._licks[(length_L-1):]) > 0:
-                    response = 'L'
-                    tone_wrong.Play()
-                    rewarded_trials.append(0)
-                    break
-
+        if response == 'N' or response == 'L':
+            tone_wrong.Play()
+            rewarded_trials.append(0)
+            ITI_ = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
-        #thread_tone_R.join()
 
     #---------------
     #Post-trial data storage
@@ -312,6 +265,7 @@ for trial in trials:
             time.sleep(1)
         rewarded_side.append('R')
 
+
     elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         #if 5 rewards from R port in a row, deliver rewards through L port
         for i in range(4):
@@ -325,8 +279,12 @@ for trial in trials:
 
 camera.stop_preview()
 
-print(f'Total L reward: {total_reward_L} + {supp_reward_L}uL')
-print(f'Total R reward: {total_reward_R} +{supp_reward_R}uL')
+for i in range(2):
+    tone_L.Play()
+    tone_R.Play()
+
+print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
+print(f'Total R reward: {total_reward_R} uL + {supp_reward_R}')
 
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and

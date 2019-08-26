@@ -5,11 +5,12 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
-protocol_description = '''In this protocol, a sample cue is immediately followed by a "go" cue. During
-the response period, first lickport that registers a lick determines the animal's
-response. Correct responses trigger reward delivery from the correct port, while
-incorrect or null responses are unrewarded. Trial types (L/R) are determined
-randomly prior to every trial.'''
+protocol_description = '''In this protocol, a sample cue is immediately followed by a "go" cue. During the
+response period, licks registered by the incorrect lickport will be ignored,
+while any licks registered by the correct lickport will trigger reward delivery
+through that port (even if the incorrect port was licked first). Trial types
+(L/R) alternate every 3 trials.'''
+
 
 import time
 import RPi.GPIO as GPIO
@@ -36,7 +37,7 @@ R_tone_freq = 4000 #frequency of sample tone in right lick trials
 sample_tone_length = 0.8 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
-go_tone_length = 0.15
+go_tone_length = 0.2
 
 reward_size = 5 #size of water rewards in uL
 
@@ -106,6 +107,8 @@ total_reward_L = 0
 total_reward_R = 0
 performance = 0 #will store the total number of correct responses.
 
+left_trial_ = True
+
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
@@ -114,7 +117,8 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    left_trial_ = np.random.rand() < 0.5
+    if float(trial/3).is_integer():
+        left_trial_ = not left_trial_
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -131,25 +135,24 @@ for trial in trials:
         tone_go.Play() #Play go tone
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-        response = 'N'
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        resp_window_end = time.time()*1000 + response_delay
+        response = False
+        response_start = time.time()*1000
 
-        while time.time() * 1000 < resp_window_end:
+        while response == False:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-                water_L.Reward() #Deliver L reward
-                data.v_rew_l[trial] = reward_size
                 response = 'L'
-                total_reward_L += reward_size
-                performance += 1
-                break
 
-            elif sum(lick_port_R._licks[(length_R-1):]) > 0:
-                response = 'R'
-                break
+            elif time.time()*1000 - response_start > response_delay:
+                response = 'N'
+
+        if response == 'L':
+            data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
+            water_L.Reward() #Deliver L reward
+            data.v_rew_l[trial] = reward_size
+            total_reward_L += reward_size
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -168,25 +171,24 @@ for trial in trials:
         tone_go.Play() #Play go tone
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-        response = 'N'
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        resp_window_end = time.time()*1000 + response_delay
+        response = False
+        response_start = time.time()*1000
 
-        while time.time() * 1000 < resp_window_end:
+        while response == False:
+
             if sum(lick_port_R._licks[(length_R-1):]) > 0:
-                data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-                water_R.Reward() #Deliver R reward
-                data.v_rew_r[trial] = reward_size
                 response = 'R'
-                total_reward_R += reward_size
-                performance += 1
-                break
 
-            elif sum(lick_port_L._licks[(length_L-1):]) > 0:
-                response = 'L'
-                break
+            elif time.time()*1000 - response_start > response_delay:
+                response = 'N'
 
+        if response == 'R':
+            data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
+            data.v_rew_r[trial] = reward_size
+            water_R.Reward() #Deliver R reward
+            total_reward_R += reward_size
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -213,7 +215,7 @@ for trial in trials:
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
 
-    print(f'Performance: {performance}/{trial}')
+    print(f'Performance: {performance}/{trial})
 
     #Pause for the ITI before next trial
     ITI_ = 1.5
