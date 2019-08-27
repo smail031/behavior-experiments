@@ -107,9 +107,9 @@ trials = np.arange(n_trials)
 data = core.data(protocol_description, n_trials, mouse_number, block_number)
 
 total_reward_L = 0
-supp_reward_L
+supp_reward_L = 0
 total_reward_R = 0
-supp_reward_R
+supp_reward_R = 0
 performance = 0 #will store the total number of correct responses.
 rewarded_side = []
 rewarded_trials = []
@@ -208,7 +208,7 @@ for trial in trials:
 
         while time.time()*1000 < delay_window_end:
 
-            if sum(lick_port_L._licks[(length_L-1):]) > 0: or sum(lick_port_R._licks[(length_R-1):]) > 0:
+            if sum(lick_port_L._licks[(length_L-1):]) > 0 or sum(lick_port_R._licks[(length_R-1):]) > 0:
                 tone_R.sound.stop()
                 tone_wrong.Play()
                 early_lick = True
@@ -312,6 +312,11 @@ for trial in trials:
 
     time.sleep(ITI_)
 
+for i in range(2):
+    tone_L.Play()
+    tone_R.Play()
+
+    
 camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} + {supp_reward_L}uL')

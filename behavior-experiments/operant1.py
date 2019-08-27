@@ -129,7 +129,7 @@ for trial in trials:
         if float(trial/3).is_integer():
             left_trial_ = not left_trial_
     else:
-        left_trial_ = np.random.rand < 0.5
+        left_trial_ = np.random.rand() < 0.5
 
 
     thread_L.start() #Start threads for lick recording
@@ -283,6 +283,10 @@ for trial in trials:
 
     time.sleep(ITI_)
 
+for i in range(2):
+    tone_L.Play()
+    tone_R.Play()
+    
 camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
