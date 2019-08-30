@@ -137,17 +137,16 @@ for trial in trials:
         early_lick = False
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        thread_tone_L = threading.Thread(target = tone_L.sound.play)
-        thread_tone_L.start()
-        # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+        tone_L.Play()
+        data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        delay_window_end = time.time()*1000 + delay_length + sample_tone_length*1000
+        delay_window_end = time.time()*1000 + delay_length
 
         while time.time()*1000 < delay_window_end:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0 or sum(lick_port_R._licks[(length_R-1):]) > 0:
-                tone_L.sound.stop()
                 tone_wrong.Play()
                 early_lick = True
                 response = 'X'
@@ -199,17 +198,16 @@ for trial in trials:
         early_lick = False
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        thread_tone_R = threading.Thread(target = tone_R.sound.play)
-        thread_tone_R.start()
-        # data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+        tone_R.Play()
+        data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
         delay_window_end = time.time()*1000 + delay_length + sample_tone_length*1000
 
         while time.time()*1000 < delay_window_end:
 
-            if sum(lick_port_L._licks[(length_L-1):]) > 0 or sum(lick_port_R._licks[(length_R-1):]) > 0:
-                tone_R.sound.stop()
+            if sum(lick_port_L._licks[(length_L-1):]) > 0: or sum(lick_port_R._licks[(length_R-1):]) > 0:
                 tone_wrong.Play()
                 early_lick = True
                 response = 'X'
@@ -316,7 +314,7 @@ for i in range(2):
     tone_L.Play()
     tone_R.Play()
 
-    
+
 camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} + {supp_reward_L}uL')
