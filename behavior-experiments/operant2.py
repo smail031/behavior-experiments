@@ -142,7 +142,7 @@ for trial in trials:
 
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        delay_window_end = time.time()*1000 + delay_length
+        delay_window_end = time.time()*1000 + delay_length*1000
 
         while time.time()*1000 < delay_window_end:
 
@@ -186,10 +186,11 @@ for trial in trials:
 
             if response == 'N':
                 tone_wrong.Play()
+                rewarded_trials.append(0)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
-        thread_tone_L.join()
+
 
     #Right trial:--------------------------------------------------------------
     else:
@@ -203,11 +204,11 @@ for trial in trials:
 
         length_L = len(lick_port_L._licks)
         length_R = len(lick_port_R._licks)
-        delay_window_end = time.time()*1000 + delay_length + sample_tone_length*1000
+        delay_window_end = time.time()*1000 + delay_length*1000
 
         while time.time()*1000 < delay_window_end:
 
-            if sum(lick_port_L._licks[(length_L-1):]) > 0: or sum(lick_port_R._licks[(length_R-1):]) > 0:
+            if sum(lick_port_L._licks[(length_L-1):]) > 0 or sum(lick_port_R._licks[(length_R-1):]) > 0:
                 tone_wrong.Play()
                 early_lick = True
                 response = 'X'
@@ -247,10 +248,11 @@ for trial in trials:
 
             if response == 'N':
                 tone_wrong.Play()
-
+                rewarded_trials.append(0)
+                
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
-        #thread_tone_R.join()
+
 
     #---------------
     #Post-trial data storage
@@ -273,7 +275,7 @@ for trial in trials:
         storage[trial] = {}
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
-
+        
     print(f'Performance: {performance}/{trial+1}')
 
     if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
