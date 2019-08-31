@@ -28,7 +28,7 @@ mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 
-delay_length = 0.2 #length of delay between sample tone and go cue, in sec
+delay_length = 0.1 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
@@ -125,7 +125,7 @@ for trial in trials:
 
     left_trial_ = np.random.rand() < 0.5
 
-    ITI_ = 5 #ITI_ will be changed to 1 if response is correct
+    ITI_ = 3 #ITI_ will be changed to 1 if response is correct
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -175,7 +175,7 @@ for trial in trials:
                     performance += 1
                     rewarded_trials.append(1)
                     rewarded_side.append('L')
-                    ITI_ = 1
+                    ITI_ = 0
                     break
 
                 elif sum(lick_port_R._licks[(length_R-1):]) > 0:
@@ -237,7 +237,7 @@ for trial in trials:
                     rewarded_side.append('R')
                     total_reward_R += reward_size
                     performance += 1
-                    ITI_ = 1
+                    ITI_ = 0
                     break
 
                 elif sum(lick_port_L._licks[(length_L-1):]) > 0:
@@ -321,6 +321,7 @@ camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} + {supp_reward_L}uL')
 print(f'Total R reward: {total_reward_R} +{supp_reward_R}uL')
+print(f'Total reward: {total_reward_L+supp_reward_L+total_reward_R+supp_reward_R}uL')
 
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
