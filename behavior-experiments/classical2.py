@@ -112,8 +112,6 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    left_trial_ = np.random.rand() < 0.5
-
     ITI_ = 1
 
     if float(trial/3).is_integer(): #alternate trial types every 3 trials.
