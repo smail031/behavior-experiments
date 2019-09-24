@@ -42,7 +42,7 @@ go_tone_length = 0.1
 wrong_tone_freq = 8000
 wrong_tone_length = 1
 
-reward_size = 5 #size of water rewards in uL
+reward_size = 2.2 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:
@@ -291,7 +291,7 @@ camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
 print(f'Total R reward: {total_reward_R} uL + {supp_reward_R}')
-
+print(f'Total reward: {total_reward_L+supp_reward_L+total_reward_R+supp_reward_R}uL')
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
