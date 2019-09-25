@@ -37,9 +37,11 @@ reward_tone_freq = 4000
 no_reward_tone_freq = 1000
 reward_tone_length = 0.5
 
+wrong_tone_freq = 12000
+
 reward_size = 2.2 #size of water rewards in uL
 
-block_length = 25 #number of trials with same L/R probability
+block_length = 5 #number of trials with same L/R probability
 
 #----------------------------
 #Assign GPIO pins:
@@ -90,6 +92,8 @@ tone_go = core.tones(go_tone_freq, go_tone_length)
 
 tone_reward = core.tones(reward_tone_freq, reward_tone_length) #create a reward tone
 tone_no_reward = core.tones(no_reward_tone_freq, reward_tone_length) #create a "no reward" tone
+
+tone_wrong = core.tones(wrong_tone_freq, reward_tone_length)
 
 camera = PiCamera() #create camera object
 
