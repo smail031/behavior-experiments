@@ -198,7 +198,8 @@ while trial_counter < n_trials:
             storage[trial]['t'] = rawdata_list[ind]._t_licks
             storage[trial]['volt'] = rawdata_list[ind]._licks
 
-        ITI_ = 2    
+        trial_counter += 1
+        ITI_ = 2
         time.sleep(ITI_)
 
     L_prob = 1-L_prob
