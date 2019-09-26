@@ -108,7 +108,7 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    ITI_ = 1
+    ITI_ = 1s
 
     if float(trial/3).is_integer(): #alternate trial types every 3 trials.
         left_trial_ = not left_trial_
