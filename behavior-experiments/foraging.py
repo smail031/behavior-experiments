@@ -41,7 +41,7 @@ wrong_tone_freq = 12000
 
 reward_size = 2.2 #size of water rewards in uL
 
-block_length = 5 #number of trials with same L/R probability
+block_length = 25 #number of trials with same L/R probability
 
 #----------------------------
 #Assign GPIO pins:
@@ -144,7 +144,7 @@ while trial_counter < n_trials:
         while time.time()*1000 < response_window_end:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                if np.random.rand < L_prob:
+                if np.random.rand() < L_prob:
                     data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
                     water_L.Reward() #Deliver L reward
                     tone_reward.Play()
@@ -156,7 +156,7 @@ while trial_counter < n_trials:
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
-                if np.random.rand < R_prob:
+                if np.random.rand() < R_prob:
                     data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
                     water_R.Reward() #Deliver L reward
                     tone_reward.Play()
@@ -198,6 +198,7 @@ while trial_counter < n_trials:
             storage[trial]['t'] = rawdata_list[ind]._t_licks
             storage[trial]['volt'] = rawdata_list[ind]._licks
 
+        ITI_ = 2    
         time.sleep(ITI_)
 
     L_prob = 1-L_prob
