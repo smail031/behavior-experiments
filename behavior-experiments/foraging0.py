@@ -110,9 +110,6 @@ for trial in trials:
 
     ITI_ = 1
 
-    if float(trial/3).is_integer(): #alternate trial types every 3 trials.
-        left_trial_ = not left_trial_
-
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
