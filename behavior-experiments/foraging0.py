@@ -170,9 +170,9 @@ for trial in trials:
 
     time.sleep(ITI_)
 
-for i in range(2):
-    tone_L.Play()
-    tone_R.Play()
+for i in range(5):
+    tone_go.Play()
+    tone_go.Play()
 
 
 camera.stop_preview()
@@ -186,6 +186,4 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
 
 #delete the .wav files created for the experiment
-tone_L.Delete()
-tone_R.Delete()
 tone_go.Delete()

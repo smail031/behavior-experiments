@@ -108,7 +108,11 @@ trials = np.arange(n_trials)
 data = core.data(protocol_description, n_trials, mouse_number, block_number)
 
 total_reward_L = 0
+supp_reward_L = 0
 total_reward_R = 0
+supp_reward_R = 0
+rewarded_side = []
+rewarded_trials = []
 
 L_prob = 1
 R_prob = 0
@@ -148,6 +152,8 @@ while trial_counter < n_trials:
                     data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
                     water_L.Reward() #Deliver L reward
                     tone_reward.Play()
+                    rewarded_trials.append(1)
+                    rewarded_side.append('L')
                     data.v_rew_l[trial] = reward_size
                 else:
                     tone_no_reward.Play()
@@ -160,6 +166,8 @@ while trial_counter < n_trials:
                     data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
                     water_R.Reward() #Deliver L reward
                     tone_reward.Play()
+                    rewarded_trials.append(1)
+                    rewarded_side.append('R')
                     data.v_rew_r[trial] = reward_size
                 else:
                     tone_no_reward.Play()
@@ -169,11 +177,10 @@ while trial_counter < n_trials:
 
         if response == 'N':
             tone_wrong.Play()
-            ITI_ = 5
+            rewarded_trials.append(0)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
-
 
 
         #---------------
@@ -199,21 +206,54 @@ while trial_counter < n_trials:
             storage[trial]['volt'] = rawdata_list[ind]._licks
 
         trial_counter += 1
+
+        if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
+            #if 8 unrewarded trials in a row, deliver rewards through both ports.
+            for i in range(2):
+                tone_L.Play()
+                water_L.Reward()
+                supp_reward_L += reward_size
+                rewarded_trials.append(1)
+                time.sleep(1)
+                tone_R.Play()
+                water_R.Reward()
+                supp_reward_R += reward_size
+                rewarded_trials.append(1)
+                time.sleep(1)
+
+        if rewarded_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
+            #if 5 rewards from L port in a row, deliver rewards through R port.
+            for i in range(4):
+                tone_R.Play()
+                water_R.Reward()
+                supp_reward_R += reward_size
+                time.sleep(1)
+            rewarded_side.append('R')
+
+        elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
+            #if 5 rewards from R port in a row, deliver rewards through L port
+            for i in range(4):
+                tone_L.Play()
+                water_L.Reward()
+                supp_reward_L += reward_size
+                time.sleep(1)
+            rewarded_side.append('L')
+
         ITI_ = 2
         time.sleep(ITI_)
 
     L_prob = 1-L_prob
     R_prob = 1-R_prob
 
-for i in range(2): #Play an "alarm" at the end of the experiment.
-    tone_L.Play()
-    tone_R.Play()
+for i in range(5): #Play an "alarm" at the end of the experiment.
+    tone_go.Play()
+    tone_go.Play()
 
 camera.stop_preview()
 
-print(f'Total L reward: {total_reward_L}uL')
-print(f'Total R reward: {total_reward_R}uL')
-print(f'Total reward: {total_reward_L+total_reward_R}uL')
+print(f'Total L reward: {total_reward_L} + {supp_reward_L}uL')
+print(f'Total R reward: {total_reward_R} + {supp_reward_R}uL')
+print(f'Total reward: {total_reward_L+supp_reward_L+total_reward_R+supp_reward_R}uL')
 
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
