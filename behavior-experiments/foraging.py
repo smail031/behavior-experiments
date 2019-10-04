@@ -24,10 +24,10 @@ from pygame import mixer
 #Set experimental parameters:
 #------------------------------------------------------------------------------
 
-mouse_number = input('mouse number: ' ) #asks user for mouse number
-block_number = input('block number: ' ) #asks user for block number (for file storage)
+mouse_number = input('Mouse number: ' ) #asks user for mouse number
+block_number = input('Block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
-block_length = int(input('frequency of probability switching: ' )) #number of trials
+block_length = int(input('Frequency of P switching: ' )) #number of trials
 #before switching probabilities
 
 response_delay = 2000 #length of time for animals to give response
@@ -224,7 +224,7 @@ for trial in trials:
         L_prob = 1-L_prob
         R_prob = 1-R_prob
 
-    print(f'trial {trial} of {n_trials}')
+    print(f'Trial {trial} of {n_trials}')
 
     time.sleep(ITI_)
 
