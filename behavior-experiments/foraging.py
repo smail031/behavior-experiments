@@ -39,7 +39,7 @@ reward_tone_length = 0.5
 
 wrong_tone_freq = 12000
 
-reward_size = 2.2 #size of water rewards in uL
+reward_size = 2.3 #size of water rewards in uL
 
 block_length = 25 #number of trials with same L/R probability
 
