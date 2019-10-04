@@ -39,7 +39,7 @@ reward_tone_length = 0.5
 
 wrong_tone_freq = 12000
 
-reward_size = 2.3 #size of water rewards in uL
+reward_size = 2.2 #size of water rewards in uL
 
 block_length = 25 #number of trials with same L/R probability
 
@@ -117,11 +117,11 @@ rewarded_trials = []
 L_prob = 1
 R_prob = 0
 
-trial_counter  = 0
+trial  = 0
 
-while trial_counter < n_trials:
+while trial < n_trials:
 
-    for trial in range(block_length):
+    for block_trial in range(block_length):
 
         data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
         data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
@@ -205,7 +205,7 @@ while trial_counter < n_trials:
             storage[trial]['t'] = rawdata_list[ind]._t_licks
             storage[trial]['volt'] = rawdata_list[ind]._licks
 
-        trial_counter += 1
+        trial += 1
 
         if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
             #if 8 unrewarded trials in a row, deliver rewards through both ports.
@@ -220,24 +220,6 @@ while trial_counter < n_trials:
                 supp_reward_R += reward_size
                 rewarded_trials.append(1)
                 time.sleep(1)
-
-        # if rewarded_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
-        #     #if 5 rewards from L port in a row, deliver rewards through R port.
-        #     for i in range(4):
-        #         tone_R.Play()
-        #         water_R.Reward()
-        #         supp_reward_R += reward_size
-        #         time.sleep(1)
-        #     rewarded_side.append('R')
-        #
-        # elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
-        #     #if 5 rewards from R port in a row, deliver rewards through L port
-        #     for i in range(4):
-        #         tone_L.Play()
-        #         water_L.Reward()
-        #         supp_reward_L += reward_size
-        #         time.sleep(1)
-        #     rewarded_side.append('L')
 
         ITI_ = 2
         time.sleep(ITI_)
