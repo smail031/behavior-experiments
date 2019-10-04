@@ -224,6 +224,8 @@ for trial in trials:
         L_prob = 1-L_prob
         R_prob = 1-R_prob
 
+    print(f'trial {trial} of {n_trials}')
+
     time.sleep(ITI_)
 
 
