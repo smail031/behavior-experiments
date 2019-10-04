@@ -27,6 +27,8 @@ from pygame import mixer
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
+block_length = int(input('frequency of probability switching: ' )) #number of trials
+#before switching probabilities
 
 response_delay = 2000 #length of time for animals to give response
 
@@ -40,8 +42,6 @@ reward_tone_length = 0.5
 wrong_tone_freq = 12000
 
 reward_size = 2.2 #size of water rewards in uL
-
-block_length = 25 #number of trials with same L/R probability
 
 #----------------------------
 #Assign GPIO pins:
@@ -119,115 +119,116 @@ R_prob = 0
 
 trial  = 0
 
-while trial < n_trials:
+for trial in trials:
 
-    for block_trial in range(block_length):
+    data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
+    data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
-        data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
-        data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
-
-        #create thread objects for left and right lickports
-        thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
-        thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
+    #create thread objects for left and right lickports
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
 
-        thread_L.start() #Start threads for lick recording
-        thread_R.start()
+    thread_L.start() #Start threads for lick recording
+    thread_R.start()
 
-        time.sleep(0.5)
+    time.sleep(0.5)
 
-        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone_go.Play() #Play go tone
-        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+    data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+    tone_go.Play() #Play go tone
+    data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-        response = 'N'
-        length_L = len(lick_port_L._licks)
-        length_R = len(lick_port_R._licks)
-        response_window_end = time.time()*1000 + response_delay
+    response = 'N'
+    length_L = len(lick_port_L._licks)
+    length_R = len(lick_port_R._licks)
+    response_window_end = time.time()*1000 + response_delay
 
-        while time.time()*1000 < response_window_end:
+    while time.time()*1000 < response_window_end:
 
-            if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                if np.random.rand() < L_prob:
-                    data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-                    water_L.Reward() #Deliver L reward
-                    tone_reward.Play()
-                    rewarded_trials.append(1)
-                    rewarded_side.append('L')
-                    data.v_rew_l[trial] = reward_size
-                else:
-                    tone_no_reward.Play()
-
-                response = 'L'
-                break
-
-            elif sum(lick_port_R._licks[(length_R-1):]) > 0:
-                if np.random.rand() < R_prob:
-                    data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-                    water_R.Reward() #Deliver L reward
-                    tone_reward.Play()
-                    rewarded_trials.append(1)
-                    rewarded_side.append('R')
-                    data.v_rew_r[trial] = reward_size
-                else:
-                    tone_no_reward.Play()
-
-                response = 'R'
-                break
-
-        if response == 'N':
-            tone_wrong.Play()
-            rewarded_trials.append(0)
-
-        data.response[trial] = response
-        data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
-
-
-        #---------------
-        #Post-trial data storage
-        #---------------
-
-        #Make sure the threads are finished
-        thread_L.join()
-        thread_R.join()
-
-        #subtract lick timestamps from start of trial so that integers are not too
-        #big for storage.
-        lick_port_L._t_licks -= data._t_start_abs[trial]
-        lick_port_R._t_licks -= data._t_start_abs[trial]
-
-        #Store and process the data
-        storage_list = [data.lick_l, data.lick_r]
-        rawdata_list = [lick_port_L, lick_port_R]
-
-        for ind, storage in enumerate(storage_list):
-            storage[trial] = {}
-            storage[trial]['t'] = rawdata_list[ind]._t_licks
-            storage[trial]['volt'] = rawdata_list[ind]._licks
-
-        trial += 1
-
-        if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
-            #if 8 unrewarded trials in a row, deliver rewards through both ports.
-            for i in range(2):
+        if sum(lick_port_L._licks[(length_L-1):]) > 0:
+            if np.random.rand() < L_prob:
+                data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
+                water_L.Reward() #Deliver L reward
                 tone_reward.Play()
-                water_L.Reward()
-                supp_reward_L += reward_size
                 rewarded_trials.append(1)
-                time.sleep(1)
+                rewarded_side.append('L')
+                data.v_rew_l[trial] = reward_size
+            else:
+                tone_no_reward.Play()
+
+            response = 'L'
+            break
+
+        elif sum(lick_port_R._licks[(length_R-1):]) > 0:
+            if np.random.rand() < R_prob:
+                data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
+                water_R.Reward() #Deliver L reward
                 tone_reward.Play()
-                water_R.Reward()
-                supp_reward_R += reward_size
                 rewarded_trials.append(1)
-                time.sleep(1)
+                rewarded_side.append('R')
+                data.v_rew_r[trial] = reward_size
+            else:
+                tone_no_reward.Play()
 
-        ITI_ = 2
-        time.sleep(ITI_)
+            response = 'R'
+            break
 
-    L_prob = 1-L_prob
-    R_prob = 1-R_prob
+    if response == 'N':
+        tone_wrong.Play()
+        rewarded_trials.append(0)
 
-for i in range(5): #Play an "alarm" at the end of the experiment.
+    data.response[trial] = response
+    data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
+
+
+    #---------------
+    #Post-trial data storage
+    #---------------
+
+    #Make sure the threads are finished
+    thread_L.join()
+    thread_R.join()
+
+    #subtract lick timestamps from start of trial so that integers are not too
+    #big for storage.
+    lick_port_L._t_licks -= data._t_start_abs[trial]
+    lick_port_R._t_licks -= data._t_start_abs[trial]
+
+    #Store and process the data
+    storage_list = [data.lick_l, data.lick_r]
+    rawdata_list = [lick_port_L, lick_port_R]
+
+    for ind, storage in enumerate(storage_list):
+        storage[trial] = {}
+        storage[trial]['t'] = rawdata_list[ind]._t_licks
+        storage[trial]['volt'] = rawdata_list[ind]._licks
+
+    if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
+        #if 8 unrewarded trials in a row, deliver rewards through both ports.
+        for i in range(2):
+            tone_reward.Play()
+            water_L.Reward()
+            supp_reward_L += reward_size
+            rewarded_trials.append(1)
+            time.sleep(1)
+            tone_reward.Play()
+            water_R.Reward()
+            supp_reward_R += reward_size
+            rewarded_trials.append(1)
+            time.sleep(1)
+
+    ITI_ = 2
+
+
+    if float(trial/block_length).is_integer():
+        L_prob = 1-L_prob
+        R_prob = 1-R_prob
+
+    time.sleep(ITI_)
+
+
+
+for i in range(10): #Play an "alarm" at the end of the experiment.
     tone_go.Play()
     tone_go.Play()
 
