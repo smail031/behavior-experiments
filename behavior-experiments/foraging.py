@@ -153,6 +153,7 @@ for trial in trials:
                 rewarded_trials.append(1)
                 rewarded_side.append('L')
                 data.v_rew_l[trial] = reward_size
+                total_reward_L += reward_size
             else:
                 tone_no_reward.Play()
 
@@ -167,6 +168,7 @@ for trial in trials:
                 rewarded_trials.append(1)
                 rewarded_side.append('R')
                 data.v_rew_r[trial] = reward_size
+                total_reward_R += reward_size
             else:
                 tone_no_reward.Play()
 
