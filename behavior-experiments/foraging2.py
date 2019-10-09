@@ -5,11 +5,11 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
-protocol_description = '''In this protocol, a sample cue is immediately followed by a "go" cue. During
-the response period, first lickport that registers a lick determines the animal's
-response. Correct responses trigger reward delivery from the correct port, while
-incorrect or null responses are unrewarded. Trial types (L/R) are determined
-randomly prior to every trial.'''
+protocol_description = '''In this protocol, go cue is delivered at each trial. During
+the subsequent response period, first lickport that registers a lick determines
+the animal's response. A reward is delivered from the selected lickport based on
+that lickport's assigned probability. Lickport probabilities alternate every
+block_length.'''
 
 import time
 import RPi.GPIO as GPIO

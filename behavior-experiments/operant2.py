@@ -5,11 +5,12 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
-protocol_description = '''In this protocol, a sample cue is immediately followed by a "go" cue. During
-the response period, first lickport that registers a lick determines the animal's
-response. Correct responses trigger reward delivery from the correct port, while
-incorrect or null responses are unrewarded. Trial types (L/R) are determined
-randomly prior to every trial.'''
+protocol_description = '''In this protocol, a sample cue followed by a "go" cue
+after a given delay_length. During the response period, first lickport that
+registers a lick determines the animal's response. Correct responses trigger
+reward delivery from the correct port, while incorrect or null responses are
+unrewarded. Trial types (L/R) are determined randomly prior to every trial. If
+the animal licks during the delay period, no reward is delivered.'''
 
 import time
 import RPi.GPIO as GPIO
@@ -27,9 +28,9 @@ from pygame import mixer
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
+delay_length = input('delay length(sec): ') #length of delay between sample tone and go cue, in sec
 
-delay_length = 0.05 #length of delay between sample tone and go cue, in sec
-response_delay = 2000 #length of time for animals to give response
+response_window = 2000 #length of time for animals to give response, in msec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
@@ -162,7 +163,7 @@ for trial in trials:
             response = 'N'
             length_L = len(lick_port_L._licks)
             length_R = len(lick_port_R._licks)
-            response_window_end = time.time()*1000 + response_delay
+            response_window_end = time.time()*1000 + response_window
 
             while time.time()*1000 < response_window_end:
 
@@ -224,7 +225,7 @@ for trial in trials:
             response = 'N'
             length_L = len(lick_port_L._licks)
             length_R = len(lick_port_R._licks)
-            response_window_end = time.time()*1000 + response_delay
+            response_window_end = time.time()*1000 + response_window
 
             while time.time()*1000 < response_window_end:
 
@@ -249,7 +250,7 @@ for trial in trials:
             if response == 'N':
                 tone_wrong.Play()
                 rewarded_trials.append(0)
-                
+
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
 
@@ -275,7 +276,7 @@ for trial in trials:
         storage[trial] = {}
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
-        
+
     print(f'Performance: {performance}/{trial+1}')
 
     if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:

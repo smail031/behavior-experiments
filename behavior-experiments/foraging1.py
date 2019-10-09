@@ -5,9 +5,9 @@ Created on Mon Jul 15 16:57:22 2019
 
 @author: sebastienmaille
 """
-protocol_description = '''In this protocol, a sample cue is immediately followed by a "go", which itself
-is followed by reward delivery from the corresponding port. A delay can be
-introduced between sample and go cues by changing the "delay_length"" variable.'''
+protocol_description = '''In this protocol, a go cue is immediately followed
+by reward delivery from one of the ports. the rewarded side alternates every
+25 trials.'''
 
 import time
 import RPi.GPIO as GPIO
