@@ -111,6 +111,7 @@ total_reward_L = 0
 supp_reward_L = 0
 total_reward_R = 0
 supp_reward_R = 0
+total_num_rewards = 0
 rewarded_side = []
 rewarded_trials = []
 
@@ -154,6 +155,7 @@ for trial in trials:
                 rewarded_side.append('L')
                 data.v_rew_l[trial] = reward_size
                 total_reward_L += reward_size
+                total_num_rewards += 1
             else:
                 tone_no_reward.Play()
 
@@ -169,6 +171,7 @@ for trial in trials:
                 rewarded_side.append('R')
                 data.v_rew_r[trial] = reward_size
                 total_reward_R += reward_size
+                total_num_rewards += 1
             else:
                 tone_no_reward.Play()
 
@@ -226,7 +229,7 @@ for trial in trials:
         L_prob = 1-L_prob
         R_prob = 1-R_prob
 
-    print(f'Trial {trial+1} of {n_trials}, {sum(rewarded_trials)} rewarded trials.')
+    print(f'Trial {trial+1} of {n_trials}, {total_num_rewards} rewarded trials.')
 
     time.sleep(ITI_)
 
