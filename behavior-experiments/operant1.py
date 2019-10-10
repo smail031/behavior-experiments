@@ -42,7 +42,7 @@ go_tone_length = 0.1
 wrong_tone_freq = 8000
 wrong_tone_length = 1
 
-reward_size = 2.2 #size of water rewards in uL
+reward_size = 3.8 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:
@@ -250,21 +250,20 @@ for trial in trials:
 
     if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
         #if 8 unrewarded trials in a row, deliver rewards through both ports.
-        for i in range(2):
-            tone_L.Play()
-            water_L.Reward()
-            supp_reward_L += reward_size
-            rewarded_trials.append(1)
-            time.sleep(1)
-            tone_R.Play()
-            water_R.Reward()
-            supp_reward_R += reward_size
-            rewarded_trials.append(1)
-            time.sleep(1)
+        tone_L.Play()
+        water_L.Reward()
+        supp_reward_L += reward_size
+        rewarded_trials.append(1)
+        time.sleep(1)
+        tone_R.Play()
+        water_R.Reward()
+        supp_reward_R += reward_size
+        rewarded_trials.append(1)
+        time.sleep(1)
 
     if rewarded_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
         #if 5 rewards from L port in a row, deliver rewards through R port.
-        for i in range(4):
+        for i in range(2):
             tone_R.Play()
             water_R.Reward()
             supp_reward_R += reward_size
@@ -274,7 +273,7 @@ for trial in trials:
 
     elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         #if 5 rewards from R port in a row, deliver rewards through L port
-        for i in range(4):
+        for i in range(2):
             tone_L.Play()
             water_L.Reward()
             supp_reward_L += reward_size
@@ -286,7 +285,7 @@ for trial in trials:
 for i in range(2):
     tone_L.Play()
     tone_R.Play()
-    
+
 camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')

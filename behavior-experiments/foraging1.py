@@ -29,7 +29,7 @@ n_trials = int(input('How many trials?: ' )) #number of trials in this block
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.1
 
-reward_size = 2.3 #size of water rewards in uL
+reward_size = 3.8 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:

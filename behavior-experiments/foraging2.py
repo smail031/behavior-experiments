@@ -41,7 +41,7 @@ reward_tone_length = 0.5
 
 wrong_tone_freq = 12000
 
-reward_size = 2.2 #size of water rewards in uL
+reward_size = 3.8 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:
@@ -210,17 +210,16 @@ for trial in trials:
 
     if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
         #if 8 unrewarded trials in a row, deliver rewards through both ports.
-        for i in range(2):
-            tone_reward.Play()
-            water_L.Reward()
-            supp_reward_L += reward_size
-            rewarded_trials.append(1)
-            time.sleep(1)
-            tone_reward.Play()
-            water_R.Reward()
-            supp_reward_R += reward_size
-            rewarded_trials.append(1)
-            time.sleep(1)
+        tone_reward.Play()
+        water_L.Reward()
+        supp_reward_L += reward_size
+        rewarded_trials.append(1)
+        time.sleep(1)
+        tone_reward.Play()
+        water_R.Reward()
+        supp_reward_R += reward_size
+        rewarded_trials.append(1)
+        time.sleep(1)
 
     ITI_ = 2
 
