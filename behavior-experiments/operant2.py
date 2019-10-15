@@ -28,7 +28,7 @@ from pygame import mixer
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
-delay_length = input('delay length(sec): ') #length of delay between sample tone and go cue, in sec
+delay_length = float(input('delay length(sec): ')) #length of delay between sample tone and go cue, in sec
 
 response_window = 2000 #length of time for animals to give response, in msec
 
