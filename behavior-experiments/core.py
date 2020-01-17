@@ -325,3 +325,19 @@ class servo():
     def Adjust(self, PWM):
 
         self.position.ChangeDutyCycle(PWM)
+
+class ttl():
+    def __init__(self, pin):
+        self.pin = pin
+        self.GPIO_setup()
+
+    def GPIO_setup(self):
+        GPIO.setup(self.pin, GPIO.OUT)
+        GPIO.output(self.pin, 0)
+
+    def pulse(self, pulse_length):
+        GPIO.output(self.pin, 1)
+
+        time.sleep(pulse_length)
+
+        GPIO.output(self.pin, 0)
