@@ -5,29 +5,29 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 ttl_out_PIN = 21
-ttl_in_PIN
-pulse_length = 1
-pulse_received = False
+ttl_in_PIN = 20
+pulse_length = 0.01
 
-GPIO.setup(ttl_in_PIN, GPIO.IN)
+GPIO.setup(ttl_in_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 GPIO.setup(ttl_out_PIN, GPIO.OUT)
 GPIO.output(ttl_out_PIN, False)
 
 go = input('ready?')
 
-start_time = time.time()
+start_time = time.time()*1000
+pulse_time = time.time()*1000 - start_time
 
-GPIO.output(ttlPIN, True)
+GPIO.output(ttl_out_PIN, True)
 time.sleep(pulse_length)
-GPIO.output(ttlPIN, False)
+GPIO.output(ttl_out_PIN, False)
 
-sent_time = time.time() - start_time
+sent_time = time.time()*1000 - start_time
 
-while pulse_received == False:
-    if GPIO.input(ttl_in_PIN):
-        pulse_received == True
+while GPIO.input(ttl_in_PIN) == False:
+    print('cool')
 
-received_time = time.time() - start_time
+received_time = time.time()*1000 - start_time
 
+print(pulse_time)
 print(sent_time)
 print(received_time)
