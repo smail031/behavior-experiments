@@ -15,7 +15,7 @@ import numpy as np
 import os
 import threading
 import core
-from picamera import PiCamera
+#from picamera import PiCamera
 from pygame import mixer
 
 #------------------------------------------------------------------------------
@@ -35,7 +35,7 @@ sample_tone_length = 0.8 #length of sample tone
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.1
 
-reward_size = 2.3 #size of water rewards in uL
+reward_size = 3.8 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:
@@ -87,13 +87,13 @@ tone_R = core.tones(R_tone_freq, sample_tone_length) #create right tone
 
 tone_go = core.tones(go_tone_freq, go_tone_length) #create "go" tone
 
-camera = PiCamera() #create camera object
+#camera = PiCamera() #create camera object
 
 #----------------------------
 #Initialize experiment
 #----------------------------
 
-camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
+#camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
@@ -192,7 +192,7 @@ for i in range(2):
     tone_R.Play()
 
 
-camera.stop_preview()
+#camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L}uL')
 print(f'Total R reward: {total_reward_R}uL')

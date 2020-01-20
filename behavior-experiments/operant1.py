@@ -17,7 +17,7 @@ import numpy as np
 import os
 import threading
 import core
-from picamera import PiCamera
+#from picamera import PiCamera
 from pygame import mixer
 
 #------------------------------------------------------------------------------
@@ -95,13 +95,13 @@ tone_R = core.tones(R_tone_freq, sample_tone_length)
 tone_go = core.tones(go_tone_freq, go_tone_length)
 tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 
-camera = PiCamera() #create camera object
+#camera = PiCamera() #create camera object
 
 #----------------------------
 #Initialize experiment
 #----------------------------
 
-camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
+#camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
@@ -286,7 +286,7 @@ for i in range(2):
     tone_L.Play()
     tone_R.Play()
 
-camera.stop_preview()
+#camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
 print(f'Total R reward: {total_reward_R} uL + {supp_reward_R}')

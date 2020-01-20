@@ -4,20 +4,16 @@ import time
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
-ttlPIN = 40
-pulse_length = 5
+ttlPIN = 21
+pulse_length = 1
 
 GPIO.setup(ttlPIN, GPIO.OUT)
+GPIO.output(ttlPIN, False)
 
-print('low')
-GPIO.output(ttlPIN, 0)
+go = input('ready?')
 
-time.sleep(5)
+GPIO.output(ttlPIN, True)
+time.sleep(pulse_length)
+GPIO.output(ttlPIN, False)
 
-print('high')
-GPIO.output(ttlPIN, 1)
-
-time.sleep(5)
-
-print('low')
-GPIO.output(ttlPIN, 0)
+print('done')
