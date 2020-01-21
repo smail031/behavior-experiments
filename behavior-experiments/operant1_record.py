@@ -28,6 +28,7 @@ mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 trial_alternation = input('Alternate trials randomly(R) or every 3 trials(T)?: ')#
+date = time.strftime("%Y-%m-%d", time.localtime(time.time()))
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
@@ -96,12 +97,18 @@ tone_go = core.tones(go_tone_freq, go_tone_length)
 tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 
 camera = PiCamera() #create camera object
+camera.camera.resolution = (640, 480) #set picam resolution
+camera.rotation = (180) #invert the image
+camera.annotate_foreground = Color('white') #annotation text will be white
+camera.annotate_background = Color('black') #annotation background will be black
 
 #----------------------------
 #Initialize experiment
 #----------------------------
 
-camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
+camera.start_preview(fullscreen = False, window = (0,-44,350,400))
+camera.start_recording(f'{mouse_number}_{date}_block{block_number}.h264')
+
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
@@ -140,12 +147,15 @@ for trial in trials:
     if left_trial_ is True:
         data.sample_tone[trial] = 'L' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        camera.annotate_text = f'trial{trial}: instruction tone'
         tone_L.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        camera.annotate_text = f'trial{trial}: go tone'
         tone_go.Play() #Play go tone
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+        camera.annotate_text = f'trial{trial}: response window'
 
         response = 'N'
         length_L = len(lick_port_L._licks)
@@ -158,6 +168,7 @@ for trial in trials:
                 response = 'L'
                 data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
                 data.v_rew_l[trial] = reward_size
+                camera.annotate_text = f'trial{trial}: reward delivery'
                 water_L.Reward() #Deliver L reward
                 total_reward_L += reward_size
                 performance += 1
@@ -171,6 +182,7 @@ for trial in trials:
                 break
 
         if response == 'N' or response == 'R':
+            camera.annotate_text = f'trial{trial}: no reward delivery'
             tone_wrong.Play()
             rewarded_trials.append(0)
             ITI_ = 5
@@ -182,6 +194,7 @@ for trial in trials:
     else:
         data.sample_tone[trial] = 'R' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        camera.annotate_text = f'trial{trial}: instruction tone'
         tone_R.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
@@ -189,8 +202,10 @@ for trial in trials:
         time.sleep(delay_length) #Sleep for delay_length
 
         data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        camera.annotate_text = f'trial{trial}: go tone'
         tone_go.Play() #Play go tone
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+        camera.annotate_text = f'trial{trial}: response window'
 
 
         response = 'N' #preset response to 'N'
@@ -204,6 +219,7 @@ for trial in trials:
                 response = 'R'
                 data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
                 data.v_rew_r[trial] = reward_size
+                camera.annotate_text = f'trial{trial}: reward delivery'
                 water_R.Reward() #Deliver R reward
                 total_reward_R += reward_size
                 performance += 1
@@ -217,6 +233,7 @@ for trial in trials:
                 break
 
         if response == 'N' or response == 'L':
+            camera.annotate_text = f'trial{trial}: no reward delivery'
             tone_wrong.Play()
             rewarded_trials.append(0)
             ITI_ = 5
@@ -228,6 +245,7 @@ for trial in trials:
     #Post-trial data storage
     #---------------
 
+    camera.annotate_text = f'intertrial interval'
     #Make sure the threads are finished
     thread_L.join()
     thread_R.join()
@@ -286,6 +304,7 @@ for i in range(2):
     tone_L.Play()
     tone_R.Play()
 
+camera.stop_recording()
 camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
