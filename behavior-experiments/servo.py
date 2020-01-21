@@ -5,10 +5,10 @@ Created on Wed Jul 31 10:40:57 2019
 
 @author: sebastienmaille
 """
-#from picamera import PiCamera
+from picamera import PiCamera
 
-#camera = PiCamera()
-#camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
+camera = PiCamera()
+camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
 
 import core
 import RPi.GPIO as GPIO
@@ -33,4 +33,4 @@ while cont == True:
     else:
         servo.Adjust(float(new_DC)) #change duty cycle'
 
-#camera.stop_preview()
+camera.stop_preview()
