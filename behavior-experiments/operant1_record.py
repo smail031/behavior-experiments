@@ -100,8 +100,9 @@ camera = PiCamera() #create camera object
 camera.resolution = (320, 240) #set picam resolution
 camera.rotation = (180) #invert the image
 filename = f'{mouse_number}_{date}_block{block_number}.h264'
-#camera.annotate_foreground = Color('white') #annotation text will be white
-#camera.annotate_background = Color('black') #annotation background will be black
+camera.annotate_text_size = (20)
+#camera.annotate_foreground = Color('#000000') #annotation text will be white
+#camera.annotate_background = camera.color('black') #annotation background will be black
 
 #----------------------------
 #Initialize experiment
@@ -282,7 +283,7 @@ for trial in trials:
 
     if rewarded_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
         #if 5 rewards from L port in a row, deliver rewards through R port.
-        for i in range(2):
+        for i in range(4):
             tone_R.Play()
             water_R.Reward()
             supp_reward_R += reward_size
@@ -292,7 +293,7 @@ for trial in trials:
 
     elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         #if 5 rewards from R port in a row, deliver rewards through L port
-        for i in range(2):
+        for i in range(4):
             tone_L.Play()
             water_L.Reward()
             supp_reward_L += reward_size
@@ -318,8 +319,8 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 #Rclone the video
 os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{filename} /home/pi/Desktop/temporary-data')
 os.system(f'rclone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{mouse_number}')
-os.system(f'rclone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}')
-os.system(f'rclone copy /home/pi/Desktop/temporary-data/{filename} gdrive:/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}')
+os.system(f'rclone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date}')
+os.system(f'rclone copy /home/pi/Desktop/temporary-data/{filename} gdrive:/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date}')
 
 #delete the .wav files created for the experiment
 tone_L.Delete()
