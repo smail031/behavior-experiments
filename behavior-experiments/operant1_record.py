@@ -97,10 +97,10 @@ tone_go = core.tones(go_tone_freq, go_tone_length)
 tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 
 camera = PiCamera() #create camera object
-camera.camera.resolution = (640, 480) #set picam resolution
+camera.resolution = (640, 480) #set picam resolution
 camera.rotation = (180) #invert the image
-camera.annotate_foreground = Color('white') #annotation text will be white
-camera.annotate_background = Color('black') #annotation background will be black
+#camera.annotate_foreground = Color('white') #annotation text will be white
+#camera.annotate_background = Color('black') #annotation background will be black
 
 #----------------------------
 #Initialize experiment
