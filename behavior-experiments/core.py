@@ -327,17 +327,18 @@ class servo():
         self.position.ChangeDutyCycle(PWM)
 
 class ttl():
-    def __init__(self, pin):
+    def __init__(self, pin, pulse_length):
         self.pin = pin
+        self.pulse_length = pulse_length
         self.GPIO_setup()
 
     def GPIO_setup(self):
         GPIO.setup(self.pin, GPIO.OUT)
-        GPIO.output(self.pin, 0)
+        GPIO.output(self.pin, False)
 
-    def pulse(self, pulse_length):
-        GPIO.output(self.pin, 1)
+    def pulse(self):
+        GPIO.output(self.pin, True)
 
-        time.sleep(pulse_length)
+        time.sleep(self.pulse_length)
 
-        GPIO.output(self.pin, 0)
+        GPIO.output(self.pin, False)
