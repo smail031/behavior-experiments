@@ -97,8 +97,9 @@ tone_go = core.tones(go_tone_freq, go_tone_length)
 tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 
 camera = PiCamera() #create camera object
-camera.resolution = (640, 480) #set picam resolution
+camera.resolution = (320, 240) #set picam resolution
 camera.rotation = (180) #invert the image
+filename = f'{mouse_number}_{date}_block{block_number}.h264'
 #camera.annotate_foreground = Color('white') #annotation text will be white
 #camera.annotate_background = Color('black') #annotation background will be black
 
@@ -107,7 +108,7 @@ camera.rotation = (180) #invert the image
 #----------------------------
 
 camera.start_preview(fullscreen = False, window = (0,-44,350,400))
-camera.start_recording(f'{mouse_number}_{date}_block{block_number}.h264')
+camera.start_recording(f'{filename}')
 
 
 #Set the time for the beginning of the block
@@ -147,15 +148,15 @@ for trial in trials:
     if left_trial_ is True:
         data.sample_tone[trial] = 'L' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        camera.annotate_text = f'trial{trial}: instruction tone'
+        camera.annotate_text = f'trial{trial} (L): instruction tone'
         tone_L.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        camera.annotate_text = f'trial{trial}: go tone'
+        camera.annotate_text = f'trial{trial} (L): go tone'
         tone_go.Play() #Play go tone
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-        camera.annotate_text = f'trial{trial}: response window'
+        camera.annotate_text = f'trial{trial} (L): response window'
 
         response = 'N'
         length_L = len(lick_port_L._licks)
@@ -168,7 +169,7 @@ for trial in trials:
                 response = 'L'
                 data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
                 data.v_rew_l[trial] = reward_size
-                camera.annotate_text = f'trial{trial}: reward delivery'
+                camera.annotate_text = f'trial{trial} (L): reward delivery'
                 water_L.Reward() #Deliver L reward
                 total_reward_L += reward_size
                 performance += 1
@@ -182,7 +183,7 @@ for trial in trials:
                 break
 
         if response == 'N' or response == 'R':
-            camera.annotate_text = f'trial{trial}: no reward delivery'
+            camera.annotate_text = f'trial{trial} (L): no reward delivery'
             tone_wrong.Play()
             rewarded_trials.append(0)
             ITI_ = 5
@@ -194,7 +195,7 @@ for trial in trials:
     else:
         data.sample_tone[trial] = 'R' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        camera.annotate_text = f'trial{trial}: instruction tone'
+        camera.annotate_text = f'trial{trial} (R): instruction tone'
         tone_R.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
@@ -202,10 +203,10 @@ for trial in trials:
         time.sleep(delay_length) #Sleep for delay_length
 
         data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        camera.annotate_text = f'trial{trial}: go tone'
+        camera.annotate_text = f'trial{trial} (R): go tone'
         tone_go.Play() #Play go tone
         data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-        camera.annotate_text = f'trial{trial}: response window'
+        camera.annotate_text = f'trial{trial} (R): response window'
 
 
         response = 'N' #preset response to 'N'
@@ -219,7 +220,7 @@ for trial in trials:
                 response = 'R'
                 data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
                 data.v_rew_r[trial] = reward_size
-                camera.annotate_text = f'trial{trial}: reward delivery'
+                camera.annotate_text = f'trial{trial} (R): reward delivery'
                 water_R.Reward() #Deliver R reward
                 total_reward_R += reward_size
                 performance += 1
@@ -233,7 +234,7 @@ for trial in trials:
                 break
 
         if response == 'N' or response == 'L':
-            camera.annotate_text = f'trial{trial}: no reward delivery'
+            camera.annotate_text = f'trial{trial} (R): no reward delivery'
             tone_wrong.Play()
             rewarded_trials.append(0)
             ITI_ = 5
@@ -313,6 +314,12 @@ print(f'Total reward: {total_reward_L+supp_reward_L+total_reward_R+supp_reward_R
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
+
+#Rclone the video
+os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{filename} /home/pi/Desktop/temporary-data')
+os.system(f'rclone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{mouse_number}')
+os.system(f'rclone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}')
+os.system(f'rclone copy /home/pi/Desktop/temporary-data/{filename} gdrive:/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}')
 
 #delete the .wav files created for the experiment
 tone_L.Delete()
