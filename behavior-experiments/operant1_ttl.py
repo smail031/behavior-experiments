@@ -141,15 +141,15 @@ for trial in trials:
         left_trial_ = np.random.rand() < 0.5
 
     TTL_trigger.pulse() # Trigger the start of a scan
+    TTL_marker.pulse() # Set a marker to align scans to trial start
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
-    time.sleep(0.5)
-    TTL_marker.pulse() # Set a marker to align scans to trial start
-    time.sleep(0.5)
+    time.sleep(1)
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
+        TTL_marker.pulse() # Set a marker to align scans to trial start
         data.sample_tone[trial] = 'L' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         tone_L.Play() #Play left tone
@@ -242,6 +242,7 @@ for trial in trials:
     thread_L.join()
     thread_R.join()
 
+    TTL_marker.pulse() # Set a marker to align scans to trial start
     TTL_trigger.pulse() #trigger the end of the scan
 
     #subtract lick timestamps from start of trial so that integers are not too
