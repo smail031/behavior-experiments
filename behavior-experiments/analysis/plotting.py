@@ -37,15 +37,16 @@ gs = gridspec.GridSpec(nrows = 1, ncols = 2, width_ratios = [1, 1], figure = fig
 sides = ['l', 'r']
 ax = []
 
-#transform trial types from "L/R" to "0/1" to simplify plotting
-trial_types = []
-
 correct_response = np.zeros(num_trials)
 correct_response.fill(np.nan)
 incorrect_response = np.zeros(num_trials)
 incorrect_response.fill(np.nan)
 null_response = np.zeros(num_trials)
 null_response.fill(np.nan)
+
+
+#transform trial types from "L/R" to "0/1" to simplify plotting
+trial_types = []
 
 for trial in range(num_trials):
     if 'L' in str(f['sample_tone']['type'][trial]):
