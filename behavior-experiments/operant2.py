@@ -126,8 +126,6 @@ for trial in trials:
 
     left_trial_ = np.random.rand() < 0.5
 
-    ITI_ = 3 #ITI_ will be changed to 1 if response is correct
-
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
@@ -176,7 +174,6 @@ for trial in trials:
                     performance += 1
                     rewarded_trials.append(1)
                     rewarded_side.append('L')
-                    ITI_ = 0
                     break
 
                 elif sum(lick_port_R._licks[(length_R-1):]) > 0:
@@ -238,7 +235,6 @@ for trial in trials:
                     rewarded_side.append('R')
                     total_reward_R += reward_size
                     performance += 1
-                    ITI_ = 0
                     break
 
                 elif sum(lick_port_L._licks[(length_L-1):]) > 0:
@@ -310,7 +306,11 @@ for trial in trials:
             time.sleep(1)
         rewarded_side.append('L')
 
-    time.sleep(ITI_)
+    ITI_ = 0
+    while ITI_ > 10 or ITI_ < 2:
+        ITI_ = np.random.exponential(scale = 5) #randomly select a new inter-trial interval
+
+    time.sleep(ITI_) #wait for the inter-trial interval
 
 for i in range(2):
     tone_L.Play()

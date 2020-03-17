@@ -163,7 +163,6 @@ for trial in trials:
                 performance += 1
                 rewarded_side.append('L')
                 rewarded_trials.append(1)
-                ITI_ = 1
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0:
@@ -173,7 +172,6 @@ for trial in trials:
         if response == 'N' or response == 'R':
             tone_wrong.Play()
             rewarded_trials.append(0)
-            ITI_ = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -209,7 +207,6 @@ for trial in trials:
                 performance += 1
                 rewarded_side.append('R')
                 rewarded_trials.append(1)
-                ITI_ = 1
                 break
 
             elif sum(lick_port_L._licks[(length_L-1):]) > 0:
@@ -219,7 +216,6 @@ for trial in trials:
         if response == 'N' or response == 'L':
             tone_wrong.Play()
             rewarded_trials.append(0)
-            ITI_ = 5
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -280,7 +276,11 @@ for trial in trials:
             time.sleep(1)
         rewarded_side.append('L')
 
-    time.sleep(ITI_)
+    ITI_ = 0
+    while ITI_ > 10 or ITI_ < 2:
+        ITI_ = np.random.exponential(scale = 5) #randomly select a new inter-trial interval
+
+    time.sleep(ITI_) #wait for the length of the inter-trial interval
 
 for i in range(2):
     tone_L.Play()

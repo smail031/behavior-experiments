@@ -30,7 +30,7 @@ delay_length = 0 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-sample_tone_length = 0.8 #length of sample tone
+sample_tone_length = 1.5 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.1
@@ -112,8 +112,6 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    ITI_ = 1
-
     if float(trial/3).is_integer(): #alternate trial types every 3 trials.
         left_trial_ = not left_trial_
 
@@ -184,6 +182,10 @@ for trial in trials:
         storage[trial] = {}
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
+
+    ITI_ = 0
+    while ITI_ > 10 or ITI_ < 2:
+        ITI_ = np.random.exponential(scale = 5)
 
     time.sleep(ITI_)
 

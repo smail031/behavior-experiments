@@ -118,8 +118,6 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    ITI_ = 1
-
     if float(trial/3).is_integer(): #alternate trial types every 3 trials.
         left_trial_ = not left_trial_
 
@@ -197,6 +195,10 @@ for trial in trials:
 
     camera.annotate_text = 'intertrial interval'
 
+    ITI_ = 0
+    while ITI_ > 10 or ITI_ < 2:
+        ITI_ = np.random.exponential(scale = 5)
+        
     time.sleep(ITI_)
 
 for i in range(2):
