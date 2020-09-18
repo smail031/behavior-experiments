@@ -42,7 +42,7 @@ go_tone_length = 0.1
 wrong_tone_freq = 8000
 wrong_tone_length = 1
 
-reward_size = 3.8 #size of water rewards in uL
+reward_size = 15.2 #size of water rewards in uL
 
 TTL_pulse_length = 0.01 #length of TTL pulses, in seconds
 

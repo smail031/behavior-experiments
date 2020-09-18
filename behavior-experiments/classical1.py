@@ -30,12 +30,12 @@ delay_length = 0 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-sample_tone_length = 1.5 #length of sample tone
+sample_tone_length = 2 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.1
 
-reward_size = 3.8 #size of water rewards in uL
+reward_size = 15.2 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:
@@ -184,8 +184,8 @@ for trial in trials:
         storage[trial]['volt'] = rawdata_list[ind]._licks
 
     ITI_ = 0
-    while ITI_ > 10 or ITI_ < 2:
-        ITI_ = np.random.exponential(scale = 5)
+    while ITI_ > 12 or ITI_ < 8:
+        ITI_ = np.random.exponential(scale = 10)
 
     time.sleep(ITI_)
 
