@@ -71,7 +71,7 @@ GPIO.setup(L_enablePIN, GPIO.OUT, initial = 1)
 GPIO.setup(R_enablePIN, GPIO.OUT, initial = 1)
 
 #initialize the mixer (for tones) at the proper sampling rate.
-mixer.init(frequency = 44100)
+mixer.init(frequency = 22050)
 
 #create Stepper class instances for left and right reward delivery
 water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
