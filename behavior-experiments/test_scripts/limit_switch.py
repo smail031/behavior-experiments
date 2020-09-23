@@ -13,7 +13,7 @@ class limit_switch():
 
     def Switch(self, sampling_rate, sampling_duration):
 
-        GPIO.setup(self.pin, GPIO.IN)
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         #records the licks at a given sampling rate
 
         num_samples = int(sampling_duration * sampling_rate) #calculate number of samples
