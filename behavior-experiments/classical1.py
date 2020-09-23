@@ -30,7 +30,7 @@ delay_length = 0 #length of delay between sample tone and go cue, in sec
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-sample_tone_length = 2.5 #length of sample tone
+sample_tone_length = 2 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.1
@@ -146,7 +146,7 @@ for trial in trials:
         data.sample_tone[trial] = 'R' #Assign data type
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone_R.Play()
+        tone_R.Play() #play instruction tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
 
