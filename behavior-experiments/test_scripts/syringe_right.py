@@ -6,14 +6,10 @@ Created on Fri Jul 12 15:38:32 2019
 @author: sebastienmaille
 """
 import RPi.GPIO as GPIO
+import time
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
-
-L_enablePIN = 23 #enable pin for left stepper motor
-L_directionPIN = 24 #direction pin for left stepper motor
-L_stepPIN = 25 #step pin for left stepper motor
-L_emptyPIN = 20 #empty switch pin for left stepper motor
 
 R_enablePIN = 10 #enable pin for right stepper motor
 R_directionPIN = 9 #direction pin for right stepper motor
@@ -45,23 +41,9 @@ class stepper():
 
         GPIO.output(self.enablePIN, 1) #disable stepper (to prevent overheating)
 
-stepperL = stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
 stepperR = stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
-syringe = True
-while syringe == True:
+while True:
 
-    side = input('Which side? (L/R/Q): ')
-    steps = input('How many steps?: ')
-
-    if side == 'L':
-        stepperL.Motor(1, steps)
-
-    elif side == 'R':
-        stepperR.Motor(1, steps)
-
-    elif side == 'Q':
-        syringe = False
-
-    else:
-        print('Not recognized.')
+    stepperR.Motor(1, 2000) #move forward 2000 steps
+    stepperR.Motor(0,2000) #move backward 2000 steps
