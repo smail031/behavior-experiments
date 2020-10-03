@@ -34,7 +34,7 @@ response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-sample_tone_length = 0.8 #length of sample tone
+sample_tone_length = 2 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.1
@@ -279,6 +279,10 @@ for trial in trials:
             supp_reward_L += reward_size
             time.sleep(1)
         rewarded_side.append('L')
+
+    ITI_ = 0
+    while ITI_ > 10 or ITI_ < 2:
+        ITI_ = np.random.exponential(scale = 5) #randomly select a new inter-trial interval
 
     time.sleep(ITI_)
 
