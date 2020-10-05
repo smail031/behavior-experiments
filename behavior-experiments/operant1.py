@@ -34,7 +34,7 @@ response_delay = 2000 #length of time for animals to give response
 
 L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
-sample_tone_length = 0.8 #length of sample tone
+sample_tone_length = 2 #length of sample tone
 
 go_tone_freq = 500 #frequency of go tone
 go_tone_length = 0.1
@@ -122,8 +122,8 @@ for trial in trials:
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 7))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 7))
 
     if trial_alternation == 'T':
         if float(trial/3).is_integer():
@@ -277,8 +277,8 @@ for trial in trials:
         rewarded_side.append('L')
 
     ITI_ = 0
-    while ITI_ > 10 or ITI_ < 2:
-        ITI_ = np.random.exponential(scale = 5) #randomly select a new inter-trial interval
+    while ITI_ > 12 or ITI_ < 8:
+        ITI_ = np.random.exponential(scale = 10) #randomly select a new inter-trial interval
 
     time.sleep(ITI_) #wait for the length of the inter-trial interval
 
