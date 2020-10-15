@@ -36,8 +36,8 @@ L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
 sample_tone_length = 2 #length of sample tone
 
-go_tone_freq = 500 #frequency of go tone
-go_tone_length = 0.1
+# go_tone_freq = 500 #frequency of go tone
+# go_tone_length = 0.1
 
 wrong_tone_freq = 8000
 wrong_tone_length = 1
@@ -92,7 +92,7 @@ lick_port_R = core.lickometer(R_lickometer)
 tone_L = core.tones(L_tone_freq, sample_tone_length)
 tone_R = core.tones(R_tone_freq, sample_tone_length)
 
-tone_go = core.tones(go_tone_freq, go_tone_length)
+# tone_go = core.tones(go_tone_freq, go_tone_length)
 tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 
 camera = PiCamera() #create camera object
@@ -143,9 +143,9 @@ for trial in trials:
         tone_L.Play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone_go.Play() #Play go tone
-        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+        # data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        # tone_go.Play() #Play go tone
+        # data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         response = 'N'
         length_L = len(lick_port_L._licks)
@@ -186,9 +186,9 @@ for trial in trials:
 
         time.sleep(delay_length) #Sleep for delay_length
 
-        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone_go.Play() #Play go tone
-        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
+        # data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
+        # tone_go.Play() #Play go tone
+        # data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
 
         response = 'N' #preset response to 'N'
