@@ -298,5 +298,5 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 #delete the .wav files created for the experiment
 tone_L.Delete()
 tone_R.Delete()
-tone_go.Delete()
+# tone_go.Delete()
 tone_wrong.Delete()
