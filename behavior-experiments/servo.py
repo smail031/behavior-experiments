@@ -25,12 +25,19 @@ cont = True
 
 while cont == True:
 
-    new_DC = input('Input new duty cycle (quit:Q): ') #ask user for new duty cycle
+    new_DC = float(input('Input new duty cycle (quit:q): ')) #ask user for new duty cycle
 
-    if new_DC == 'Q':
+    if new_DC == 'q':
         cont = False
 
+    elif new_DC > 11 or new_DC < 7:
+        veto = input('Duty cycly is unusually high/low. Proceed? (y/n)')
+        #warns user if DC is too high or low, to avoid hurting the mouse or damaging the rig
+
+        if veto = 'y':
+            servo.Adjust(new_DC) #change duty cycle'
+
     else:
-        servo.Adjust(float(new_DC)) #change duty cycle'
+        servo.Adjust(new_DC) #change duty cycle'
 
 camera.stop_preview()
