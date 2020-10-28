@@ -34,7 +34,7 @@ while cont == True:
         veto = input('Duty cycle is unusually high/low. Proceed? (y/n)')
         #warns user if DC is too high or low, to avoid hurting the mouse or damaging the rig
 
-        if veto = 'y':
+        if veto == 'y':
             servo.Adjust(new_DC) #change duty cycle'
 
     else:
