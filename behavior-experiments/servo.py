@@ -31,7 +31,7 @@ while cont == True:
         cont = False
 
     elif new_DC > 11 or new_DC < 7:
-        veto = input('Duty cycly is unusually high/low. Proceed? (y/n)')
+        veto = input('Duty cycle is unusually high/low. Proceed? (y/n)')
         #warns user if DC is too high or low, to avoid hurting the mouse or damaging the rig
 
         if veto = 'y':
