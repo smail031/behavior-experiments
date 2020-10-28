@@ -139,8 +139,8 @@ for trial in trials:
     else:
         left_trial_ = np.random.rand() < 0.5
 
-if ttl_experiment == 'y':
-    TTL_trigger.pulse() # Trigger the start of a scan
+    if ttl_experiment == 'y':
+        TTL_trigger.pulse() # Trigger the start of a scan
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -149,7 +149,7 @@ if ttl_experiment == 'y':
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
 
-        if ttl-experiment == 'y':
+        if ttl_experiment == 'y':
             TTL_marker.pulse() # Set a marker to align scans to trial start
 
         data.sample_tone[trial] = 'L' #Assign data type
@@ -189,7 +189,7 @@ if ttl_experiment == 'y':
     #Right trial:--------------------------------------------------------------
     else:
 
-        if ttl-experiment == 'y':
+        if ttl_experiment == 'y':
             TTL_marker.pulse() # Set a marker to align scans to trial start
 
         data.sample_tone[trial] = 'R' #Assign data type
@@ -236,7 +236,7 @@ if ttl_experiment == 'y':
     thread_L.join()
     thread_R.join()
 
-    if ttl-experiment == 'y':
+    if ttl_experiment == 'y':
         TTL_trigger.pulse() #trigger the end of the scan
 
     #subtract lick timestamps from start of trial so that integers are not too
