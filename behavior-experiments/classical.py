@@ -32,9 +32,6 @@ L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
 sample_tone_length = 2 #length of sample tone
 
-go_tone_freq = 500 #frequency of go tone
-go_tone_length = 0.1
-
 reward_size = 15.2 #size of water rewards in uL
 
 #----------------------------
@@ -85,8 +82,6 @@ lick_port_R = core.lickometer(R_lickometer)
 tone_L = core.tones(L_tone_freq, sample_tone_length) #create left tone
 tone_R = core.tones(R_tone_freq, sample_tone_length) #create right tone
 
-tone_go = core.tones(go_tone_freq, go_tone_length) #create "go" tone
-
 camera = PiCamera() #create camera object
 
 #----------------------------
@@ -112,8 +107,11 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    if float(trial/3).is_integer(): #alternate trial types every 3 trials.
-        left_trial_ = not left_trial_
+    left_trial_ = np.random.rand() < 0.5
+
+    trace_period = 3
+    while trace_period > 2:
+        trace_period = np.random.exponential(scale=2)
 
     thread_L.start() #Start threads for lick recording
     thread_R.start()
@@ -127,11 +125,8 @@ for trial in trials:
         tone_L.Play()
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-
-        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone_go.Play() #Play go tone
-        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-
+        time.sleep(trace_period)
+        
         data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
         water_L.Reward() #Deliver L reward
         data.v_rew_l[trial] = reward_size
@@ -149,11 +144,8 @@ for trial in trials:
         tone_R.Play() #play instruction tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
-
-        data.t_go_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone_go.Play() #Play go tone
-        data.go_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-
+        time.sleep(trace_period)
+        
         data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
         water_R.Reward() #Deliver R reward
         data.v_rew_r[trial] = reward_size
@@ -207,4 +199,3 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
 #delete the .wav files created for the experiment
 tone_L.Delete()
 tone_R.Delete()
-tone_go.Delete()
