@@ -100,6 +100,9 @@ total_reward_R = 0
 left_trial_ = True
 
 for trial in trials:
+
+    print(f'Trial {trial}, total reward: {total_reward_L+total_reward_R}')
+    
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
