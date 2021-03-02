@@ -32,7 +32,7 @@ L_tone_freq = 1000 #frequency of sample tone in left lick trials
 R_tone_freq = 4000 #frequency of sample tone in right lick trials
 sample_tone_length = 2 #length of sample tone
 
-reward_size = 15.2 #size of water rewards in uL
+reward_size = 8.2 #size of water rewards in uL
 
 #----------------------------
 #Assign GPIO pins:
