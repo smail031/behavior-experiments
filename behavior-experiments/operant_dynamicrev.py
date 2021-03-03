@@ -76,8 +76,8 @@ R_stepPIN = 11 #step pin for right stepper motor
 R_emptyPIN = 21 #empty switch pin for right stepper motor
 R_lickometer = 16 #input pin for lickometer (black wire)
 
-TTL_trigger_PIN = 100 # output for TTL pulse triggers to start/end laser scans
-TTL_marker_PIN = 100 # output for TTL pulse markers
+TTL_trigger_PIN = 15 # output for TTL pulse triggers to start/end laser scans
+TTL_marker_PIN = 27 # output for TTL pulse markers
 
 #----------------------------
 #Initialize class instances for experiment:
