@@ -25,6 +25,7 @@ from pygame import mixer
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
+ttl_experiment = input('Send trigger pulses to imaging laser? (y/n)')
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 
@@ -33,6 +34,8 @@ R_tone_freq = 4000 #frequency of sample tone in right lick trials
 sample_tone_length = 2 #length of sample tone
 
 reward_size = 8.2 #size of water rewards in uL
+
+TTL_pulse_length = 0.01 #length of TTL pulses, in seconds
 
 #----------------------------
 #Assign GPIO pins:
@@ -52,6 +55,9 @@ R_directionPIN = 9 #direction pin for right stepper motor
 R_stepPIN = 11 #step pin for right stepper motor
 R_emptyPIN = 21 #empty switch pin for right stepper motor
 R_lickometer = 16 #input pin for lickometer (black wire)
+
+TTL_trigger_PIN = 15 # output for TTL pulse triggers to start/end laser scans
+TTL_marker_PIN = 27 # output for TTL pulse markers
 
 #----------------------------
 #Initialize class instances for experiment:
@@ -81,6 +87,11 @@ lick_port_R = core.lickometer(R_lickometer)
 #create tones
 tone_L = core.tones(L_tone_freq, sample_tone_length) #create left tone
 tone_R = core.tones(R_tone_freq, sample_tone_length) #create right tone
+
+if ttl_experiment == 'y':
+    #set up ttl class instances triggers and marker TTL output
+    TTL_trigger = core.ttl(TTL_trigger_PIN, TTL_pulse_length)
+    TTL_marker = core.ttl(TTL_marker_PIN, TTL_pulse_length)
 
 camera = PiCamera() #create camera object
 
@@ -116,12 +127,19 @@ for trial in trials:
     while trace_period > 2:
         trace_period = np.random.exponential(scale=2)
 
+    if ttl_experiment == 'y':
+        TTL_trigger.pulse() # Trigger the start of a scan
+        
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
     time.sleep(0.5)
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
+
+        if ttl_experiment == 'y':
+            TTL_marker.pulse() # Set a marker to align scans to trial start
+        
         data.sample_tone[trial] = 'L' #Assign data type
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
@@ -141,6 +159,9 @@ for trial in trials:
     #Right trial:--------------------------------------------------------------
     else:
 
+        if ttl_experiment == 'y':
+            TTL_marker.pulse() # Set a marker to align scans to trial start
+        
         data.sample_tone[trial] = 'R' #Assign data type
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
@@ -164,6 +185,9 @@ for trial in trials:
     thread_L.join()
     thread_R.join()
 
+    if ttl_experiment == 'y':
+        TTL_trigger.pulse() #trigger the end of the scan
+    
     #subtract lick timestamps from start of trial so that integers are not too
     #big for storage.
     lick_port_L._t_licks -= data._t_start_abs[trial]
