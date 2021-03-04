@@ -228,7 +228,7 @@ for trial in trials:
 
 for i in range(2):
     tone_L_A.Play()
-    tone_R_B.Play()
+    tone_R_A.Play()
 
 
 camera.stop_preview()

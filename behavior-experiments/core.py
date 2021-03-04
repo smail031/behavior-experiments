@@ -49,7 +49,7 @@ class tones():
             start_time = time.time()
             while time.time() < start_time + self.tone_length:
                 self.sound.play() #play .wav file
-                time.sleep(self.pulse_length*2) #wait for end of tone + interpulse interval
+                time.sleep(self.pulse_length*1.5) #wait for end of tone + interpulse interval
 
     def Delete(self):
         # Delete the wav file
