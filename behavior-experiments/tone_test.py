@@ -14,6 +14,7 @@ class tones():
         self.freq = frequency
         self.tone_length = tone_length
         self.pulse_length = pulse_length
+        self.pulse_number = tone_length/(2*pulse_length) # 2 because of the interpulse interval
 
         if self.tone_length == self.pulse_length: #determine if single or multi pulse tone
             self.multi_pulse = False
@@ -26,13 +27,17 @@ class tones():
 
         elif self.multi_pulse == True:
             #create an empty wav file that will be the inter-pulse interval
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 pulse.wav synth {self.pulse_length} sin {self.freq} vol -20dB')
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 interpulse.wav synth {self.pulse_length} sin {self.freq/2} vol -20dB')
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 pulse.wav synth {self.pulse_length} sin {self.freq} vol -20dB') #tone
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 interpulse.wav synth {self.pulse_length} sin {self.freq} vol -150dB') #silent interpulse interval
 
-            os.system(f'sox pulse.wav interpulse.wav {self.name}.wav')
+            concat_files = ' pulse.wav interpulse.wav' * int(self.pulse_number)
+
+            os.system(f'sox{concat_files} {self.name}.wav')
 
         self.sound = mixer.Sound(f'{self.name}.wav')
-
+        
+        os.system(f'rm pulse.wav') #delete the pulse and interpulse, no longer useful.
+        os.system(f'rm interpulse.wav')
     def Play(self):
 
 
