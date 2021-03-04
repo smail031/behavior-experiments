@@ -35,7 +35,7 @@ low_freq = 1000 #frequency of lower freq sample tone
 high_freq = 4000 #frequency of lower freq sample tone
 
 single_pulse_length = sample_tone_length
-multi_pulse_length = 0.2
+multi_pulse_length = 0.05
 
 reward_size = 8.2 #size of water rewards in uL
 
