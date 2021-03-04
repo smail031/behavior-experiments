@@ -21,22 +21,26 @@ from pygame import mixer
 
 class tones():
 
-    def __init__(self, frequency, tone_length):
+    def __init__(self, frequency, tone_length, pulse_length):
 
         #Create a string that will be the name of the .wav file
-        self.name = str(frequency) + 'Hz'
+        self.name = f'{frequency}Hz_{pulse_length}sec'
         self.freq = frequency
-        self.length = tone_length
+        self.tone_length = tone_length
+        self.pulse_length = pulse_length
 
         #create a waveform called self.name from frequency and tone_length
-        os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {self.length} sin {self.freq} vol -20dB')
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {self.pulse_length} sin {self.freq} vol -20dB')
 
         self.sound = mixer.Sound(f'{self.name}.wav')
 
     def Play(self):
-        #play the .wav file and wait for it to end while self.cut is False
-        self.sound.play()
-        time.sleep(self.length)
+        
+        start_time = time.time()
+        while time.time() < start_time + self.tone_length:
+            #play the .wav file and wait for it to end while self.cut is False
+            self.sound.play()
+            time.sleep(self.pulse_length)
 
     def Delete(self):
         # Delete the wav file
