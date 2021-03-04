@@ -29,18 +29,27 @@ class tones():
         self.tone_length = tone_length
         self.pulse_length = pulse_length
 
-        #create a waveform called self.name from frequency and tone_length
+        if self.tone_length == self.pulse_length: #determine if single or multi pulse tone
+            multi_pulse = False
+        else:
+            multi_pulse = True
+
+        #create a waveform called self.name from frequency and pulse_length
         os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {self.pulse_length} sin {self.freq} vol -20dB')
 
         self.sound = mixer.Sound(f'{self.name}.wav')
 
     def Play(self):
-        
-        start_time = time.time()
-        while time.time() < start_time + self.tone_length:
-            #play the .wav file and wait for it to end while self.cut is False
-            self.sound.play()
-            time.sleep(self.pulse_length)
+
+        if multi_pulse == False:
+            self.sound.play() #play the .wav file and wait for it to end
+            time.sleep(self.tone_length)
+
+        elif multi_pulse == True:        
+            start_time = time.time()
+            while time.time() < start_time + self.tone_length:
+                self.sound.play() #play .wav file
+                time.sleep(self.pulse_length*2) #wait for end of tone + interpulse interval
 
     def Delete(self):
         # Delete the wav file
