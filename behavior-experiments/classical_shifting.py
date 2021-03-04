@@ -184,7 +184,6 @@ for trial in trials:
             tone_R_A.Play()
         else:
             tone_R_B.Play()
-        tone_R.Play() #play instruction tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         time.sleep(trace_period)
