@@ -29,7 +29,7 @@ class tones():
         self.tone_length = tone_length
         self.pulse_length = pulse_length
 
-        if self.tone_length == self.pulse_length: #determine if single or multi pulse tone
+        if self.tone_length = self.pulse_length: #determine if single or multi pulse tone
             multi_pulse = False
         else:
             multi_pulse = True
