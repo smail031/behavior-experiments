@@ -100,7 +100,7 @@ highfreq_singlepulse = core.tones(high_freq, sample_tone_length, single_pulse_le
 highfreq_multipulse = core.tones(high_freq, sample_tone_length, multi_pulse_length) #4000Hz multi pulse
 
 #create tone that is used as an error signal
-tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
+tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length, wrong_tone_length)
 
 if ttl_experiment == 'y':
     #set up ttl class instances triggers and marker TTL output
