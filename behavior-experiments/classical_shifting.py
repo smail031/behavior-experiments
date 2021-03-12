@@ -120,8 +120,6 @@ tone_L_B = tone_B
 tone_R_A = tone_C
 tone_R_B = tone_D
 
-left_trial_ = True
-
 for trial in trials:
 
     print(f'Trial {trial}, total reward: {total_reward_L+total_reward_R}')
@@ -133,7 +131,7 @@ for trial in trials:
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 5))
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 5))
 
-    left_trial_ = np.random.rand() < 0.5
+    left_trial_ = np.random.rand() < 0.5 # 50% chance of L trial, otherwise R trial 
 
     trace_period = 3
     while trace_period > 2:
@@ -145,7 +143,7 @@ for trial in trials:
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
-    time.sleep(0.5)
+    time.sleep(1)
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
 
