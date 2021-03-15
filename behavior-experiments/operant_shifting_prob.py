@@ -215,7 +215,7 @@ for trial in trials:
                     
                 break
 
-        if response == 'N' or response == 'R':
+        if response == 'N':
             tone_wrong.Play()
             rewarded_trials.append(0)
 
@@ -281,7 +281,7 @@ for trial in trials:
 
                     data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
                     data.v_rew_l[trial] = reward_size
-                    water_R.Reward() #Deliver R reward
+                    water_L.Reward() #Deliver R reward
                     total_reward_L += reward_size
                     rewarded_side.append('L')
                     rewarded_trials.append(1)
