@@ -21,7 +21,7 @@ from pygame import mixer
 
 class tones():
 
-    def __init__(self, frequency, tone_length, pulse_length, high_freq, multipulse):
+    def __init__(self, frequency, tone_length, pulse_length):
 
         #Create a string that will be the name of the .wav file
         self.name = f'{frequency}Hz_{pulse_length}sec'
