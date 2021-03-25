@@ -21,7 +21,7 @@ from pygame import mixer
 
 class tones():
 
-    def __init__(self, frequency, tone_length, pulse_length):
+    def __init__(self, frequency, tone_length, pulse_length, high_freq, multipulse):
 
         #Create a string that will be the name of the .wav file
         self.name = f'{frequency}Hz_{pulse_length}sec'
@@ -140,8 +140,15 @@ class data():
         self.t_rew_r = np.empty(self.n_trials) #stores reward times from L lickport
         self.t_rew_r.fill(np.nan) #fills t_rew_r with nan since not all trials will be rewarded.
 
+        self.freq = np.empty(self.n_trials) #stores freq of presented tone in Hz
+        self.multipulse = np.empty(self.n_trials) #stores whether presented tone is multipulse(1) or singlepulse(0)
+        
+        self.freq_rule = np.empty(self.n_trials) #stores whether freq(1) or pulse(0) rule for each trial
+        self.left_port = np.empty(self.n_trials) #stores port assignment of tones
+        #if freq rule, left_port=1 means highfreq on left port
+        #if pulse rule, left_port=1 means multipulse on left port
 
-        self.filename = str(self.mouse_number) + '_' + str(self.date_experiment) + '_' + 'block' + str(self.block_number) + '.hdf5'
+        self.filename = 'ms' + str(self.mouse_number) + '_' + str(self.date_experiment) + '_' + 'block' + str(self.block_number) + '.hdf5'
 
     def Store(self):
 
@@ -176,6 +183,8 @@ class data():
             rew_l = f.create_group('rew_l')
             rew_r = f.create_group('rew_r')
 
+            rule = f.create_group('rule') #stores rules and tone assignments
+
             #Preinitialize datasets for each sub-datatype within licks, tones
             #and rewards
             lick_l_t = lick_l.create_dataset('t', (self.n_trials,), dtype = dtfloat)
@@ -186,6 +195,8 @@ class data():
             sample_tone_t = sample_tone.create_dataset('t', data = self.t_sample_tone, dtype = 'f8')
             sample_tone_type = sample_tone.create_dataset('type', data = self.sample_tone, dtype = 'S1')
             sample_tone_end = sample_tone.create_dataset('end', data = self.sample_tone_end, dtype = 'f8')
+            sample_tone_freq = sample_tone.create_dataset('freq', data = self.freq, dtype=int)
+            sample_tone_multipulse = sample_tone.create_dataset('multipulse', data = self.multipulse)
 
             go_tone_t = go_tone.create_dataset('t', data = self.t_go_tone)
             go_tone_end = go_tone.create_dataset('length', data = self.go_tone_end)
@@ -194,6 +205,9 @@ class data():
             rew_l_v = rew_l.create_dataset('volume', data = self.v_rew_l)
             rew_r_t = rew_r.create_dataset('t', data = self.t_rew_r)
             rew_r_v = rew_r.create_dataset('volume', data = self.v_rew_r)
+
+            freq_rule = rule.create_dataset('freq_rule', data = self.freq_rule)
+            left_port = rule.create_dataset('left_port', data = self.left_port)
 
             for trial in range(self.n_trials):
                 lick_l_t[trial] = self.lick_l[trial]['t']
@@ -215,33 +229,21 @@ class data():
                 contains time of reward (s) and its volume (uL)'
             t_start.attrs['title'] = 'When the trial begins (s)'
             t_end.attrs['title'] = 'When the trial ends (s)'
+            rule.attrs['title'] = 'Rule and port assignment. Freq_rule(1) -> freq rule; freq_rule(0) -> pulse rule. If freq rule, left_port(1) -> highfreq on left port; if pulse rule, left_port(1) -> multipulse on left port.'
 
     def Rclone(self):
-        os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{self.filename} /home/pi/Desktop/temporary-data')
+        #find yesterday's data for this mouse
+        yesterday_files = [fname for fname in os.listdir('/home/pi/Desktop/yesterday_data') if self.mouse_number in fname]
+
+        for fname in yesterday_files: #move yesterday's files to temp data folder
+            os.system(f'mv /home/pi/Desktop/yesterday_data/{fname} /home/pi/Desktop/temporary-data')
+
+        #move current file to yesterday_data folder
+        os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{self.filename} /home/pi/Desktop/yesterday_data')
+        #create folder on gdrive for today's data and copy file into that folder
         os.system(f'rclone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{self.mouse_number}')
         os.system(f'rclone mkdir gdrive:/Sébastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}')
-        os.system(f'rclone copy /home/pi/Desktop/temporary-data/{self.filename} gdrive:/Sébastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}')
-
-
-    def Plot(self, trial):
-        '''
-        parameters
-        --------
-        trial : int
-            The trial to plot
-
-        '''
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 1, 1)
-        ax.plot(self.lick_r[trial]['t'], self.lick_r[trial]['volt'], 'r')
-        ax.plot(self.lick_l[trial]['t'], self.lick_l[trial]['volt'], 'g')
-
-        ax.plot([self.t_tone, self.t_tone], [0, 5], 'k', linewidth = 2)
-
-        ax.plot([self.t_rew_l, self.t_rew_l], [0, 5], 'b', linewidth = 2)
-        ax.plot([self.t_rew_r, self.t_rew_r], [0, 5], 'b', linewidth = 2)
-
-        plt.savefig('data_plt.pdf')
+        os.system(f'rclone copy /home/pi/Desktop/yesterday_data/{self.filename} gdrive:/Sébastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}')
 
 
 class stepper():
