@@ -16,6 +16,7 @@ import numpy as np
 import os
 import threading
 import core
+import h5py
 from picamera import PiCamera
 from pygame import mixer
 
@@ -137,9 +138,11 @@ rewarded_trials = []
 
 if 'y' in [freq_rule, left_port]:  
     #get data from yesterday's experiment
-    yesterday_file = [fname for fname in os.listdir('/home/pi/Desktop/yesterday_data') if mouse_number in fname][0] #get yesterday's file for this mouse, should only be one.
+    yesterday_directory = '/home/pi/Desktop/yesterday_data'
+    yesterday_file = [fname for fname in os.listdir(yesterday_directory) if mouse_number in fname][0] #get yesterday's file for this mouse, should only be one.
 
-    import h5py
+    yesterday_file = yesterday_directory + '/' + yesterday_file
+
     f = h5py.File(yesterday_file, 'r') #open HDF5 file
     
     if freq_rule == 'y': #if experimenter did not specify freq_rule
