@@ -27,9 +27,14 @@ from pygame import mixer
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
-freq_rule = input('Frequency rule(1) or Pulse rule(0) (y for yesterdays rule): ')
-left_port = input('Port assignment: L(1) or R(0) (y for yesterdays rule): ')
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n)')
+
+yesterday = input('Use yesterdays rules? (y/n): ') #ask whether previous day's rule should be used
+
+if yesterday == 'n': #if not, ask user to specify the rule to be used
+    freq_rule = int(input('Frequency rule(1) or Pulse rule(0): '))
+    left_port = int(input('Port assignment: L(1) or R(0): '))
+
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
@@ -136,7 +141,7 @@ correct_trials = [] #will store recent correct/incorrect trials (for supp rew an
 
 #------ Assign tones according to rules -------
 
-if 'y' in [freq_rule, left_port]:  
+if yesterday == 'y':  
     #get data from yesterday's experiment
     yesterday_directory = '/home/pi/Desktop/yesterday_data'
     yesterday_file = [fname for fname in os.listdir(yesterday_directory) if mouse_number in fname][0] #get yesterday's file for this mouse, should only be one.
