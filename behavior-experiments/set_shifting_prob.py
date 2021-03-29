@@ -129,9 +129,9 @@ total_reward_L = 0
 supp_reward_L = 0
 total_reward_R = 0
 supp_reward_R = 0
-performance = 0 #will store the total number of correct responses.
-rewarded_side = []
-rewarded_trials = []
+performance = 0 #will store the total number of correct responses (to print at each trial)
+correct_side = [] #will store ports from which rewards were received (to track bias)
+correct_trials = [] #will store recent correct/incorrect trials (for supp rew and set shift)
 
 
 #------ Assign tones according to rules -------
@@ -225,48 +225,45 @@ for trial in trials:
         while time.time() * 1000 < resp_window_end:
 
             if sum(lick_port_L._licks[(length_L-1):]) > 0: #If first lick is L (correct)
-
-                response = 'L' #record response
-                performance += 1 
                 
                 if np.random.rand() < p_rew: #stochastic rew delivery for correct lick
 
                     data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-                    data.v_rew_l[trial] = reward_size
                     water_L.Reward() #Deliver L reward
+                    data.v_rew_l[trial] = reward_size
                     total_reward_L += reward_size
-                    rewarded_side.append('L')
-                    rewarded_trials.append(1)
 
                 else: #stochastic rew omission for correct lick
                     tone_wrong.Play()
-                    rewarded_trials.append(0)
+
+                response = 'L' #record response
+                performance += 1
+                correct_trials.append(1)
+                correct_side.append('L')
                     
                 break
 
             elif sum(lick_port_R._licks[(length_R-1):]) > 0: #If first lick is R (incorrect)
-
-                response = 'R'
                 
                 if np.random.rand() < p_rew: #stochastic rew omission for incorrect lick
 
                     tone_wrong.Play()
-                    rewarded_trials.append(0)
 
                 else: #stochastic rew delivery for incorrect lick
                     
                     data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-                    data.v_rew_r[trial] = reward_size
                     water_R.Reward() #Deliver R reward
+                    data.v_rew_r[trial] = reward_size
                     total_reward_R += reward_size
-                    rewarded_side.append('R')
-                    rewarded_trials.append(1)
+
+                response = 'R' #record response
+                correct_trials.append(0)
                     
                 break
 
         if response == 'N':
             tone_wrong.Play()
-            rewarded_trials.append(0)
+            correct_trials.append(0)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -298,48 +295,46 @@ for trial in trials:
 
                 
             if sum(lick_port_R._licks[(length_R-1):]) > 0: #If first lick is R (correct)
-
-                response = 'R' #record response
-                performance += 1
                     
                 if np.random.rand() < p_rew: #stochastic reward delivery
 
                     data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-                    data.v_rew_r[trial] = reward_size
                     water_R.Reward() #Deliver R reward
+                    data.v_rew_r[trial] = reward_size
                     total_reward_R += reward_size
-                    rewarded_side.append('R')
-                    rewarded_trials.append(1)
 
                 else: #stochastic reward omission
+
                     tone_wrong.Play()
-                    rewarded_trials.append(0)
+
+                response = 'R' #record response
+                performance += 1
+                correct_side.append('R')
+                correct_trials.append(1)
                     
                 break
 
             elif sum(lick_port_L._licks[(length_L-1):]) > 0: #If first lick is L (incorrect)
 
-                response = 'L'
-
                 if np.random.rand() < p_rew: #stochastic reward omission
 
-                    rewarded_trials.append(0)
                     tone_wrong.Play()
 
                 else: #stochastic rew delivery for incorrect choice
 
                     data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-                    data.v_rew_l[trial] = reward_size
                     water_L.Reward() #Deliver R reward
+                    data.v_rew_l[trial] = reward_size
                     total_reward_L += reward_size
-                    rewarded_side.append('L')
-                    rewarded_trials.append(1)
-         
+
+                response = 'L'
+                correct_trials.append(0)
+                    
                 break
 
         if response == 'N':
             tone_wrong.Play()
-            rewarded_trials.append(0)
+            correct_trials.append(0)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -377,22 +372,21 @@ for trial in trials:
     #if freq rule, left_port=1 means highfreq on left port
     #if pulse rule, left_port=1 means multipulse on left port
 
-    print(f'Performance: {performance}/{trial+1}')
+    print(f'Performance: {performance}/{trial+1}') #print performance/total trials to console
 
-    if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
+    if len(correct_trials) > 8 and sum(correct_trials[-8:]) == 0:
         #if 8 unrewarded trials in a row, deliver rewards through both ports.
         L_tone_a.Play()
         water_L.Reward()
         supp_reward_L += reward_size
-        rewarded_trials.append(1)
         time.sleep(1)
         R_tone_a.Play()
         water_R.Reward()
         supp_reward_R += reward_size
-        rewarded_trials.append(1)
         time.sleep(1)
+        correct_trials = []
 
-    if rewarded_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
+    if correct_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
         #if 5 rewards from L port in a row, deliver rewards through R port.
         for i in range(2):
 
@@ -404,9 +398,9 @@ for trial in trials:
             water_R.Reward()
             supp_reward_R += reward_size
             time.sleep(1)
-        rewarded_side.append('R')
+        correct_side.append('R') #Added so the supp rewards aren't triggered next trial
 
-    elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
+    elif correct_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         #if 5 rewards from R port in a row, deliver rewards through L port
         for i in range(2):
             
@@ -418,11 +412,11 @@ for trial in trials:
             water_L.Reward()
             supp_reward_L += reward_size
             time.sleep(1)
-        rewarded_side.append('L')
+        correct_side.append('L') #Added so the supp rewards aren't triggered next trial
 
-    if sum(rewarded_trials[-20:]) >= 18: #if more than 18 correct responses over last 20 trials
+    if sum(correct_trials[-20:]) >= 18: #if 18 or more correct responses over last 20 trials
            
-        rewarded_trials = [] #reset rewarded_trials
+        correct_trials = [] #reset rewarded_trials
            
         freq_rule = not freq_rule #reverse task set (rule)
         left_port = np.random.randint(0,2) #randomly assign port (0/1)
