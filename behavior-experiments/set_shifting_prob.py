@@ -24,7 +24,9 @@ from pygame import mixer
 #Set experimental parameters:
 #------------------------------------------------------------------------------
 
+experimenter = input('Initials: ') #gets experimenter initials
 mouse_number = input('mouse number: ' ) #asks user for mouse number
+mouse_weight = float(input('mouse weight(g): ')) #asks user for mouse weight in grams
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n)')
@@ -46,7 +48,7 @@ low_freq = 1000 #frequency of sample tone in left lick trials
 high_freq = 4000 #frequency of sample tone in right lick trials
 
 single_pulse_length = sample_tone_length #single tone pulse lasts the entire timexs
-multi_pulse_length = 0.05
+multi_pulse_length = 0.1
 
 wrong_tone_freq = 8000
 wrong_tone_length = 1
@@ -128,7 +130,7 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number)
+data = core.data(protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight1)
 
 total_reward_L = 0
 supp_reward_L = 0
