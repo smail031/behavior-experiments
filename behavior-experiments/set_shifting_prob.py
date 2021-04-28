@@ -130,7 +130,7 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight1)
+data = core.data(protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
 
 total_reward_L = 0
 supp_reward_L = 0
