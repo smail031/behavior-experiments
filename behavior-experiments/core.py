@@ -66,7 +66,7 @@ class tones():
 
 class data():
 
-    def __init__(self, protocol_description, n_trials, mouse_number, block_number):
+    def __init__(self, protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight):
         '''
         Creates an instance of the class Data which will store parameters for
         each trial, including lick data and trial type information.
@@ -106,6 +106,8 @@ class data():
         self.n_trials = n_trials
         self.block_number = block_number
         self.protocol_description = protocol_description
+        self.experimenter = experimenter
+        self.mouse_weight = mouse_weight
 
         self.t_experiment = time.strftime("%Y-%m-%d__%H:%M:%S",
                                      time.localtime(time.time()))
@@ -160,7 +162,8 @@ class data():
             f.attrs['animal'] = self.mouse_number
             f.attrs['time_experiment'] = self.t_experiment
             f.attrs['protocol_description'] = self.protocol_description
-            f.attrs['user'] = getpass.getuser()
+            f.attrs['experimenter'] = self.experimenter
+            f.attrs['mouse_weight'] = self.mouse_weight
 
             dtint = h5py.special_dtype(vlen = np.dtype('int32')) #Predefine variable-length
                                                             #dtype for storing t, volt
