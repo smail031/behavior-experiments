@@ -22,10 +22,18 @@ from pygame import mixer
 #Set experimental parameters:
 #------------------------------------------------------------------------------
 
+experimenter = input('Initials: ') #gets experimenter initials
 mouse_number = input('mouse number: ' ) #asks user for mouse number
+mouse_weight = float(input('mouse weight(g): '))
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n)')
+
+yesterday = input('Use yesterdays rules? (y/n): ') #ask whether previous day's rule should be used
+
+if yesterday == 'n': #if not, ask user to specify the rule to be used
+    freq_rule = int(input('Frequency rule(1) or Pulse rule(0): '))
+    left_port = int(input('Port assignment: L(1) or R(0): '))
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 
@@ -35,7 +43,7 @@ low_freq = 1000 #frequency of lower freq sample tone
 high_freq = 4000 #frequency of lower freq sample tone
 
 single_pulse_length = sample_tone_length
-multi_pulse_length = 0.05
+multi_pulse_length = 0.1
 
 reward_size = 8.2 #size of water rewards in uL
 
@@ -88,12 +96,11 @@ water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
-#create tones
-tone_A = core.tones(low_freq, sample_tone_length, single_pulse_length) #1000Hz single pulse
-tone_B = core.tones(low_freq, sample_tone_length, multi_pulse_length) #1000Hz multi pulse
-tone_C = core.tones(high_freq, sample_tone_length, single_pulse_length) #4000Hz single pulse
-tone_D = core.tones(high_freq, sample_tone_length, multi_pulse_length) #4000Hz multi pulse
-
+#create instruction tones
+lowfreq_singlepulse = core.tones(low_freq, sample_tone_length, single_pulse_length) #1000Hz single pulse
+lowfreq_multipulse = core.tones(low_freq, sample_tone_length, multi_pulse_length) #1000Hz multi pulse
+highfreq_singlepulse = core.tones(high_freq, sample_tone_length, single_pulse_length) #4000Hz single pulse
+highfreq_multipulse = core.tones(high_freq, sample_tone_length, multi_pulse_length) #4000Hz multi pulse
 
 if ttl_experiment == 'y':
     #set up ttl class instances triggers and marker TTL output
@@ -110,15 +117,56 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number)
+data = core.data(protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
 
 total_reward_L = 0
 total_reward_R = 0
 
-tone_L_A = tone_A #assign tones
-tone_L_B = tone_B
-tone_R_A = tone_C
-tone_R_B = tone_D
+#------ Assign tones according to rules -------
+
+if yesterday == 'y':  
+    #get data from yesterday's experiment
+    yesterday_directory = '/home/pi/Desktop/yesterday_data'
+    yesterday_file = [fname for fname in os.listdir(yesterday_directory) if mouse_number in fname][0] #get yesterday's file for this mouse, should only be one.
+
+    yesterday_file = yesterday_directory + '/' + yesterday_file
+
+    f = h5py.File(yesterday_file, 'r') #open HDF5 file
+    
+    freq_rule = f['rule']['freq_rule'][-1] #get value of freq_rule of last trial yesterday
+    left_port = f['rule']['left_port'][-1] #get value of left_port of last trial yesterday
+            
+if freq_rule == 1: #Tone freq is relevant dimension (pulsing is irrelevant)
+
+    if left_port == 1: #highfreq tones are on L port (lowfreq -> R port)
+
+        L_tone_a = highfreq_singlepulse
+        L_tone_b = highfreq_multipulse
+        R_tone_a = lowfreq_singlepulse
+        R_tone_b = lowfreq_multipulse
+
+    elif left_port ==0: #highfreq is on R port (lowfreq -> L port)
+
+        L_tone_a = lowfreq_singlepulse
+        L_tone_b = lowfreq_multipulse
+        R_tone_a = highfreq_singlepulse
+        R_tone_b = highfreq_multipulse
+
+elif freq_rule == 0: #Tone pulsing is relevant dimension (freq is irrelevant)
+  
+    if left_port == 1: #multipulse tones are on L port (singlepulse -> R port)
+
+        L_tone_a = highfreq_multipulse
+        L_tone_b = lowfreq_multipulse
+        R_tone_a = highfreq_singlepulse
+        R_tone_b = lowfreq_singlepulse
+
+    elif left_port ==0: #multipulse is on R port (singlepulse -> L port)
+
+        L_tone_a = highfreq_singlepulse
+        L_tone_b = lowfreq_singlepulse
+        R_tone_a = highfreq_multipulse
+        R_tone_b = lowfreq_multipulse
 
 for trial in trials:
 
@@ -154,11 +202,11 @@ for trial in trials:
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         if np.random.rand() > 0.5:
-            tone_L_A.Play()
+            L_tone_a.Play()
         else:
-            tone_L_B.Play()
+            L_tone_b.Play()
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-
+v
         time.sleep(trace_period)
         
         data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
@@ -179,9 +227,9 @@ for trial in trials:
 
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
         if np.random.rand() > 0.5:
-            tone_R_A.Play()
+            R_tone_a.Play()
         else:
-            tone_R_B.Play()
+            R_tone_b.Play()
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         time.sleep(trace_period)
@@ -240,7 +288,7 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
 
 #delete the .wav files created for the experiment
-tone_A.Delete()
-tone_B.Delete()
-tone_C.Delete()
-tone_D.Delete()
+lowfreq_singlepulse.Delete()
+lowfreq_multipulse.Delete()
+highfreq_singlepulse.Delete()
+highfreq_multipulse.Delete()
