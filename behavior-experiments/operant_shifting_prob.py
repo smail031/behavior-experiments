@@ -27,6 +27,7 @@ mouse_number = input('mouse number: ' ) #asks user for mouse number
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n)')
+prompt = input('Syringe check: ')
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
@@ -38,7 +39,7 @@ low_freq = 1000 #frequency of sample tone in left lick trials
 high_freq = 4000 #frequency of sample tone in right lick trials
 
 single_pulse_length = sample_tone_length #single tone pulse lasts the entire timexs
-multi_pulse_length = 0.05
+multi_pulse_length = 0.2
 
 wrong_tone_freq = 8000
 wrong_tone_length = 1
