@@ -30,6 +30,7 @@ mouse_weight = float(input('mouse weight(g): ')) #asks user for mouse weight in 
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n)')
+syringe_check = input('Syringe check: ')
 
 yesterday = input('Use yesterdays rules? (y/n): ') #ask whether previous day's rule should be used
 
@@ -48,7 +49,7 @@ low_freq = 1000 #frequency of sample tone in left lick trials
 high_freq = 4000 #frequency of sample tone in right lick trials
 
 single_pulse_length = sample_tone_length #single tone pulse lasts the entire timexs
-multi_pulse_length = 0.1
+multi_pulse_length = 0.2
 
 wrong_tone_freq = 8000
 wrong_tone_length = 1
