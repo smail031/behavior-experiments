@@ -155,7 +155,10 @@ if yesterday == 'y':
     
     freq_rule = f['rule']['freq_rule'][-1] #get value of freq_rule of last trial yesterday
     left_port = f['rule']['left_port'][-1] #get value of left_port of last trial yesterday
-            
+
+print(f'Rule = [{freq_rule},{left_port}]'
+
+
 if freq_rule == 1: #Tone freq is relevant dimension (pulsing is irrelevant)
 
     if left_port == 1: #highfreq tones are on L port (lowfreq -> R port)
