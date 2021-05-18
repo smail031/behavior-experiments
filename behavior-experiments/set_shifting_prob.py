@@ -153,8 +153,8 @@ if yesterday == 'y':
 
     f = h5py.File(yesterday_file, 'r') #open HDF5 file
     
-    freq_rule = f['rule']['freq_rule'][-1] #get value of freq_rule of last trial yesterday
-    left_port = f['rule']['left_port'][-1] #get value of left_port of last trial yesterday
+    freq_rule = int(f['rule']['freq_rule'][-1]) #get value of freq_rule of last trial yesterday
+    left_port = int(f['rule']['left_port'][-1]) #get value of left_port of last trial yesterday
 
 print(f'Rule = [{freq_rule},{left_port}]')
 
