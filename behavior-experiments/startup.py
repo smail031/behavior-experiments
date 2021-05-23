@@ -9,12 +9,12 @@ from picamera import PiCamera #Allows us to control the Raspberry Pi camera
 #Assign General Purpose Input/Output (GPIO) pins:
 #----------------------------
 
-servo_PWM = 17 #PWM pin for servo that adjusts lickport distance
-
+#Each syringe pump has 4 pins: enable, direction, step and empty(limit).
 L_enablePIN = 23 #enable pin for left stepper motor
 L_directionPIN = 24 #direction pin for left stepper motor
 L_stepPIN = 25 #step pin for left stepper motor
 L_emptyPIN = 20 #empty switch pin for left stepper motor
+
 L_lickometer = 12 #input pin for lickometer (black wire)
 
 
@@ -22,10 +22,8 @@ R_enablePIN = 10 #enable pin for right stepper motor
 R_directionPIN = 9 #direction pin for right stepper motor
 R_stepPIN = 11 #step pin for right stepper motor
 R_emptyPIN = 21 #empty switch pin for right stepper motor
-R_lickometer = 16 #input pin for lickometer (black wire)
 
-TTL_trigger_PIN = 15 # output for TTL pulse triggers to start/end laser scans
-TTL_marker_PIN = 27 # output for TTL pulse markers
+R_lickometer = 16 #input pin for lickometer (black wire)
 
 
 #----------------------------
