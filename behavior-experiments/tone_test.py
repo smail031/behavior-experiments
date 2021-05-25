@@ -1,3 +1,4 @@
+
 import time
 import numpy as np
 import os
@@ -53,8 +54,22 @@ mixer.init(frequency = 44100)
 #sound.Delete()
 
 #Create silent channel
-os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 silent.wav synth 2 sin 4000 vol -20dB')
+os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin 4000 vol -200dB')
 
-sound = mixer.Sound('silent.wav')
-sound.play()
+#Create sounds channel
+os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 sound.wav synth 2 sin 4000 vol -20dB')
+
+#merge channels two different ways to create left and right tones 
+os.system(f'sox -M silent.wav sound.wav right.wav')
+os.system(f'sox -M sound.wav silent.wav left.wav')
+
+right = mixer.Sound('right.wav')
+left = mixer.Sound('left.wav')
+print('right')
+right.play()
+time.sleep(4)
+print('left')
+left.play()
+time.sleep(2)
+
 
