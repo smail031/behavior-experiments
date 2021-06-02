@@ -109,6 +109,9 @@ class data():
         self.experimenter = experimenter
         self.mouse_weight = mouse_weight
 
+        self.exp_quality = '' #'y' if experiment was good, 'n' if there were problems.
+        self.exp_msg = '' #if problems, user will explain. 
+
         self.t_experiment = time.strftime("%Y-%m-%d__%H:%M:%S",
                                      time.localtime(time.time()))
         self.date_experiment = time.strftime("%Y-%m-%d",
@@ -164,6 +167,8 @@ class data():
             f.attrs['protocol_description'] = self.protocol_description
             f.attrs['experimenter'] = self.experimenter
             f.attrs['mouse_weight'] = self.mouse_weight
+            f.attrs['experimental_quality'] = self.exp_quality
+            f.attrs['experimental_message'] = self.exp_msg
 
             dtint = h5py.special_dtype(vlen = np.dtype('int32')) #Predefine variable-length
                                                             #dtype for storing t, volt

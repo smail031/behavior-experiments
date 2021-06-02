@@ -481,6 +481,13 @@ camera.stop_preview()
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
 print(f'Total R reward: {total_reward_R} uL + {supp_reward_R}')
 print(f'Total reward: {total_reward_L+supp_reward_L+total_reward_R+supp_reward_R}uL')
+
+data.exp_quality = input('Should this data be used? (y/n): ') #ask user whether there were problems with the experiment
+
+if data.exp_quality == 'n':
+    data.exp_msg = input('What went wrong?: ') #if there was a problem, user can explain
+
+
 data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
