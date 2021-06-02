@@ -94,9 +94,11 @@ lick_port_R = core.lickometer(R_lickometer)
 print('Testing lick detection.')
 
 left_works = False #this will be set to True if a contact
-while left_works == False: 
+while left_works == False:
+
+    thread_L = threading.Thread(target=lick_port_L.Lick, args=(1000,10))                
+    thread_L.start() #start left lickport thread
     
-    lick_port_L.Lick(1000,10) #start left lickport thread
     print('Touch ground + left lickport')
     start_time = time.time() #get a timestamp for the start of lick detection
 
@@ -123,8 +125,10 @@ while left_works == False:
 #Same thing for the R lickport
 right_works = False
 while right_works == False:
+
+    thread_R = threading.Thread(target=lick_port_R.Lick, args=(1000,10))
+    thread_R.start()
     
-    lick_port_R.Lick(1000,10) 
     print('Touch ground + right lickport')
     start_time = time.time()
 
@@ -149,7 +153,7 @@ while right_works == False:
 #----------------------------
 
 camera = PiCamera() #create camera object
-camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
+camera.start_preview(fullscreen = False, window = (0,-44,350,400))
 #starts the camera in preview mode
 
 test_cam = input('Confirm that camera is working (ENTER)')
