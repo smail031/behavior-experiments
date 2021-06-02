@@ -127,7 +127,7 @@ camera = PiCamera() #create camera object
 #Initialize experiment
 #----------------------------
 
-camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
+camera.start_preview(fullscreen = False, window = (0,-44,350,400))
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)

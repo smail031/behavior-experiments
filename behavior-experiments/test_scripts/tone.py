@@ -1,5 +1,6 @@
 import os
 from pygame import mixer
+import time
 
 class tones():
 
@@ -26,8 +27,8 @@ class tones():
 
 mixer.init(frequency = 44100) #initialize the mixer at the proper sampling rate
 
-tone_freq = input('Frequency (Hz):')
-tone_length = input('Length (s):')
+tone_freq = int(input('Frequency (Hz):'))
+tone_length = int(input('Length (s):'))
 
 tone = tones(tone_freq,tone_length)
 
