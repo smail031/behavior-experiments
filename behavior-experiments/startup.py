@@ -44,22 +44,25 @@ GPIO.setup(R_enablePIN, GPIO.OUT, initial = 1)
 #Test and refill syringe pumps:
 #----------------------------
 
-#create Stepper class instances for left and right reward delivery
-water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
-water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
+refill = input('Refill tubes? (y/n): ')
 
-syringe_test = input('Prepare syringes for refill (ENTER) ')
-#nothing is stored, just to make sure user is ready
-
-left_thread = threading.Thread(target = water_L.Refill) #Initialize thread for L syringe
-right_thread = threading.Thread(target = water_R.Refill) #Initialize thread for R syringe
-#The thread will run the stepper.Refill method, and can run several instances simultaneously
-
-left_thread.start() #start thread for L syringe
-right_thread.start() #start thread for R syringe
-
-tube_fill = input('Reconnect and fill water tubes (ENTER) ')
-#reminder to reconnect and manually spin the syringe pumps
+if refill == 'y':
+    #create Stepper class instances for left and right reward delivery
+    water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
+    water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
+    
+    syringe_test = input('Prepare syringes for refill (ENTER) ')
+    #nothing is stored, just to make sure user is ready
+    
+    left_thread = threading.Thread(target = water_L.Refill) #Initialize thread for L syringe
+    right_thread = threading.Thread(target = water_R.Refill) #Initialize thread for R syringe
+    #The thread will run the stepper.Refill method, and can run several instances simultaneously
+    
+    left_thread.start() #start thread for L syringe
+    right_thread.start() #start thread for R syringe
+    
+    tube_fill = input('Reconnect and fill water tubes (ENTER) ')
+    #reminder to reconnect and manually spin the syringe pumps
 
 #----------------------------
 #Test speakers:
@@ -90,15 +93,10 @@ lick_port_R = core.lickometer(R_lickometer)
 
 print('Testing lick detection.')
 
-#Initializing threads for L and R lickports. Sampling at 1000Hz for 10 seconds
-thread_L_lick = threading.Thread(target = lick_port_L.Lick, args = (1000, 10))
-thread_R_lick = threading.Thread(target = lick_port_R.Lick, args = (1000, 10))
-#will run the lickometer.Lick method
-
 left_works = False #this will be set to True if a contact
 while left_works == False: 
     
-    thread_L_lick.start() #start left lickport thread
+    lick_port_L.Lick(1000,10) #start left lickport thread
     print('Touch ground + left lickport')
     start_time = time.time() #get a timestamp for the start of lick detection
 
@@ -126,7 +124,7 @@ while left_works == False:
 right_works = False
 while right_works == False:
     
-    thread_R_lick.start()
+    lick_port_R.Lick(1000,10) 
     print('Touch ground + right lickport')
     start_time = time.time()
 
