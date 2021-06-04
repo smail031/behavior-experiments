@@ -383,6 +383,12 @@ for trial in trials:
 
     print(f'Performance: {performance}/{trial+1}') #print performance/total trials to console
 
+    if sum(lick_port_L._licks) == 0:
+        print('No Left licks detected')
+
+    if sum(lick_port_R._licks) == 0:
+        print('No Right licks detected')
+
     if len(correct_trials) > 8 and sum(correct_trials[-8:]) == 0:
         #if 8 unrewarded trials in a row, deliver rewards through both ports.
         L_tone_a.Play()
