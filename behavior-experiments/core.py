@@ -21,7 +21,7 @@ from pygame import mixer
 
 class tones():
 
-    def __init__(self, frequency, tone_length, pulse_length):
+    def __init__(self, frequency, tone_length, pulsing=False, loc='B'):
 
         #Create a string that will be the name of the .wav file
         self.name = f'{frequency}Hz_{pulse_length}sec'
@@ -37,12 +37,12 @@ class tones():
 
         if self.multi_pulse == False:
             #create a waveform called self.name from frequency and pulse_length
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 {self.name}.wav synth {self.pulse_length} sin {self.freq} vol -20dB')
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 {self.name}.wav synth {self.pulse_length} sin {self.freq} vol -20dB')
 
         elif self.multi_pulse == True:
             #create an empty wav file that will be the inter-pulse interval
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 pulse.wav synth {self.pulse_length} sin {self.freq} vol -20dB') #tone
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 2 interpulse.wav synth {self.pulse_length} sin {self.freq} vol -150dB') #silent interpulse interval
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 pulse.wav synth {self.pulse_length} sin {self.freq} vol -20dB') #tone
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 interpulse.wav synth {self.pulse_length} sin {self.freq} vol -150dB') #silent interpulse interval
 
             #string with pulse/interpulse repeated for number of pulses
             concat_files = ' pulse.wav interpulse.wav' * int(self.pulse_number)
@@ -51,6 +51,31 @@ class tones():
 
             os.system(f'rm pulse.wav') #delete the pulse and interpulse, no longer useful.
             os.system(f'rm interpulse.wav')
+
+        if loc == 'L': #will create a tone coming from left speaker
+
+            #create a silent channel called silent.wav 
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin 4000 vol -200dB')
+
+            #merge the two channels such that the silent is on the right
+            os.system(f'sox -M {self.name}.wav silent.wav {self.name}.wav')
+
+            os.system(f'rm silent.wav') #delete silent channel
+
+        elif loc == 'R': #will create a tone coming from right speaker
+
+            #create a silent channel called silent.wav 
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin 4000 vol -200dB')
+
+            #merge the two channels such that the silent is on the left
+            os.system(f'sox -M silent.wav {self.name}.wav {self.name}.wav')
+
+            os.system(f'rm silent.wav') #delete silent channel
+
+        elif loc == 'B': #will create a tone coming from both speakers
+
+            #merge the tone with itself to get a sound from both speakers
+            os.system(f'sox -M {self.name}.wav {self.name}.wav {self.name}.wav')
 
         self.sound = mixer.Sound(f'{self.name}.wav')
 
