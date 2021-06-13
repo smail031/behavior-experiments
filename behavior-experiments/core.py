@@ -28,7 +28,7 @@ class tones():
         self.freq = frequency
         self.tone_length = tone_length
         self.pulsing = pulsing
-        self.loc
+        self.loc = locs
         self.pulse_length = 0.2
 
         if self.pulsing == False:
