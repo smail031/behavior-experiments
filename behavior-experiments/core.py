@@ -71,10 +71,10 @@ class tones():
 
             os.system(f'rm silent.wav') #delete silent channel
 
-        elif self.loc == 'B': #will create a tone coming from both speakers
+        #elif self.loc == 'B': #will create a tone coming from both speakers
 
             #merge the tone with itself to get a sound from both speakers
-            os.system(f'sox -M {self.name}.wav {self.name}.wav {self.name}.wav')
+            #os.system(f'sox -M {self.name}.wav {self.name}.wav {self.name}.wav')
 
         self.sound = mixer.Sound(f'{self.name}.wav')
 
