@@ -371,7 +371,7 @@ for trial in trials:
         storage[trial]['volt'] = rawdata_list[ind]._licks
         
     data.freq[trial] = tone.freq #store tone frequency
-    data.multipulse[trial] = tone.multi_pulse #store whether multipulse(1) or single pulse(0)
+    data.loc[trial] = tone.loc #store whether multipulse(1) or single pulse(0)
 
     data.freq_rule[trial] = freq_rule #store whether freq(1) or pulse(0) rule is in effect
     data.left_port[trial] = left_port #store port assighment of tones
