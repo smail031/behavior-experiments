@@ -6,6 +6,11 @@ from pygame import mixer
 
 mixer.init(frequency = 44100)
 
+low_freq = 1000
+high_freq = 4000
+
+tone_length = 2
+
 lowfreq_L = core.tones(low_freq, sample_tone_length, loc='L') #1000Hz single pulse
 lowfreq_R = core.tones(low_freq, sample_tone_length, loc='R') #1000Hz multi pulse
 highfreq_L = core.tones(high_freq, sample_tone_length, loc='L') #4000Hz single pulse
