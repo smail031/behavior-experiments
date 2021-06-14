@@ -188,7 +188,7 @@ class data():
 
     def Store(self):
 
-        if os.path.exists(self.filename) and not force:
+        if os.path.exists(self.filename):
             raise IOError(f'File {self.filename} already exists.')
 
         with h5py.File(self.filename, 'w') as f:
