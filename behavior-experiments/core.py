@@ -31,6 +31,10 @@ class tones():
         self.loc = loc
         self.pulse_length = 0.2
 
+        self.vol = -20
+        if self.freq == 4000:
+            self.vol = -30
+
         if self.pulsing == False:
             #create a waveform called self.name from frequency and pulse_length
             os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 {str(self.freq)}.wav synth {self.tone_length} sin {self.freq} vol -20dB')
