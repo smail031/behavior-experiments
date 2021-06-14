@@ -223,11 +223,6 @@ for trial in trials:
 
         time.sleep(trace_period)
 
-        response = 'N'
-        length_L = len(lick_port_L._licks)
-        length_R = len(lick_port_R._licks)
-        resp_window_end = time.time()*1000 + response_delay
-
         data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
         water_L.Reward() #Deliver L reward
         data.v_rew_l[trial] = reward_size
