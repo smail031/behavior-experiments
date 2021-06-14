@@ -31,9 +31,9 @@ class tones():
         self.loc = loc
         self.pulse_length = 0.2
 
-        self.vol = -20
+        self.vol = 0
         if self.freq == 4000:
-            self.vol = -45
+            self.vol = -20
 
         if self.pulsing == False:
             #create a waveform called self.name from frequency and pulse_length
