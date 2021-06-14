@@ -172,7 +172,7 @@ class data():
         self.t_rew_r.fill(np.nan) #fills t_rew_r with nan since not all trials will be rewarded.
 
         self.freq = np.empty(self.n_trials) #stores freq of presented tone in Hz
-        self.loc = np.empty(self.n_trials, dtype=str) #stores whether tone came from L or R speaker
+        self.loc = np.empty(self.n_trials, dtype='S1') #stores whether tone came from L or R speaker
         self.multipulse = np.empty(self.n_trials) #stores whether presented tone is multipulse(1) or singlepulse(0)
         
         self.freq_rule = np.empty(self.n_trials) #stores whether freq(1) or pulse(0) rule for each trial
