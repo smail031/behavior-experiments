@@ -71,7 +71,7 @@ if refill == 'y':
 #initialize the mixer (for tones) at the proper sampling rate.
 mixer.init(frequency = 44100)
 
-test_tone = core.tones(1000,2,2) #generates a .wav file with a 2 second tone at 1000Hz
+test_tone = core.tones(1000,2) #generates a .wav file with a 2 second tone at 1000Hz
 
 print('Testing speakers.')
 
