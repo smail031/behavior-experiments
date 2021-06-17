@@ -32,7 +32,7 @@ class tones():
             
         self.freq = frequency
         self.tone_length = tone_length
-        self.pulsing = pulsing
+        self.multi_pulse = pulsing
         self.loc = loc
         self.pulse_length = 0.2
 
