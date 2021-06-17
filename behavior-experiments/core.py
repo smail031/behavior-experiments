@@ -24,7 +24,12 @@ class tones():
     def __init__(self, frequency, tone_length, pulsing=False, loc='B'):
 
         #Create a string that will be the name of the .wav file
-        self.name = f'{frequency}Hz_{loc}'
+        if pulsing:           
+            self.name = f'{frequency}Hz_{loc}_pulsing'
+
+        else:
+            self.name = = f'{frequency}Hz_{loc}'
+            
         self.freq = frequency
         self.tone_length = tone_length
         self.pulsing = pulsing
