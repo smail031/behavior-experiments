@@ -40,11 +40,11 @@ class tones():
         if self.freq == 4000:
             self.vol = -22
 
-        if self.pulsing == False:
+        if self.multi_pulse == False:
             #create a waveform called self.name from frequency and pulse_length
             os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 {str(self.freq)}Hz_B.wav synth {self.tone_length} sin {self.freq} vol {self.vol}dB')
 
-        elif self.pulsing == True:
+        elif self.multi_pulse == True:
 
             self.pulse_number = self.tone_length/(2*self.pulse_length) # 2 because of the interpulse interval
             
