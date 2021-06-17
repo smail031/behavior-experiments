@@ -108,13 +108,13 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 #create instruction tones
-lowfreq_singlepulse = core.tones(low_freq, sample_tone_length, single_pulse_length) #1000Hz single pulse
-lowfreq_multipulse = core.tones(low_freq, sample_tone_length, multi_pulse_length) #1000Hz multi pulse
-highfreq_singlepulse = core.tones(high_freq, sample_tone_length, single_pulse_length) #4000Hz single pulse
-highfreq_multipulse = core.tones(high_freq, sample_tone_length, multi_pulse_length) #4000Hz multi pulse
+lowfreq_singlepulse = core.tones(low_freq, sample_tone_length) #1000Hz single pulse
+lowfreq_multipulse = core.tones(low_freq, sample_tone_length, pulsing=True) #1000Hz multi pulse
+highfreq_singlepulse = core.tones(high_freq, sample_tone_length) #4000Hz single pulse
+highfreq_multipulse = core.tones(high_freq, sample_tone_length, pulsing=True) #4000Hz multi pulse
 
 #create tone that is used as an error signal
-tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length, wrong_tone_length)
+tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 
 if ttl_experiment == 'y':
     #set up ttl class instances triggers and marker TTL output
