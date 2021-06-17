@@ -28,7 +28,7 @@ class tones():
             self.name = f'{frequency}Hz_{loc}_pulsing'
 
         else:
-            self.name = = f'{frequency}Hz_{loc}'
+            self.name = f'{frequency}Hz_{loc}'
             
         self.freq = frequency
         self.tone_length = tone_length
