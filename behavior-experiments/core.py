@@ -42,7 +42,7 @@ class tones():
 
         if self.pulsing == False:
             #create a waveform called self.name from frequency and pulse_length
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 {str(self.freq)}_B.wav synth {self.tone_length} sin {self.freq} vol {self.vol}dB')
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 {str(self.freq)}Hz_B.wav synth {self.tone_length} sin {self.freq} vol {self.vol}dB')
 
         elif self.pulsing == True:
 
