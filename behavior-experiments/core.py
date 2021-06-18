@@ -66,10 +66,10 @@ class tones():
             os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin 4000 vol -200dB')
 
             #merge the two channels such that the silent is on the right
-            os.system(f'sox -M {str(self.freq)}.wav silent.wav {self.name}.wav')
+            os.system(f'sox -M {str(self.freq)}Hz_B.wav silent.wav {self.name}.wav')
 
             os.system('rm silent.wav') #delete silent channel
-            os.system(f'rm {str(self.freq)}.wav') #delete sound channel
+            os.system(f'rm {str(self.freq)}Hz_B.wav') #delete sound channel
             
         elif self.loc == 'R': #will create a tone coming from right speaker
 
@@ -77,10 +77,10 @@ class tones():
             os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin 4000 vol -200dB')
 
             #merge the two channels such that the silent is on the left
-            os.system(f'sox -M silent.wav {str(self.freq)}.wav {self.name}.wav')
+            os.system(f'sox -M silent.wav {str(self.freq)}Hz_B.wav {self.name}.wav')
 
             os.system(f'rm silent.wav') #delete silent channel
-            os.system(f'rm {str(self.freq)}.wav') #delete sound channel
+            os.system(f'rm {str(self.freq)}Hz_B.wav') #delete sound channel
 
         #elif self.loc == 'B': #will create a tone coming from both speakers
 
