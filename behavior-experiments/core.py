@@ -37,7 +37,7 @@ class tones():
         self.pulse_length = 0.2
 
         self.vol = -5
-        if self.freq > 4000:
+        if self.freq >= 4000:
             self.vol = -30
 
         if self.multi_pulse == False:
