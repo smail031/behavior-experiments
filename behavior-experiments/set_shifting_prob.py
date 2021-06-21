@@ -112,9 +112,7 @@ lick_port_R = core.lickometer(R_lickometer)
 
 #create instruction tones
 lowfreq_singlepulse = core.tones(low_freq, sample_tone_length) #1000Hz single pulse
-print('ya')
 lowfreq_multipulse = core.tones(low_freq, sample_tone_length, pulsing=True) #1000Hz multi pulse
-print('ya')
 highfreq_singlepulse = core.tones(high_freq, sample_tone_length) #4000Hz single pulse
 highfreq_multipulse = core.tones(high_freq, sample_tone_length, pulsing=True) #4000Hz multi pulse
 
