@@ -51,8 +51,8 @@ sample_tone_length = 2 #length of sample tone
 low_freq = 1000 #frequency of sample tone in left lick trials
 high_freq = 4000 #frequency of sample tone in right lick trials
 
-single_pulse_length = sample_tone_length #single tone pulse lasts the entire timexs
-multi_pulse_length = 0.2
+#single_pulse_length = sample_tone_length #single tone pulse lasts the entire timexs
+#multi_pulse_length = 0.2
 
 wrong_tone_freq = 8000
 wrong_tone_length = 1
@@ -112,7 +112,9 @@ lick_port_R = core.lickometer(R_lickometer)
 
 #create instruction tones
 lowfreq_singlepulse = core.tones(low_freq, sample_tone_length) #1000Hz single pulse
+print('ya')
 lowfreq_multipulse = core.tones(low_freq, sample_tone_length, pulsing=True) #1000Hz multi pulse
+print('ya')
 highfreq_singlepulse = core.tones(high_freq, sample_tone_length) #4000Hz single pulse
 highfreq_multipulse = core.tones(high_freq, sample_tone_length, pulsing=True) #4000Hz multi pulse
 
