@@ -34,7 +34,7 @@ def press_callback(key):
 
         stepper.Run()
 
- def release_callback(key):
+def release_callback(key):
 
     if key == Key.space:
 
