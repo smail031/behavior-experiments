@@ -28,7 +28,7 @@ R_lickometer = 16 #input pin for lickometer (black wire)
 
 def press_callback(key):
 
-    print('SPACE:move motor, BACKSPACE:quit')
+    #print('SPACE:move motor, BACKSPACE:quit')
 
     if key == Key.space:
 
