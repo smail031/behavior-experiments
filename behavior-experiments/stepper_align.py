@@ -62,7 +62,12 @@ while syringe == True:
     else:
         print('Not recognized.')
 
-    listen = Listener(on_press=press_callback, on_release=release_callback)
-    
-    listen.start()
-    listen.join()
+    testing = True
+    while testing == True:
+        
+        listen = Listener(on_press=press_callback, on_release=release_callback)
+        
+        listen.start()
+        listen.join()
+
+        print('ya')
