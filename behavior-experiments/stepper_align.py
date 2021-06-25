@@ -36,9 +36,9 @@ def press_callback(key):
 
  def release_callback(key):
 
-     if key == Key.space:
+    if key == Key.space:
 
-         stepper.cont = False
+        stepper.cont = False
     
 
 syringe = True
