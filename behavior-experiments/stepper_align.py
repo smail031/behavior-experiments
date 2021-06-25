@@ -38,6 +38,8 @@ def release_callback(key):
 
     if key == Key.space:
 
+        print('released')
+
         stepper.cont = False
     
 
