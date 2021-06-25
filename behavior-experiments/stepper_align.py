@@ -33,7 +33,7 @@ def press_callback(key):
     if key == Key.space:
 
         stepper.cont = True
-        stepper.Motor(1,200)
+        stepper.Motor(1,100)
 
 def release_callback(key):
 
