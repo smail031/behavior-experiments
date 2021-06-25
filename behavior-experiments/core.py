@@ -308,12 +308,17 @@ class stepper():
         GPIO.output(self.enablePIN, 0) #enable the stepper motor
         GPIO.output(self.directionPIN, direction) #set direction
 
-        for i in range(int(steps)): #move in "direction" for "steps"
-            GPIO.output(self.stepPIN, 1)
-            time.sleep(0.0001)
-            GPIO.output(self.stepPIN, 0)
-            time.sleep(0.0001)
+        if GPIO.input(self.emptyPIN):
+            
+            for i in range(int(steps)): #move in "direction" for "steps"
+                GPIO.output(self.stepPIN, 1)
+                time.sleep(0.0001)
+                GPIO.output(self.stepPIN, 0)
+                time.sleep(0.0001)
 
+        else:
+
+            print('the syringe is empty')
         self.Disable() #disable stepper (to prevent overheating)
 
     def Reward(self,):
