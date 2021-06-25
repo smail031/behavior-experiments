@@ -32,7 +32,7 @@ def press_callback(key):
 
     if key == Key.space:
 
-        stepper.Run()
+        stepper.Motor(1, 200)
 
 def release_callback(key):
 
