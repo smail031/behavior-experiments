@@ -298,6 +298,7 @@ class stepper():
         self.directionPIN = directionPIN
         self.stepPIN = stepPIN
         self.emptyPIN = emptyPIN
+        self.cont = False
 
         GPIO.setup(self.enablePIN, GPIO.OUT, initial=1)
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
@@ -343,6 +344,16 @@ class stepper():
     def Disable(self):
 
         GPIO.output(self.enablePIN, 1) #disable stepper (to prevent overheating)
+
+    def Run(self):
+
+        self.cont = True
+        while self.cont == True:
+
+            if GPIO.input(self.emptyPIN):
+                self.Motor(1,200)
+        
+            
 
 
 class lickometer():

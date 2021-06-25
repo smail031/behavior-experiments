@@ -29,17 +29,16 @@ R_lickometer = 16 #input pin for lickometer (black wire)
 def press_callback(key):
 
     print('SPACE:move motor, BACKSPACE:quit')
-    #testing = True
-    #while testing == True:
-        
+
     if key == Key.space:
 
-        stepper.Motor(1,100)
-        
-    #if key == Key.backspace:
+        stepper.Run()
 
-    #testing = False
-    print('done')
+ def release_callback(key):
+
+     if key == Key.space:
+
+         stepper.cont = False
     
 
 syringe = True
