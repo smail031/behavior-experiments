@@ -23,17 +23,17 @@ L_lickometer = 12 #input pin for lickometer (black wire)
 R_enablePIN = 10 #enable pin for right stepper motor
 R_directionPIN = 9 #direction pin for right stepper motor
 R_stepPIN = 11 #step pin for right stepper motor
-R_emptyPIN = 21 #empty switch pin for right stepper motor
+R_emptyPIN = 21 #empty switch pin for right stepper msotor
 R_lickometer = 16 #input pin for lickometer (black wire)
 
 def press_callback(key):
 
     #print('SPACE:move motor, BACKSPACE:quit')
-
+    
     if key == Key.space:
 
         stepper.cont = True
-        stepper.Run()
+        stepper.Motor(1,200)
 
 def release_callback(key):
 
