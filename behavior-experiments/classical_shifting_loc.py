@@ -287,8 +287,6 @@ for trial in trials:
     #if freq rule, left_port=1 means highfreq on left port
     #if pulse rule, left_port=1 means multipulse on left port
 
-    print(f'Performance: {performance}/{trial+1}') #print performance/total trials to console
-
     if sum(lick_port_L._licks) == 0:
         print('No Left licks detected')
 
