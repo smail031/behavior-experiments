@@ -8,10 +8,6 @@ Created on Fri Jul 12 15:38:32 2019
 
 import core
 import RPi.GPIO as GPIO
-from picamera import PiCamera
-
-camera = PiCamera()
-camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400))
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -47,5 +43,3 @@ while syringe == True:
         syringe = False
     else:
         print('Not recognized.')
-
-camera.stop_preview()
