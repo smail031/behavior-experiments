@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 23 11:47:22 2021
+Created on Mon Jul 6 11:47:22 2021
 
 @author: sebastienmaille
 """
-protocol_description = '''In this protocol, one of 4 sample cues is immediately followed by aresponse period. 
-During this period, the first lickport that registers a lick determines the animal's response. Correct responses 
-trigger reward delivery from the correct port with probability p_rew, while incorrect or null responses are 
-unrewarded. if 18/20 trials are correct, a set shift is triggered.'''
+protocol_description = '''In this protocol, one of 2 sample cues (1kHz or 4kHz) is followed by a randomized delay.
+After this delay, a water reward is delivered from the associated lickport. Anticipatory licking during the delay
+period is taken as a metric of learning.'''
 
 import time
 import RPi.GPIO as GPIO
