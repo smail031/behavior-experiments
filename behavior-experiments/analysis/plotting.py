@@ -21,7 +21,7 @@ x_limit = 5000
 if date_experiment == 'today':
     date_experiment = time.strftime("%Y-%m-%d", time.localtime(time.time()))
 
-file = f'/Volumes/GoogleDrive/Shared drives/Beique Lab/Data/Raspberry PI Data/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}/{mouse_number}_{date_experiment}_block{block_number}.hdf5'
+file = f'/Volumes/GoogleDrive/Shared drives/Beique Lab/Data/Raspberry PI Data/Sébastien/Dual_Lickport/Mice/{mouse_number}/{date_experiment}/ms{mouse_number}_{date_experiment}_block{block_number}.hdf5'
 
 f = h5py.File(file, 'r')
 
@@ -116,7 +116,7 @@ for ind, key in enumerate(sides):
     plt.eventplot(null_response, colors = '#ffcc00', linewidths = 5)
 
     #set axis limits, labels and title.
-    ax[ind].set_ylim([0,num_trials])
+    ax[ind].set_ylim([0,20])
     ax[ind].set_xlim([0, x_limit])
     ax[ind].set_xticks([0, 1000, 2000, 3000, 4000, 5000])
     ax[ind].set_xlabel('Time (ms)')

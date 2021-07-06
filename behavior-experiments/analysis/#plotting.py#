@@ -86,7 +86,7 @@ for ind, key in enumerate(sides):
         if len(trial_types) != 0 and trial_types[trial] == ind:
             ax[ind].fill_between([0,5000], [trial-0.5, trial-0.5],
               [trial+0.5, trial+0.5],
-              facecolor = '#cce6ff') #wilhl show trial types on plots.
+              facecolor = '#cce6ff') #will show trial types on plots.
 
         sample_tone_on = f['sample_tone']['t'][trial]
         sample_tone_end = f['sample_tone']['end'][trial]

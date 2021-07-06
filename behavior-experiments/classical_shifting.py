@@ -206,7 +206,7 @@ for trial in trials:
         else:
             L_tone_b.Play()
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
-v
+
         time.sleep(trace_period)
         
         data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]

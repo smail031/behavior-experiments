@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul 15 16:57:22 2019
+Created on Tue Mar 23 11:47:22 2021
 
 @author: sebastienmaille
 """
-protocol_description = '''In this protocol, a sample cue is immediately followed by aresponse period. During this period, the first lickport that registers a lick determines the animal's
-response. Correct responses trigger reward delivery from the correct port, while
-incorrect or null responses are unrewarded. Trial types (L/R) alternate every
-3 trials or randomly, depending on user input.'''
+protocol_description = '''In this protocol, one of 4 sample cues is immediately followed by aresponse period. 
+During this period, the first lickport that registers a lick determines the animal's response. Correct responses 
+trigger reward delivery from the correct port with probability p_rew, while incorrect or null responses are 
+unrewarded. if 18/20 trials are correct, a set shift is triggered.'''
 
 import time
 import RPi.GPIO as GPIO
@@ -16,20 +16,33 @@ import numpy as np
 import os
 import threading
 import core
+import h5py
 from picamera import PiCamera
 from pygame import mixer
+import rclone
 
 #------------------------------------------------------------------------------
 #Set experimental parameters:
 #------------------------------------------------------------------------------
 
+experimenter = input('Initials: ') #gets experimenter initials
 mouse_number = input('mouse number: ' ) #asks user for mouse number
+mouse_weight = float(input('mouse weight(g): ')) #asks user for mouse weight in grams
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n)')
+syringe_check = input('Syringe check: ')
+
+yesterday = input('Use yesterdays rules? (y/n): ') #ask whether previous day's rule should be used
+
+if yesterday == 'n': #if not, ask user to specify the rule to be used
+    freq_rule = int(input('Frequency rule(1) or Pulse rule(0): '))
+    left_port = int(input('Port assignment: L(1) or R(0): '))
+
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
+
 
 sample_tone_length = 2 #length of sample tone
 
@@ -37,12 +50,14 @@ low_freq = 1000 #frequency of sample tone in left lick trials
 high_freq = 4000 #frequency of sample tone in right lick trials
 
 single_pulse_length = sample_tone_length #single tone pulse lasts the entire timexs
-multi_pulse_length = 0.05
+multi_pulse_length = 0.2
 
 wrong_tone_freq = 8000
 wrong_tone_length = 1
 
 reward_size = 8.2 #size of water rewards in uL
+
+p_rew = 0.8 #probability of reward following correct choice
 
 TTL_pulse_length = 0.01 #length of TTL pulses, in seconds
 
@@ -65,8 +80,8 @@ R_stepPIN = 11 #step pin for right stepper motor
 R_emptyPIN = 21 #empty switch pin for right stepper motor
 R_lickometer = 16 #input pin for lickometer (black wire)
 
-TTL_trigger_PIN = 100 # output for TTL pulse triggers to start/end laser scans
-TTL_marker_PIN = 100 # output for TTL pulse markers
+TTL_trigger_PIN = 15 # output for TTL pulse triggers to start/end laser scans
+TTL_marker_PIN = 27 # output for TTL pulse markers
 
 #----------------------------
 #Initialize class instances for experiment:
@@ -117,28 +132,83 @@ camera.start_preview(rotation = 180, fullscreen = False, window = (0,-44,350,400
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number)
+data = core.data(protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
 
 total_reward_L = 0
 supp_reward_L = 0
 total_reward_R = 0
 supp_reward_R = 0
-performance = 0 #will store the total number of correct responses.
-rewarded_side = []
-rewarded_trials = []
+performance = 0 #will store the total number of correct responses (to print at each trial)
+correct_side = [] #will store ports from which rewards were received (to track bias)
+correct_trials = [] #will store recent correct/incorrect trials (for supp rew and set shift)
 
-L_tone_a = lowfreq_singlepulse #assign tones
-L_tone_b = lowfreq_multipulse
-R_tone_a = highfreq_singlepulse
-R_tone_b = highfreq_multipulse
+
+#------ Assign tones according to rules -------
+
+if yesterday == 'y':
+
+    cfg_path ='/home/pi/.config/rclone/rclone.conf' #path to rclone configuration file
+    #get data from yesterday's experiment
+    yesterday_path = '/home/pi/Desktop/yesterday_2'
+
+    with open(cfg_path) as r:
+        cfg = r.read()
+
+    rclone.with_config(cfg).copy(f'gdrive:/Sebastien/Dual_Lickport/Mice/{mouse_number}/DATE/', yesterday_path)
+    
+    yesterday_file = [fname for fname in os.listdir(yesterday_directory) if mouse_number in fname][0] #get yesterday's file for this mouse, should only be one.
+
+    yesterday_file = yesterday_directory + '/' + yesterday_file
+
+    f = h5py.File(yesterday_file, 'r') #open HDF5 file
+    
+    freq_rule = int(f['rule']['freq_rule'][-1]) #get value of freq_rule of last trial yesterday
+    left_port = int(f['rule']['left_port'][-1]) #get value of left_port of last trial yesterday
+
+print(f'Rule = [{freq_rule},{left_port}]')
+
+
+if freq_rule == 1: #Tone freq is relevant dimension (pulsing is irrelevant)
+
+    if left_port == 1: #highfreq tones are on L port (lowfreq -> R port)
+
+        L_tone_a = highfreq_singlepulse
+        L_tone_b = highfreq_multipulse
+        R_tone_a = lowfreq_singlepulse
+        R_tone_b = lowfreq_multipulse
+
+    elif left_port ==0: #highfreq is on R port (lowfreq -> L port)
+
+        L_tone_a = lowfreq_singlepulse
+        L_tone_b = lowfreq_multipulse
+        R_tone_a = highfreq_singlepulse
+        R_tone_b = highfreq_multipulse
+
+elif freq_rule == 0: #Tone pulsing is relevant dimension (freq is irrelevant)
+  
+    if left_port == 1: #multipulse tones are on L port (singlepulse -> R port)
+
+        L_tone_a = highfreq_multipulse
+        L_tone_b = lowfreq_multipulse
+        R_tone_a = highfreq_singlepulse
+        R_tone_b = lowfreq_singlepulse
+
+    elif left_port ==0: #multipulse is on R port (singlepulse -> L port)
+
+        L_tone_a = highfreq_singlepulse
+        L_tone_b = lowfreq_singlepulse
+        R_tone_a = highfreq_multipulse
+        R_tone_b = lowfreq_multipulse
+
+#------ Iterate through trials -------
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 7))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 7))
+    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 8))
+    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 8))
 
     left_trial_ = np.random.rand() < 0.5 # 50% chance of L trial, otherwise R trial
     
@@ -148,7 +218,7 @@ for trial in trials:
     thread_L.start() #Start threads for lick recording
     thread_R.start()
 
-    time.sleep(1)
+    time.sleep(2)
     #Left trial:---------------------------------------------------------------
     if left_trial_ is True:
 
@@ -172,24 +242,46 @@ for trial in trials:
 
         while time.time() * 1000 < resp_window_end:
 
-            if sum(lick_port_L._licks[(length_L-1):]) > 0:
-                response = 'L'
-                data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
-                data.v_rew_l[trial] = reward_size
-                water_L.Reward() #Deliver L reward
-                total_reward_L += reward_size
+            if sum(lick_port_L._licks[(length_L-1):]) > 0: #If first lick is L (correct)
+                
+                if np.random.rand() < p_rew: #stochastic rew delivery for correct lick
+
+                    data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
+                    water_L.Reward() #Deliver L reward
+                    data.v_rew_l[trial] = reward_size
+                    total_reward_L += reward_size
+
+                else: #stochastic rew omission for correct lick
+                    tone_wrong.Play()
+
+                response = 'L' #record response
                 performance += 1
-                rewarded_side.append('L')
-                rewarded_trials.append(1)
+                correct_trials.append(1)
+                correct_side.append('L')
+                    
                 break
 
-            elif sum(lick_port_R._licks[(length_R-1):]) > 0:
-                response = 'R'
+            elif sum(lick_port_R._licks[(length_R-1):]) > 0: #If first lick is R (incorrect)
+                
+                if np.random.rand() < p_rew: #stochastic rew omission for incorrect lick
+
+                    tone_wrong.Play()
+
+                else: #stochastic rew delivery for incorrect lick
+                    
+                    data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
+                    water_R.Reward() #Deliver R reward
+                    data.v_rew_r[trial] = reward_size
+                    total_reward_R += reward_size
+
+                response = 'R' #record response
+                correct_trials.append(0)
+                    
                 break
 
-        if response == 'N' or response == 'R':
+        if response == 'N':
             tone_wrong.Play()
-            rewarded_trials.append(0)
+            correct_trials.append(0)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -218,24 +310,49 @@ for trial in trials:
         resp_window_end = time.time()*1000 + response_delay
 
         while time.time() * 1000 < resp_window_end:
-           if sum(lick_port_R._licks[(length_R-1):]) > 0:
-                response = 'R'
-                data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
-                data.v_rew_r[trial] = reward_size
-                water_R.Reward() #Deliver R reward
-                total_reward_R += reward_size
+
+                
+            if sum(lick_port_R._licks[(length_R-1):]) > 0: #If first lick is R (correct)
+                    
+                if np.random.rand() < p_rew: #stochastic reward delivery
+
+                    data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
+                    water_R.Reward() #Deliver R reward
+                    data.v_rew_r[trial] = reward_size
+                    total_reward_R += reward_size
+
+                else: #stochastic reward omission
+
+                    tone_wrong.Play()
+
+                response = 'R' #record response
                 performance += 1
-                rewarded_side.append('R')
-                rewarded_trials.append(1)
+                correct_side.append('R')
+                correct_trials.append(1)
+                    
                 break
 
-            elif sum(lick_port_L._licks[(length_L-1):]) > 0:
+            elif sum(lick_port_L._licks[(length_L-1):]) > 0: #If first lick is L (incorrect)
+
+                if np.random.rand() < p_rew: #stochastic reward omission
+
+                    tone_wrong.Play()
+
+                else: #stochastic rew delivery for incorrect choice
+
+                    data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
+                    water_L.Reward() #Deliver R reward
+                    data.v_rew_l[trial] = reward_size
+                    total_reward_L += reward_size
+
                 response = 'L'
+                correct_trials.append(0)
+                    
                 break
 
-        if response == 'N' or response == 'L':
+        if response == 'N':
             tone_wrong.Play()
-            rewarded_trials.append(0)
+            correct_trials.append(0)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0] #store end time
@@ -264,23 +381,30 @@ for trial in trials:
         storage[trial] = {}
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
+        
+    data.freq[trial] = tone.freq #store tone frequency
+    data.multipulse[trial] = tone.multi_pulse #store whether multipulse(1) or single pulse(0)
 
-    print(f'Performance: {performance}/{trial+1}')
+    data.freq_rule[trial] = freq_rule #store whether freq(1) or pulse(0) rule is in effect
+    data.left_port[trial] = left_port #store port assighment of tones
+    #if freq rule, left_port=1 means highfreq on left port
+    #if pulse rule, left_port=1 means multipulse on left port
 
-    if len(rewarded_trials) > 8 and sum(rewarded_trials[-8:]) == 0:
+    print(f'Performance: {performance}/{trial+1}') #print performance/total trials to console
+
+    if len(correct_trials) > 8 and sum(correct_trials[-8:]) == 0:
         #if 8 unrewarded trials in a row, deliver rewards through both ports.
         L_tone_a.Play()
         water_L.Reward()
         supp_reward_L += reward_size
-        rewarded_trials.append(1)
         time.sleep(1)
         R_tone_a.Play()
         water_R.Reward()
         supp_reward_R += reward_size
-        rewarded_trials.append(1)
         time.sleep(1)
+        correct_trials = []
 
-    if rewarded_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
+    if correct_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
         #if 5 rewards from L port in a row, deliver rewards through R port.
         for i in range(2):
 
@@ -292,9 +416,9 @@ for trial in trials:
             water_R.Reward()
             supp_reward_R += reward_size
             time.sleep(1)
-        rewarded_side.append('R')
+        correct_side.append('R') #Added so the supp rewards aren't triggered next trial
 
-    elif rewarded_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
+    elif correct_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         #if 5 rewards from R port in a row, deliver rewards through L port
         for i in range(2):
             
@@ -306,7 +430,50 @@ for trial in trials:
             water_L.Reward()
             supp_reward_L += reward_size
             time.sleep(1)
-        rewarded_side.append('L')
+        correct_side.append('L') #Added so the supp rewards aren't triggered next trial
+
+    if sum(correct_trials[-20:]) >= 18: #if 18 or more correct responses over last 20 trials
+           
+        correct_trials = [] #reset rewarded_trials
+           
+        freq_rule = not freq_rule #reverse task set (rule)
+        left_port = np.random.randint(0,2) #randomly assign port (0/1)
+        
+        print('-------------------RULE SWITCH-------------------')
+        print(f'freq_rule = {freq_rule}. left_port = {left_port}')
+
+        #-------- Re-assign tones ----------
+        if freq_rule == 1: #Tone freq is relevant dimension (pulsing is irrelevant)    
+
+           if left_port == 1: #highfreq tones are on L port (lowfreq -> R port)
+               
+               L_tone_a = highfreq_singlepulse
+               L_tone_b = highfreq_multipulse
+               R_tone_a = lowfreq_singlepulse
+               R_tone_b = lowfreq_multipulse
+
+           elif left_port ==0: #highfreq is on R port (lowfreq -> L port)
+               
+               L_tone_a = lowfreq_singlepulse
+               L_tone_b = lowfreq_multipulse
+               R_tone_a = highfreq_singlepulse
+               R_tone_b = highfreq_multipulse
+               
+        elif freq_rule == 0: #Tone pulsing is relevant dimension (freq is irrelevant)
+            
+            if left_port == 1: #multipulse tones are on L port (singlepulse -> R port)
+                
+                L_tone_a = highfreq_multipulse
+                L_tone_b = lowfreq_multipulse
+                R_tone_a = highfreq_singlepulse
+                R_tone_b = lowfreq_singlepulse
+                
+            elif left_port ==0: #multipulse is on R port (singlepulse -> L port)
+                
+                L_tone_a = highfreq_singlepulse
+                L_tone_b = lowfreq_singlepulse
+                R_tone_a = highfreq_multipulse
+                R_tone_b = lowfreq_multipulse
 
     ITI_ = 0
     while ITI_ > 12 or ITI_ < 8:
