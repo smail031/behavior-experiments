@@ -266,8 +266,8 @@ for trial in trials:
     time.sleep(ITI_) #wait for the length of the inter-trial interval
 
 for i in range(2):
-    L_tone_a.Play()
-    R_tone_a.Play()
+    L_tone.Play()
+    R_tone.Play()
 
 camera.stop_preview()
 
