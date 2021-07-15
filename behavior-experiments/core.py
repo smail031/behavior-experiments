@@ -349,7 +349,7 @@ class stepper():
         self.start = True
         while self.start == True:
 
-            self.cont = True
+            self.cont = False
             while self.cont == True:
                 
                 if GPIO.input(self.emptyPIN):
