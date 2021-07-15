@@ -9,6 +9,7 @@ Created on Thu Jun 24 15:38:32 2021
 import core
 import RPi.GPIO as GPIO
 from pynput.keyboard import Key, Listener
+import threading
 
 GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
@@ -32,14 +33,17 @@ def press_callback(key):
     
     if key == Key.space:
 
+        stepper.start = True
         stepper.cont = True
-        stepper.Motor(1,100)
 
+    elif key == Key.backspace:
+
+        stepper.cont = False
+        
+        
 def release_callback(key):
 
     #if key == Key.space:
-
-    print('released')
 
     stepper.cont = False
     
@@ -67,8 +71,12 @@ while syringe == True:
     while testing == True:
         
         listen = Listener(on_press=press_callback, on_release=release_callback)
-        
+        motor = threading.Thread(target = stepper.Run)
+
+        motor.start()
         listen.start()
+
+        motor.join()
         listen.join()
 
         print('ya')
