@@ -347,10 +347,12 @@ class stepper():
 
     def Run(self):
 
-        while self.cont == True:
-
-            if GPIO.input(self.emptyPIN):
-                self.Motor(1,200)
+        while self.start == True:
+            
+            while self.cont == True:
+                
+                if GPIO.input(self.emptyPIN):
+                    self.Motor(1,200)
         
             
 
