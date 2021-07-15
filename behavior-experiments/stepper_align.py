@@ -67,16 +67,14 @@ while syringe == True:
     else:
         print('Not recognized.')
 
-    testing = True
-    while testing == True:
         
-        listen = Listener(on_press=press_callback, on_release=release_callback)
-        motor = threading.Thread(target = stepper.Run)
-
-        motor.start()
-        listen.start()
-
-        motor.join()
-        listen.join()
-
-        print('ya')
+    listen = Listener(on_press=press_callback, on_release=release_callback)
+    motor = threading.Thread(target = stepper.Run)
+    
+    motor.start()
+    listen.start()
+    
+    motor.join()
+    listen.join()
+    
+    print('ya')
