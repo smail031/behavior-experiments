@@ -38,7 +38,7 @@ def press_callback(key):
 
     elif key == Key.backspace:
 
-        stepper.cont = False
+        return False
         
         
 def release_callback(key):
