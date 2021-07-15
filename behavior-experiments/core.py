@@ -346,9 +346,10 @@ class stepper():
         GPIO.output(self.enablePIN, 1) #disable stepper (to prevent overheating)
 
     def Run(self):
-
+        self.start = True
         while self.start == True:
-            
+
+            self.cont = True
             while self.cont == True:
                 
                 if GPIO.input(self.emptyPIN):
