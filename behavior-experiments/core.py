@@ -101,7 +101,7 @@ class tones():
 
 class data():
 
-    def __init__(self, protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight):
+    def __init__(self, protocol_name, protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight):
         '''
         Creates an instance of the class Data which will store parameters for
         each trial, including lick data and trial type information.
@@ -140,6 +140,7 @@ class data():
         self.mouse_number = mouse_number
         self.n_trials = n_trials
         self.block_number = block_number
+        self.protocol_name  = protocol_name
         self.protocol_description = protocol_description
         self.experimenter = experimenter
         self.mouse_weight = mouse_weight
@@ -200,6 +201,7 @@ class data():
             #Set attributes of the file
             f.attrs['animal'] = self.mouse_number
             f.attrs['time_experiment'] = self.t_experiment
+            f.attrs['protocol_name'] = self.protocol_name
             f.attrs['protocol_description'] = self.protocol_description
             f.attrs['experimenter'] = self.experimenter
             f.attrs['mouse_weight'] = self.mouse_weight
@@ -313,9 +315,9 @@ class stepper():
             
         for i in range(int(steps)): #move in "direction" for "steps"
             GPIO.output(self.stepPIN, 1)
-            time.sleep(0.0001)
+            time.sleep(0.0002)
             GPIO.output(self.stepPIN, 0)
-            time.sleep(0.0001)
+            time.sleep(0.0002)
             
         #else:
 
