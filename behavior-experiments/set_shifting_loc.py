@@ -499,8 +499,8 @@ data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
 
 #delete the .wav files created for the experiment
-lowfreq_singlepulse.Delete()
-lowfreq_multipulse.Delete()
-highfreq_singlepulse.Delete()
-highfreq_multipulse.Delete()
+lowfreq_L.Delete()
+lowfreq_R.Delete()
+highfreq_L.Delete()
+highfreq_R.Delete()
 tone_wrong.Delete()
