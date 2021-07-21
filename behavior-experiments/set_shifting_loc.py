@@ -428,7 +428,7 @@ for trial in trials:
             time.sleep(1)
         correct_side.append('L') #Added so the supp rewards aren't triggered next trial
 
-    if sum(correct_trials[-20:]) >= 18: #if 18 or more correct responses over last 20 trials
+    if sum(correct_trials[-20:]) >= 19: #if 18 or more correct responses over last 20 trials
            
         correct_trials = [] #reset rewarded_trials
            
