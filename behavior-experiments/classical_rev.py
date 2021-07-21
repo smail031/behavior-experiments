@@ -5,6 +5,7 @@ Created on Mon Jul 6 11:47:22 2021
 
 @author: sebastienmaille
 """
+protocol_name = 'classical_rev'
 protocol_description = '''In this protocol, one of 2 sample cues (1kHz or 4kHz) is followed by a randomized delay.
 After this delay, a water reward is delivered from the associated lickport. Anticipatory licking during the delay
 period is taken as a metric of learning.'''
@@ -114,7 +115,7 @@ if ttl_experiment == 'y':
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
+data = core.data(protocol_name, protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
 
 total_reward_L = 0
 supp_reward_L = 0

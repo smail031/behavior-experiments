@@ -5,6 +5,7 @@ Created on Tue Mar 23 11:47:22 2021
 
 @author: sebastienmaille
 """
+protocol_name = 'classical_shifting_loc'
 protocol_description = '''In this protocol, one of 4 sample cues (differing based on frequency and location) is
 immediately followed by a randomized delay. After this delay, a water reward is delivered from the corresponding
 lickport. Anticipatory licking during the delay is used as a metric of learning.'''
@@ -117,7 +118,7 @@ if ttl_experiment == 'y':
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
+data = core.data(protocol_name, protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
 
 total_reward_L = 0
 supp_reward_L = 0

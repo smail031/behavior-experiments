@@ -5,10 +5,12 @@ Created on Tue Mar 23 11:47:22 2021
 
 @author: sebastienmaille
 """
-protocol_description = '''In this protocol, one of 4 sample cues is immediately followed by aresponse period. 
-During this period, the first lickport that registers a lick determines the animal's response. Correct responses 
-trigger reward delivery from the correct port with probability p_rew, while incorrect or null responses are 
-unrewarded. if 18/20 trials are correct, a set shift is triggered.'''
+protocol_name = 'set_shifting_loc'
+protocol_description = '''In this protocol, one of 4 sample cues (differing based on frequency and location
+is immediately followed by aresponse period. During this period, the first lickport that registers a lick determines 
+the animal's response. Correct responses trigger reward delivery from the correct port with probability p_rew, while 
+incorrect or null responses are unrewarded. if 18/20 trials are correct, a set shift is triggered.'''
+
 
 import time
 import RPi.GPIO as GPIO
@@ -53,7 +55,7 @@ wrong_tone_length = 1
 
 reward_size = 8.2 #size of water rewards in uL
 
-p_rew = 0.8 #probability of reward following correct choice
+p_rew = 1 #probability of reward following correct choice
 
 TTL_pulse_length = 0.01 #length of TTL pulses, in seconds
 
@@ -128,7 +130,7 @@ camera.start_preview(fullscreen = False, window = (0,-44,350,400))
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
-data = core.data(protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
+data = core.data(protocol_name, protocol_description, n_trials, mouse_number, block_number, experimenter, mouse_weight)
 
 total_reward_L = 0
 supp_reward_L = 0
