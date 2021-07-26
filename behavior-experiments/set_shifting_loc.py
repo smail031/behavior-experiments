@@ -22,6 +22,9 @@ import h5py
 from picamera import PiCamera
 from pygame import mixer
 
+camera = PiCamera() #create camera object
+camera.start_preview(fullscreen = False, window = (0,-44,350,400))
+
 #------------------------------------------------------------------------------
 #Set experimental parameters:
 #------------------------------------------------------------------------------
@@ -120,13 +123,9 @@ if ttl_experiment == 'y':
     TTL_trigger = core.ttl(TTL_trigger_PIN, TTL_pulse_length)
     TTL_marker = core.ttl(TTL_marker_PIN, TTL_pulse_length)
 
-camera = PiCamera() #create camera object
-
 #----------------------------
 #Initialize experiment
 #----------------------------
-
-camera.start_preview(fullscreen = False, window = (0,-44,350,400))
 
 #Set the time for the beginning of the block
 trials = np.arange(n_trials)
