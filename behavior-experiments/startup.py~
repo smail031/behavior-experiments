@@ -1,6 +1,0 @@
-import core
-from pygame import mixer
-import time
-import RPi.GPIO as GPIO
-import threading
-from picamera import PiCamera
