@@ -113,6 +113,7 @@ while left_works == False:
 
     if left_works == True:
         print('Left contact detected')
+        test_tone.Play()
     else:
         print('No contact detected')
 
@@ -140,6 +141,7 @@ while right_works == False:
 
     if right_works == True:
         print('Right contact detected')
+        test_tone.Play()
     else:
         print('No contact detected')
 
