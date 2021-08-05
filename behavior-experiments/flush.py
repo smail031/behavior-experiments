@@ -37,7 +37,7 @@ n_flush = 5 #how many times to flush
 
 wait = input(f'Will flush {n_flush} times. Hit ENTER when ready')
 
-for flush in range n_flush:
+for flush in range(n_flush):
     
     left = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
     right = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
