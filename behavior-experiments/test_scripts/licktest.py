@@ -37,8 +37,8 @@ class lickport():
 left = lickport(12, 'left')
 right = lickport(16, 'right')
 
-thread_L = threading.Thread(target = left.Lick, args = (20, 30))
-thread_R = threading.Thread(target = right.Lick, args = (20, 30))
+thread_L = threading.Thread(target = left.Lick, args = (20, 300))
+thread_R = threading.Thread(target = right.Lick, args = (20, 300))
 
 thread_L.start()
 thread_R.start()
