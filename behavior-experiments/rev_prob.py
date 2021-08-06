@@ -360,11 +360,11 @@ for trial in trials:
 
     if len(correct_trials) > 8 and sum(correct_trials[-8:]) == 0:
         #if 8 unrewarded trials in a row, deliver rewards through both ports.
-        L_tone_a.Play()
+        L_tone.Play()
         water_L.Reward()
         supp_reward_L += reward_size
         time.sleep(1)
-        R_tone_a.Play()
+        R_tone.Play()
         water_R.Reward()
         supp_reward_R += reward_size
         time.sleep(1)
@@ -375,9 +375,9 @@ for trial in trials:
         for i in range(2):
 
             if np.random.rand() < 0.5:        
-                R_tone_a.Play()
+                R_tone.Play()
             else:
-                R_tone_b.Play()
+                R_tone.Play()
                 
             water_R.Reward()
             supp_reward_R += reward_size
@@ -389,9 +389,9 @@ for trial in trials:
         for i in range(2):
             
             if np.random.rand() < 0.5:        
-                L_tone_a.Play()
+                L_tone.Play()
             else:
-                L_tone_b.Play()
+                L_tone.Play()
                 
             water_L.Reward()
             supp_reward_L += reward_size
@@ -427,8 +427,8 @@ for trial in trials:
     time.sleep(ITI_) #wait for the length of the inter-trial interval
 
 for i in range(2):
-    L_tone_a.Play()
-    R_tone_a.Play()
+    L_tone.Play()
+    R_tone.Play()
 
 camera.stop_preview()
 
