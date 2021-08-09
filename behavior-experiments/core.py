@@ -325,7 +325,7 @@ class stepper():
         self.Disable() #disable stepper (to prevent overheating)
 
     def Reward(self,):
-        steps = 250#Calculate the number of steps needed to deliver
+        steps = 250 #Calculate the number of steps needed to deliver
                                 #volume. 400 steps gives 8.2uL
         if GPIO.input(self.emptyPIN):
             self.Motor(1, steps) #push syringe for "steps" until the empty pin

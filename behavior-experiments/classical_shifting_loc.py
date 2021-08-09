@@ -52,7 +52,7 @@ high_freq = 4000 #frequency of sample tone in right lick trials
 wrong_tone_freq = 8000
 wrong_tone_length = 1
 
-reward_size = 8.2 #size of water rewards in uL
+reward_size = 10 #size of water rewards in uL
 
 TTL_pulse_length = 0.01 #length of TTL pulses, in seconds
 
