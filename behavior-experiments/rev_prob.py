@@ -40,7 +40,6 @@ syringe_check = input('Syringe check: ')
 yesterday = input('Use yesterdays rules? (y/n): ') #ask whether previous day's rule should be used
 
 if yesterday == 'n': #if not, ask user to specify the rule to be used
-    freq_rule = int(input('Frequency rule(1) or Pulse rule(0): '))
     left_port = int(input('Port assignment: L(1) or R(0): '))
 
 
@@ -149,7 +148,6 @@ if yesterday == 'y':
 
     f = h5py.File(yesterday_file, 'r') #open HDF5 file
     
-    freq_rule = int(f['rule']['freq_rule'][-1]) #get value of freq_rule of last trial yesterday
     left_port = int(f['rule']['left_port'][-1]) #get value of left_port of last trial yesterday
 
 print(f'Rule = [{left_port}]')
@@ -345,7 +343,6 @@ for trial in trials:
     data.freq[trial] = tone.freq #store tone frequency
     data.loc[trial] = tone.loc #store whether multipulse(1) or single pulse(0)
 
-    data.freq_rule[trial] = freq_rule #store whether freq(1) or pulse(0) rule is in effect
     data.left_port[trial] = left_port #store port assighment of tones
     #if freq rule, left_port=1 means highfreq on left port
     #if pulse rule, left_port=1 means multipulse on left port
@@ -402,7 +399,6 @@ for trial in trials:
            
         correct_trials = [] #reset rewarded_trials
            
-        freq_rule = not freq_rule #reverse task set (rule)
         left_port = np.random.randint(0,2) #randomly assign port (0/1)
         
         print('-------------------RULE SWITCH-------------------')
