@@ -9,7 +9,7 @@ protocol_name = 'set_shifting_loc'
 protocol_description = '''In this protocol, one of 4 sample cues (differing based on frequency and location
 is immediately followed by aresponse period. During this period, the first lickport that registers a lick determines 
 the animal's response. Correct responses trigger reward delivery from the correct port with probability p_rew, while 
-incorrect or null responses are unrewarded. if 18/20 trials are correct, a set shift is triggered.'''
+incorrect or null responses are unrewarded. if 19/20 trials are correct, a set shift is triggered.'''
 
 
 import time
@@ -427,7 +427,7 @@ for trial in trials:
             time.sleep(1)
         correct_side.append('L') #Added so the supp rewards aren't triggered next trial
 
-    if sum(correct_trials[-20:]) >= 19: #if 18 or more correct responses over last 20 trials
+    if sum(correct_trials[-20:]) >= 19: #if 19 or more correct responses over last 20 trials
            
         correct_trials = [] #reset rewarded_trials
            
