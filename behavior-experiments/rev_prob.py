@@ -399,7 +399,7 @@ for trial in trials:
            
         correct_trials = [] #reset rewarded_trials
            
-        left_port = np.random.randint(0,2) #randomly assign port (0/1)
+        left_port = int(1 - left_port) #if 1, becomes 0 and vice versa
         
         print('-------------------RULE SWITCH-------------------')
         print(f'left_port = {left_port}')
@@ -411,7 +411,7 @@ for trial in trials:
             L_tone = highfreq
             R_tone = lowfreq
             
-        elif left_port ==0: #highfreq is on R port (lowfreq -> L port)
+        elif left_port == 0: #highfreq is on R port (lowfreq -> L port)
             
             L_tone = lowfreq
             R_tone = highfreq 
