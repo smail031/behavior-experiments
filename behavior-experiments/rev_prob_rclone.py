@@ -37,7 +37,7 @@ mouse_weight = float(input('mouse weight(g): ')) #asks user for mouse weight in 
 
 fetch = input('Fetch previous data? (y/n) ')
 
-if fetch === 'y':
+if fetch == 'y':
     rclone_cfg_path = '/home/pi/.config/rclone.conf' #path to rclone config file
     data_path = 'gdrive:/Sebastien/Dual_Lickport/Mice/'
     temp_data_path = '/home/pi/Desktop/temp_rclone/'
