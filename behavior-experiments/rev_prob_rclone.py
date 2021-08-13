@@ -45,8 +45,10 @@ if fetch == 'y':
     with open(rclone_cfg_path) as f:
         rclone_cfg = f.read() #open rclone config file 
         
-    prev_dates = rclone.with_config(rclone_cfg).ls(data_path+mouse_number) #list previous dates
+    prev_dates = rclone.with_config(rclone_cfg).run_cmd(command='lsd', extra_args=[data_path+mouse_number]) #list previous dates
+    prev_dates2 = rclone.with_config(rclone_cfg).run_cmd(command='lsf', extra_args=[data_path+mouse_number]) #list previous dates
     print(prev_dates)
+    
     last_date = prev_dates[-1] #get last date
     print(last_date)
 
