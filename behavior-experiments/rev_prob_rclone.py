@@ -61,9 +61,9 @@ if fetch == 'y':
 
     with h5py.File(temp_data_path+last_file, 'r') as f: #open that file as read-only
 
-        prev_protocol = f['protocol_name']
-        prev_user = f['experimenter']
-        prev_weight = f['mouse_weight']
+        prev_protocol = f.attrs['protocol_name']
+        prev_user = f.attrs['experimenter']
+        prev_weight = f.attrs['mouse_weight']
         prev_left_port = f['rule']['left_port'][-1]
         prev_water = np.nansum(f['rew_l'])
         prev_water += np.nansum(f['rew_r'])
