@@ -65,15 +65,16 @@ if fetch == 'y':
         prev_user = f.attrs['experimenter']
         prev_weight = f.attrs['mouse_weight']
         prev_left_port = f['rule']['left_port'][-1]
-        prev_water = np.nansum(f['rew_l'])
-        prev_water += np.nansum(f['rew_r'])
+        prev_water = np.nansum(f['rew_l']['volume'])
+        prev_water += np.nansum(f['rew_r']['volume'])
         prev_trials = len(f['t_start'])
 
         prev_performance = 0
         for trial in range(prev_trials):
             if f['response'][trial] == f['sample_tone']['type'][trial]:
                 prev_performance += 1
-        
+
+    print(f'Date of last experiment: {last_date}')
     print(f'Previous user: {prev_user}')
     print(f'Previous weight: {prev_weight}')
     print(f'Previous protocol: {prev_protocol}')
