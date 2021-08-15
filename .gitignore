@@ -3,3 +3,4 @@
 behavior-experiments/__pycache__
 behavior-experiments/*.hdf5
 *~
+behavior-experiments/#core.py#

@@ -44,18 +44,39 @@ if fetch == 'y':
     
     with open(rclone_cfg_path) as f:
         rclone_cfg = f.read() #open rclone config file 
-        
-    prev_dates = rclone.with_config(rclone_cfg).run_cmd(command='lsd', extra_args=[data_path+mouse_number]) #list previous dates
-    prev_dates2 = rclone.with_config(rclone_cfg).run_cmd(command='lsf', extra_args=[data_path+mouse_number]) #list previous dates
-    print(prev_dates)
-    
-    last_date = prev_dates[-1] #get last date
-    print(last_date)
+
+    #generate dictionary with a string listing everything in the dates directory
+    prev_dates = rclone.with_config(rclone_cfg).run_cmd(command='lsf', extra_args=[data_path+mouse_number])
+    last_date = prev_dates['out'][-12:-2] #Get most recent date from that string
 
     last_data_path = f'{data_path}{mouse_number}/{last_date}/'
     
-    rclone.with_config(rclone_cfg).copy(source='source:last_data_path', dest='dest:temp_data_path')
+    rclone.with_config(rclone_cfg).copy(source=last_data_path, dest=temp_data_path) #copy the whole directory to a temp_rclone folder
 
+    last_file = sorted(os.listdir(temp_data_path))[-1] #get the filename for the last experiment that was run
+
+    with h5py.File(temp_data_path+last_file, 'r') as f: #open that file as read-only
+
+        prev_protocol = f['protocol_name']
+        prev_user = f['experimenter']
+        prev_weight = f['mouse_weight']
+        prev_left_port = f['rule']['left_port'][-1]
+        prev_water = np.nansum(f['rew_l'])
+        prev_water += np.nansum(f['rew_r'])
+        prev_trials = len(f['t_start'])
+
+        prev_performance = 0
+        for trial in range(prev_trials):
+            if f['response'][trial] == f['sample_tone']['type'][trial]:
+                prev_performance += 1
+        
+    print(f'Previous user: {prev_user}')
+    print(f'Previous weight: {prev_weight}')
+    print(f'Previous protocol: {prev_protocol}')
+    print(f'Previous rule: [{prev_left_port}]')
+    print(f'Previous performance: {prev_performance}/{prev_trials}')
+    print(f'Previous water total: {prev_water}')
+    
 
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
@@ -66,7 +87,6 @@ yesterday = input('Use yesterdays rules? (y/n): ') #ask whether previous day's r
 
 if yesterday == 'n': #if not, ask user to specify the rule to be used
     left_port = int(input('Port assignment: L(1) or R(0): '))
-
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
@@ -165,15 +185,8 @@ correct_trials = [] #will store recent correct/incorrect trials (for supp rew an
 #------ Assign tones according to rules -------
 
 if yesterday == 'y':  
-    #get data from yesterday's experiment
-    yesterday_directory = '/home/pi/Desktop/yesterday_data'
-    yesterday_file = [fname for fname in os.listdir(yesterday_directory) if mouse_number in fname][0] #get yesterday's file for this mouse, should only be one.
-
-    yesterday_file = yesterday_directory + '/' + yesterday_file
-
-    f = h5py.File(yesterday_file, 'r') #open HDF5 file
     
-    left_port = int(f['rule']['left_port'][-1]) #get value of left_port of last trial yesterday
+    left_port = prev_left_port
 
 print(f'Rule = [{left_port}]')
 
