@@ -39,8 +39,12 @@ fetch = input('Fetch previous data? (y/n) ')
 
 if fetch == 'y':
     rclone_cfg_path = '/home/pi/.config/rclone/rclone.conf' #path to rclone config file
-    data_path = 'gdrive:/Sebastien/Dual_Lickport/Mice/'
-    temp_data_path = '/home/pi/Desktop/temp_rclone/'
+    data_path = 'gdrive:/Sebastien/Dual_Lickport/Mice/' #path to data repo on gdrive
+    temp_data_path = '/home/pi/Desktop/temp_rclone/' #path to temporary data folder (where files will be copied)
+
+    for item in os.listdir(temp_data_path): 
+        os.remove(temp_data_path + item) #delete everything in temp_data_folder before adding things
+        
     
     with open(rclone_cfg_path) as f:
         rclone_cfg = f.read() #open rclone config file 
@@ -185,11 +189,9 @@ correct_trials = [] #will store recent correct/incorrect trials (for supp rew an
 #------ Assign tones according to rules -------
 
 if yesterday == 'y':  
-    
     left_port = prev_left_port
 
 print(f'Rule = [{left_port}]')
-
 
 if left_port == 1: #highfreq tones are on L port (lowfreq -> R port)
     
