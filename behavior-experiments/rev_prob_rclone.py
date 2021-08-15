@@ -51,7 +51,7 @@ if fetch == 'y':
 
     #generate dictionary with a string listing everything in the dates directory
     prev_dates = rclone.with_config(rclone_cfg).run_cmd(command='lsf', extra_args=[data_path+mouse_number])
-    last_date = prev_dates['out'][-12:-2] #Get most recent date from that string
+    last_date = prev_dates['out'][-12:-2].decode() #Get most recent date from that string
 
     last_data_path = f'{data_path}{mouse_number}/{last_date}/'
     
