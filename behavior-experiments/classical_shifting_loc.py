@@ -70,7 +70,7 @@ if fetch == 'y':
     print(f'Previous user: {prev_user}')
     print(f'Previous weight: {prev_weight}')
     print(f'Previous protocol: {prev_protocol}')
-    print(f'Previous rule: [{int(prev_freq_rule)},{int(prev_left_port}}]')
+    print(f'Previous rule: [{int(prev_freq_rule)},{int(prev_left_port)}]')
     print(f'Previous water total: {prev_water}')
 
 block_number = input('block number: ' ) #asks user for block number (for file storage)
