@@ -19,6 +19,7 @@ import os
 import threading
 import core
 import h5py
+import rclone
 from picamera import PiCamera
 from pygame import mixer
 
