@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Aug 05 11:47:22 2021
+Created on Tue Aug 12 11:47:22 2021
 
 @author: sebastienmaille
 """
@@ -19,8 +19,10 @@ import os
 import threading
 import core
 import h5py
+import rclone
 from picamera import PiCamera
 from pygame import mixer
+
 
 camera = PiCamera() #create camera object
 camera.start_preview(fullscreen = False, window = (0,-44,350,400))
@@ -32,6 +34,55 @@ camera.start_preview(fullscreen = False, window = (0,-44,350,400))
 experimenter = input('Initials: ') #gets experimenter initials
 mouse_number = input('mouse number: ' ) #asks user for mouse number
 mouse_weight = float(input('mouse weight(g): ')) #asks user for mouse weight in grams
+
+fetch = input('Fetch previous data? (y/n) ')
+
+if fetch == 'y':
+    rclone_cfg_path = '/home/pi/.config/rclone/rclone.conf' #path to rclone config file
+    data_path = 'gdrive:/Sebastien/Dual_Lickport/Mice/' #path to data repo on gdrive
+    temp_data_path = '/home/pi/Desktop/temp_rclone/' #path to temporary data folder (where files will be copied)
+
+    for item in os.listdir(temp_data_path): 
+        os.remove(temp_data_path + item) #delete everything in temp_data_folder before adding things
+        
+    
+    with open(rclone_cfg_path) as f:
+        rclone_cfg = f.read() #open rclone config file 
+
+    #generate dictionary with a string listing everything in the dates directory
+    prev_dates = rclone.with_config(rclone_cfg).run_cmd(command='lsf', extra_args=[data_path+mouse_number])
+    last_date = prev_dates['out'][-12:-2].decode() #Get most recent date from that string
+
+    last_data_path = f'{data_path}{mouse_number}/{last_date}/'
+    
+    rclone.with_config(rclone_cfg).copy(source=last_data_path, dest=temp_data_path) #copy the whole directory to a temp_rclone folder
+
+    last_file = sorted(os.listdir(temp_data_path))[-1] #get the filename for the last experiment that was run
+
+    with h5py.File(temp_data_path+last_file, 'r') as f: #open that file as read-only
+
+        prev_protocol = f.attrs['protocol_name']
+        prev_user = f.attrs['experimenter']
+        prev_weight = f.attrs['mouse_weight']
+        prev_left_port = f['rule']['left_port'][-1]
+        prev_water = np.nansum(f['rew_l']['volume'])
+        prev_water += np.nansum(f['rew_r']['volume'])
+        prev_trials = len(f['t_start'])
+
+        prev_performance = 0
+        for trial in range(prev_trials):
+            if f['response'][trial] == f['sample_tone']['type'][trial]:
+                prev_performance += 1
+
+    print(f'Date of last experiment: {last_date}')
+    print(f'Previous user: {prev_user}')
+    print(f'Previous weight: {prev_weight}')
+    print(f'Previous protocol: {prev_protocol}')
+    print(f'Previous rule: [{int(prev_left_port}}]')
+    print(f'Previous performance: {prev_performance}/{prev_trials}')
+    print(f'Previous water total: {prev_water}')
+    
+
 block_number = input('block number: ' ) #asks user for block number (for file storage)
 n_trials = int(input('How many trials?: ' )) #number of trials in this block
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')
@@ -41,7 +92,6 @@ yesterday = input('Use yesterdays rules? (y/n): ') #ask whether previous day's r
 
 if yesterday == 'n': #if not, ask user to specify the rule to be used
     left_port = int(input('Port assignment: L(1) or R(0): '))
-
 
 delay_length = 0 #length of delay between sample tone and go cue, in sec
 response_delay = 2000 #length of time for animals to give response
@@ -140,18 +190,9 @@ correct_trials = [] #will store recent correct/incorrect trials (for supp rew an
 #------ Assign tones according to rules -------
 
 if yesterday == 'y':  
-    #get data from yesterday's experiment
-    yesterday_directory = '/home/pi/Desktop/yesterday_data'
-    yesterday_file = [fname for fname in os.listdir(yesterday_directory) if mouse_number in fname][0] #get yesterday's file for this mouse, should only be one.
-
-    yesterday_file = yesterday_directory + '/' + yesterday_file
-
-    f = h5py.File(yesterday_file, 'r') #open HDF5 file
-    
-    left_port = int(f['rule']['left_port'][-1]) #get value of left_port of last trial yesterday
+    left_port = prev_left_port
 
 print(f'Rule = [{left_port}]')
-
 
 if left_port == 1: #highfreq tones are on L port (lowfreq -> R port)
     
