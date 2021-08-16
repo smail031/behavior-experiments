@@ -70,6 +70,10 @@ if fetch == 'y':
     print(f'Previous user: {prev_user}')
     print(f'Previous weight: {prev_weight}')
     print(f'Previous protocol: {prev_protocol}')
+
+    if prev_protocol != protocol_name: #Check to see if the current protocol is different from the last one.
+        warning = input ('--WARNING-- using a different protocol than last time. Make sure this is intentional.')
+    
     print(f'Previous rule: [{int(prev_left_port)}]')
     print(f'Previous water total: {prev_water}')
     
@@ -175,7 +179,7 @@ correct_trials = [] #will store recent correct/incorrect trials (for supp rew an
 if yesterday == 'y':  
     left_port = prev_left_port
 
-print(f'Rule = [{left_port}]')
+print(f'Rule = [int({left_port})]')
 
 
 if left_port == 1: #highfreq tones are on L port (lowfreq -> R port)

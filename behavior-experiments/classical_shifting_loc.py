@@ -71,6 +71,10 @@ if fetch == 'y':
     print(f'Previous user: {prev_user}')
     print(f'Previous weight: {prev_weight}')
     print(f'Previous protocol: {prev_protocol}')
+
+    if prev_protocol != protocol_name: #Check to see if the current protocol is different from the last one.
+        warning = input ('--WARNING-- using a different protocol than last time. Make sure this is intentional.')
+        
     print(f'Previous rule: [{int(prev_freq_rule)},{int(prev_left_port)}]')
     print(f'Previous water total: {prev_water}')
 
