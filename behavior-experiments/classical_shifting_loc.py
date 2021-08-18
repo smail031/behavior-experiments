@@ -184,7 +184,7 @@ if yesterday == 'y':
     freq_rule = prev_freq_rule #get value of freq_rule of last trial yesterday
     left_port = prev_left_port #get value of left_port of last trial yesterday
     
-print(f'Rule = [int({freq_rule}),int({left_port})]')
+print(f'Rule = [{int(freq_rule)},{int(left_port)}]')
 
 
 if freq_rule == 1: #Tone freq is relevant dimension (location is irrelevant)

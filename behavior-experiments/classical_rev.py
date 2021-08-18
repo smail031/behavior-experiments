@@ -179,7 +179,7 @@ correct_trials = [] #will store recent correct/incorrect trials (for supp rew an
 if yesterday == 'y':  
     left_port = prev_left_port
 
-print(f'Rule = [int({left_port})]')
+print(f'Rule = [{int(left_port)}]')
 
 
 if left_port == 1: #highfreq tones are on L port (lowfreq -> R port)
