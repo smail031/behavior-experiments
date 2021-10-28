@@ -7,7 +7,7 @@ from pygame import mixer
 mixer.init(frequency = 44100)
 
 low_freq = 8000
-high_freq = 16000
+high_freq = 12000
 
 sample_tone_length = 2
 
