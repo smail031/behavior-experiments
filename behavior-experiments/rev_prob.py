@@ -68,6 +68,7 @@ if fetch == 'y':
         prev_water = np.nansum(f['rew_l']['volume'])
         prev_water += np.nansum(f['rew_r']['volume'])
         prev_trials = len(f['t_start'])
+        prev_reversal = np.nonzero(np.diff(f['rule']['left_port']))
 
         prev_performance = 0
         for trial in range(prev_trials):
@@ -84,6 +85,7 @@ if fetch == 'y':
     print(f'Previous rule: [{int(prev_left_port)}]')
     print(f'Previous performance: {prev_performance}/{prev_trials}')
     print(f'Previous water total: {prev_water}')
+    print(f'Reversal yesterday: {len(prev_reversal) > 0}({prev_reversal])')
     
 
 block_number = input('block number: ' ) #asks user for block number (for file storage)
@@ -102,10 +104,10 @@ response_delay = 2000 #length of time for animals to give response
 
 sample_tone_length = 2 #length of sample tone
 
-low_freq = 1000 #frequency of sample tone in left lick trials
-high_freq = 4000 #frequency of sample tone in right lick trials
+low_freq = 8000 #frequency of sample tone in left lick trials
+high_freq = 16000 #frequency of sample tone in right lick trials
 
-wrong_tone_freq = 8000
+wrong_tone_freq = 20000
 wrong_tone_length = 1
 
 reward_size = 10 #size of water rewards in uL

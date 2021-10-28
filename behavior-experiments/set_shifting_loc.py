@@ -104,10 +104,10 @@ response_delay = 2000 #length of time for animals to give response
 
 sample_tone_length = 2 #length of sample tone
 
-low_freq = 1000 #frequency of sample tone in left lick trials
-high_freq = 4000 #frequency of sample tone in right lick trials
+low_freq = 8000 #frequency of sample tone in left lick trials
+high_freq = 16000 #frequency of sample tone in right lick trials
 
-wrong_tone_freq = 8000
+wrong_tone_freq = 20000
 wrong_tone_length = 1
 
 reward_size = 10 #size of water rewards in uL
