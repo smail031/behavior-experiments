@@ -85,7 +85,7 @@ if fetch == 'y':
     print(f'Previous rule: [{int(prev_left_port)}]')
     print(f'Previous performance: {prev_performance}/{prev_trials}')
     print(f'Previous water total: {prev_water}')
-    print(f'Reversal yesterday: {len(prev_reversal) > 0}({prev_reversal])')
+    print(f'Reversal yesterday: {len(prev_reversal) > 0}({prev_reversal}])')
     
 
 block_number = input('block number: ' ) #asks user for block number (for file storage)
