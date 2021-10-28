@@ -110,6 +110,9 @@ high_freq = 12000 #frequency of sample tone in right lick trials
 wrong_tone_freq = 14000
 wrong_tone_length = 1
 
+end_tone_freq = 1000 #tone that will be played to signal the end of the experiment.
+end_tone_length = 8
+
 reward_size = 10 #size of water rewards in uL
 
 p_rew = 1 #probability of reward following correct choice
@@ -171,6 +174,7 @@ highfreq_R = core.tones(high_freq, sample_tone_length, loc='R') #4000Hz multi pu
 
 #create tone that is used as an error signal
 tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
+tone_end = core.tones(end_tone_freq, end_tone_length)
 
 if ttl_experiment == 'y':
     #set up ttl class instances triggers and marker TTL output
@@ -524,10 +528,8 @@ for trial in trials:
 
     time.sleep(ITI_) #wait for the length of the inter-trial interval
 
-for i in range(2):
-    L_tone_a.Play()
-    R_tone_a.Play()
-
+tone_end.Play() #Play 8s tone to signal the end of the experiment.
+    
 camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
@@ -550,3 +552,4 @@ lowfreq_R.Delete()
 highfreq_L.Delete()
 highfreq_R.Delete()
 tone_wrong.Delete()
+tone_end.Delete()

@@ -100,6 +100,9 @@ high_freq = 12000 #frequency of sample tone in right lick trials
 wrong_tone_freq = 14000
 wrong_tone_length = 1
 
+end_tone_freq = 1000 #tone that will be played to signal the end of the experiment.
+end_tone_length = 8
+
 reward_size = 10 #size of water rewards in uL
 
 TTL_pulse_length = 0.01 #length of TTL pulses, in seconds
@@ -154,6 +157,8 @@ lowfreq_L = core.tones(low_freq, sample_tone_length, loc='L') #1000Hz from left
 lowfreq_R = core.tones(low_freq, sample_tone_length, loc='R') #1000Hz from right
 highfreq_L = core.tones(high_freq, sample_tone_length, loc='L') #4000Hz from left
 highfreq_R = core.tones(high_freq, sample_tone_length, loc='R') #4000Hz from right
+
+tone_end = core.tones(end_tone_freq, end_tone_length)
 
 if ttl_experiment == 'y':
     #set up ttl class instances triggers and marker TTL output
@@ -340,9 +345,7 @@ for trial in trials:
 
     time.sleep(ITI_) #wait for the length of the inter-trial interval
 
-for i in range(2):
-    L_tone_a.Play()
-    R_tone_a.Play()
+tone_end.Play() #Play 8s tone to signal the end of the experiment.
 
 camera.stop_preview()
 
@@ -360,8 +363,9 @@ data.Store() #store the data in a .hdf5 file
 data.Rclone() #move the .hdf5 file to "temporary-data folder on Desktop and
                 #then copy to the lab google drive.
 
-#delete the .wav files created for the experiment
+# Delete the .wav files created for the experiment
 lowfreq_L.Delete()
 lowfreq_R.Delete()
 highfreq_L.Delete()
 highfreq_R.Delete()
+tone_end.Delete()
