@@ -61,8 +61,24 @@ if refill == 'y':
     left_thread.start() #start thread for L syringe
     right_thread.start() #start thread for R syringe
     
-    tube_fill = input('Reconnect and fill water tubes (ENTER) ')
+    tube_connect = input('Reconnect water tubes (ENTER) ')
     #reminder to reconnect and manually spin the syringe pumps
+
+    tube_fill = True
+
+    while tube_fill:
+        side = input('Which side? (L/R/Q): ')
+
+        if side == 'L':
+            steps = input('How many steps?: ')
+            stepperL.Motor(1, steps)
+        elif side == 'R':
+            steps = input('How many steps?: ')
+            stepperR.Motor(1, steps)
+        elif side == 'Q':
+            syringe = False
+        else:
+            print('Not recognized.')
 
 #----------------------------
 #Test speakers:
