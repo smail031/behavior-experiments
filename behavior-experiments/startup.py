@@ -71,10 +71,10 @@ if refill == 'y':
 
         if side == 'L':
             steps = input('How many steps?: ')
-            stepperL.Motor(1, steps)
+            water_L.Motor(1, steps)
         elif side == 'R':
             steps = input('How many steps?: ')
-            stepperR.Motor(1, steps)
+            water_R.Motor(1, steps)
         elif side == 'Q':
             syringe = False
         else:
