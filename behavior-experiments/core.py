@@ -288,9 +288,9 @@ class data():
         #move current file to yesterday_data folder
         os.system(f'mv /home/pi/Desktop/behavior-experiments/behavior-experiments/{self.filename} /home/pi/Desktop/yesterday_data')
         #create folder on gdrive for today's data and copy file into that folder
-        os.system(f'rclone mkdir gdrive:/Sebastien/Dual_Lickport/Mice/{self.mouse_number}')
-        os.system(f'rclone mkdir gdrive:/Sebastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}')
-        os.system(f'rclone copy /home/pi/Desktop/yesterday_data/{self.filename} gdrive:/Sebastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}')
+        os.system(f'rclone mkdir sharepoint:"Data/Behaviour data/Sebastien/Dual_Lickport/Mice/{self.mouse_number}"')
+        os.system(f'rclone mkdir sharepoint:"Data/Behaviour data/Sebastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}"')
+        os.system(f'rclone copy /home/pi/Desktop/yesterday_data/{self.filename} sharepoint:"Data/Behaviour data/Sebastien/Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}"')
 
 
 class stepper():
