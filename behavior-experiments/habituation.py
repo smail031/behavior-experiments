@@ -147,7 +147,7 @@ for trial in trials:
         resp_window_end = time.time()*1000 + response_window
 
         while time.time()*1000 < resp_window_end:
-            if sum(lick_port_L.licks[(length_L-1):]) > 0: # Check for any licks
+            if sum(lick_port_L._licks[(length_L-1):]) > 0: # Check for any licks
                 data.t_rew_l[trial] = time.time()*1000 - data._t_start_abs[trial]
                 water_L.Reward() #Deliver L reward
                 data.v_rew_l[trial] = reward_size
@@ -166,7 +166,7 @@ for trial in trials:
         resp_window_end = time.time()*1000 + response_window
         
         while time.time()*1000 < resp_window_end:
-            if sum(lick_port_R.licks[(length_R-1):]) > 0: # Check for any licks
+            if sum(lick_port_R._licks[(length_R-1):]) > 0: # Check for any licks
                 data.t_rew_r[trial] = time.time()*1000 - data._t_start_abs[trial]
                 water_R.Reward() #Deliver R reward
                 data.v_rew_r[trial] = reward_size
