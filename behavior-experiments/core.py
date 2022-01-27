@@ -544,6 +544,104 @@ class ttl():
         time.sleep(self.pulse_length)
         GPIO.output(self.pin, False)
 
+class Rule:
+    '''
+    The rule maps the association between tones, actions and associated
+    outcomes.
+
+    Attributes:
+    -----------
+    self.tones: list
+        A list of tone objects. For reversal learning, should be formatted as
+        [high_freq, low_freq].
+
+    self.initial_rule: int
+        The initial rule governing tone-action mapping.
+
+    self.criterion: list
+        A list of two integers, indicating that the mouse is considered "expert"
+        once it performs correctly on [0] out of [1] trials.
+
+    self.countdown: int
+        Once the criterion has been met, initiates a countdown of trials until
+        a rule reversal.
+
+    self.countdown_start: int
+        Indicates where the trial countdown should start once the criterion has
+        been reached.
+    '''
+
+    def __init__(self, tones: list, initial_rule: int,
+                 criterion: list, countdown: int, countdown_start: int):
+        self.tones = tones
+        self.rule = initial_rule
+        self.criterion = criterion
+        self.countdown = countdown
+        self.countdown_start = countdown_start
+        self.correct_trials = []
+        # Initialize tone-action mapping to the initial rule.
+        self.map_tones()
+
+    def map_tones(self):
+        '''
+        Given a rule, maps tones to their associated rewarded outcomes.
+        '''
+        print(f'Rule = [{int(self.rule)}]')
+        # High frequency -> L port; Low frequency -> R port
+        if self.rule == 1:
+            self.L_tone = self.tones[0]
+            self.R_tone = self.tones[1]
+            
+        elif self.rule ==0:
+            # High frequency -> R port; Low frequency -> L port
+            self.L_tone = self.tones[1]
+            self.R_tone = self.tones[0]
+
+        # If user inputs rule as 9, a random rule is selected.
+        elif self.rule == 9:
+            print('Selecting random rule.')
+            self.rule = np.random.choice([0,1])
+            self.map_tones()
+
+    def check_criterion(self) -> bool:
+        '''
+        Checks to see if the criterion has been met.
+        '''
+        if sum(correct_trials[-self.criterion[1]:]) >= self.criterion[0]:
+            return True
+
+        else:
+            return False
+
+    def check(self):
+        '''
+        Checks to see if the criterion has been met, or if the trial countdown
+        has reached 0.
+        '''
+        # Check whether the countdown has begun.
+        if np.isnan(self.countdown):
+            # If there is no countdown, check whether criterion has been met.
+            if self.check_criterion():
+                # Warn user that criterion was met, and begin trial countdown.
+                print('-----Performance criterion has been met.-----')
+                print(f'A rule reversal will occur in '
+                      '{self.countdown_start} trials.')
+                self.countdown = self.countdown_start
+
+        else:
+            print(f'Rule reversal countdown: {self.countdown}')
+            if self.countdown == 0:
+                # If countdown has reached 0, warn user and switch rule.
+                self.countdown = np.nan
+                self.rule = int(1-self.rule)
+                self.map_tones()
+                print('-------------------RULE SWITCH-------------------')
+                print(f'Rule = {self.rule}')
+
+            else:
+                self.countdown -= 1
+
+            
 def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
     '''
     Uses rclone to get the most recent experimental data available for this
