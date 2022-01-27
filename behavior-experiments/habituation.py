@@ -144,7 +144,7 @@ for trial in trials:
         data.sample_tone[trial] = 'L' # No sample tone, just to record trialtype
 
         length_L = len(lick_port_L._licks)
-        response_window_end = time.time()*1000 + response_window
+        resp_window_end = time.time()*1000 + response_window
 
         while time.time()*1000 < resp_window_end:
             if sum(lick_port_L.licks[(length_L-1):]) > 0: # Check for any licks
@@ -163,7 +163,7 @@ for trial in trials:
 
         data.sample_tone[trial] = 'R' # No sample tone, just to record trialtype
         length_R = len(lick_port_R._licks)
-        response_window_end = time.time()*1000 + response_window
+        resp_window_end = time.time()*1000 + response_window
         
         while time.time()*1000 < resp_window_end:
             if sum(lick_port_R.licks[(length_R-1):]) > 0: # Check for any licks
