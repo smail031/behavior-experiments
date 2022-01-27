@@ -390,12 +390,12 @@ class data():
                   '/home/pi/Desktop/yesterday_data')
         # Create remote folder for today's data and copy file into that folder
         os.system(f'rclone mkdir sharepoint:"Data/Behaviour data/Sebastien/'
-                  'Dual_Lickport/Mice/{self.mouse_number}"')
+                  f'Dual_Lickport/Mice/{self.mouse_number}"')
         os.system(f'rclone mkdir sharepoint:"Data/Behaviour data/Sebastien/'
-                  'Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}"')
+                  f'Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}"')
         os.system(f'rclone copy /home/pi/Desktop/yesterday_data/{self.filename}'
-                  ' sharepoint:"Data/Behaviour data/Sebastien/Dual_Lickport/'
-                  'Mice/{self.mouse_number}/{self.date_experiment}"')
+                  f' sharepoint:"Data/Behaviour data/Sebastien/Dual_Lickport/'
+                  f'Mice/{self.mouse_number}/{self.date_experiment}"')
 
 
 class stepper():
