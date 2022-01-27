@@ -33,11 +33,6 @@ experimenter = input('Initials: ')
 mouse_number = input('mouse number: ' )
 mouse_weight = float(input('mouse weight(g): '))
 
-fetch = input('Fetch previous data? (y/n) ')
-if fetch == 'y':
-    [prev_freq_rule, prev_left_port, countdown] = (
-        core.get_previous_data(mouse_number))
-
 block_number = input('block number: ' )
 n_trials = int(input('How many trials?: ' ))
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')

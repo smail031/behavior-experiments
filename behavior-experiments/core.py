@@ -104,7 +104,7 @@ class data():
 
     def __init__(self, protocol_name, protocol_description, n_trials,
                  mouse_number, block_number, experimenter, mouse_weight,
-                 countdown):
+                 countdown=np.nan):
         '''
         Tracks relevant experimental parameters and data, to be stored in an
         HDF5 file and uploaded to a remote drive.
@@ -569,10 +569,14 @@ class Rule:
     self.countdown_start: int
         Indicates where the trial countdown should start once the criterion has
         been reached.
+    
+    self.correct_trials: list
+        Keeps a running count of the performance on recent trials. May be 
+        emptied after rule switch or supplementary rewards.
     '''
 
     def __init__(self, tones: list, initial_rule: int,
-                 criterion: list, countdown: int, countdown_start: int):
+                 criterion: list, countdown:int = np.nan, countdown_start: int):
         self.tones = tones
         self.rule = initial_rule
         self.criterion = criterion
@@ -607,7 +611,7 @@ class Rule:
         '''
         Checks to see if the criterion has been met.
         '''
-        if sum(correct_trials[-self.criterion[1]:]) >= self.criterion[0]:
+        if sum(self.correct_trials[-self.criterion[1]:]) >= self.criterion[0]:
             return True
 
         else:
@@ -633,6 +637,7 @@ class Rule:
             if self.countdown == 0:
                 # If countdown has reached 0, warn user and switch rule.
                 self.countdown = np.nan
+                self.correct_trials = []
                 self.rule = int(1-self.rule)
                 self.map_tones()
                 print('-------------------RULE SWITCH-------------------')
