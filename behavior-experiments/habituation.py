@@ -105,7 +105,7 @@ if ttl_experiment == 'y':
 
 trials = np.arange(n_trials)
 data = core.data(protocol_name, protocol_description, n_trials, mouse_number,
-                 block_number, experimenter, mouse_weight, np.nan)
+                 block_number, experimenter, mouse_weight)
 
 total_reward_L = 0
 total_reward_R = 0

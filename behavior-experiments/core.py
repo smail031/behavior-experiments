@@ -104,7 +104,7 @@ class data():
 
     def __init__(self, protocol_name, protocol_description, n_trials,
                  mouse_number, block_number, experimenter, mouse_weight,
-                 countdown):
+                 countdown=np.nan):
         '''
         Tracks relevant experimental parameters and data, to be stored in an
         HDF5 file and uploaded to a remote drive.
@@ -576,7 +576,7 @@ class Rule:
     '''
 
     def __init__(self, tones: list, initial_rule: int,
-                 criterion: list, countdown:int = np.nan, countdown_start: int):
+                 criterion: list, countdown_start: int, countdown:int = np.nan):
         self.tones = tones
         self.rule = initial_rule
         self.criterion = criterion
