@@ -196,12 +196,6 @@ for trial in trials:
         storage[trial] = {}
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
-        
-    data.freq[trial] = tone.freq #store tone frequency
-    data.loc[trial] = tone.loc #store whether each tone came from left or right
-
-    data.left_port[trial] = left_port #store port assighment of tones
-    #if pulse rule, left_port=1 means multipulse on left port
 
     if sum(lick_port_L._licks) == 0:
         print('No Left licks detected')
