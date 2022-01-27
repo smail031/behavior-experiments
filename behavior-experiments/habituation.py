@@ -152,6 +152,7 @@ for trial in trials:
                 water_L.Reward() #Deliver L reward
                 data.v_rew_l[trial] = reward_size
                 total_reward_L += reward_size
+                break
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0]
 
@@ -171,6 +172,7 @@ for trial in trials:
                 water_R.Reward() #Deliver R reward
                 data.v_rew_r[trial] = reward_size
                 total_reward_R += reward_size
+                break
 
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0]
 
