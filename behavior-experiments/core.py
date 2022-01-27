@@ -104,7 +104,7 @@ class data():
 
     def __init__(self, protocol_name, protocol_description, n_trials,
                  mouse_number, block_number, experimenter, mouse_weight,
-                 countdown=np.nan):
+                 countdown):
         '''
         Tracks relevant experimental parameters and data, to be stored in an
         HDF5 file and uploaded to a remote drive.
