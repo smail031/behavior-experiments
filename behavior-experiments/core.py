@@ -386,8 +386,8 @@ class data():
         # Move current file to yesterday_data folder
         print(self.filename)
         os.system(f'mv /home/pi/Desktop/behavior-experiments/'
-                  'behavior-experiments/{self.filename} '
-                  '/home/pi/Desktop/yesterday_data')
+                  f'behavior-experiments/{self.filename} '
+                  f'/home/pi/Desktop/yesterday_data')
         # Create remote folder for today's data and copy file into that folder
         os.system(f'rclone mkdir sharepoint:"Data/Behaviour data/Sebastien/'
                   f'Dual_Lickport/Mice/{self.mouse_number}"')
