@@ -19,7 +19,6 @@ import numpy as np
 import os
 import threading
 import core
-import h5py
 from picamera import PiCamera
 from pygame import mixer
 
@@ -36,25 +35,21 @@ mouse_weight = float(input('mouse weight(g): '))
 
 fetch = input('Fetch previous data? (y/n) ')
 if fetch == 'y':
-    [prev_freq_rule, prev_left_port] = core.get_previous_data(mouse_number)
+    [prev_freq_rule, prev_left_port, countdown] = (
+        core.get_previous_data(mouse_number))
 
 block_number = input('block number: ' )
 n_trials = int(input('How many trials?: ' ))
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')
 syringe_check = input('Syringe check: ')
 
-yesterday = input('Use yesterdays rules? (y/n): ') 
-
-if yesterday == 'n': #if not, ask user to specify the rule to be used
-    left_port = int(input('Port assignment: L(1) or R(0): '))
-
-end_tone_freq = 1000 #tone that will be played to signal the end of the experiment.
+end_tone_freq = 1000 # Tone that will be played at the end of the experiment.
 end_tone_length = 8
 
-reward_size = 10 #size of water rewards in uL
-response_window = 5000
+reward_size = 10 # Size of water rewards in uL
+response_window = 5000 # Duration(ms) of response window each trial.
 
-TTL_pulse_length = 0.01 #length of TTL pulses, in seconds
+TTL_pulse_length = 0.01 # Length of TTL pulses, in seconds
 
 #-------------------------------------------------------------------------------
 #Assign GPIO pins:
@@ -215,8 +210,8 @@ for trial in trials:
         print('No Right licks detected')
 
     ITI_ = 0
-    while ITI_ > 12 or ITI_ < 8:
-        ITI_ = np.random.exponential(scale = 10) 
+    while ITI_ > 4 or ITI_ < 0:
+        ITI_ = np.random.exponential(scale = 1) 
 
     time.sleep(ITI_) # Wait for the length of the inter-trial interval.
 
