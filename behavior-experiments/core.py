@@ -384,6 +384,7 @@ class data():
                       '/home/pi/Desktop/temporary-data')
 
         # Move current file to yesterday_data folder
+        print(self.filename)
         os.system(f'mv /home/pi/Desktop/behavior-experiments/'
                   'behavior-experiments/{self.filename} '
                   '/home/pi/Desktop/yesterday_data')
