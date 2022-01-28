@@ -76,7 +76,7 @@ if refill == 'y':
             steps = input('How many steps?: ')
             water_R.Motor(1, steps)
         elif side == 'Q':
-            syringe = False
+            tube_fill = False
         else:
             print('Not recognized.')
 
