@@ -57,8 +57,8 @@ if yesterday == 'n':
 response_window = 2000 # Time window(ms) for animals to respond after cue.
 
 sample_tone_length = 2 # Length of sample tone (s)
-low_freq = 8000 # Frequency(Hz) of high frequency sample tone.
-high_freq = 12000 # Frequency(Hz) of high frequency sample tone.
+low_freq = 6000 # Frequency(Hz) of high frequency sample tone.
+high_freq = 10000 # Frequency(Hz) of high frequency sample tone.
 
 wrong_tone_freq = 14000
 wrong_tone_length = 1
@@ -208,7 +208,7 @@ for trial in trials:
 
                 response = 'L'
                 performance += 1
-                self.correct_trials.append(1)
+                rule.correct_trials.append(1)
                 correct_side.append('L')
                     
                 break
@@ -228,13 +228,13 @@ for trial in trials:
                     total_reward_R += reward_size
 
                 response = 'R'
-                self.correct_trials.append(0)
+                rule.correct_trials.append(0)
                     
                 break
 
         if response == 'N':
             tone_wrong.Play()
-            self.correct_trials.append(0)
+            rule.correct_trials.append(0)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0]
@@ -275,7 +275,7 @@ for trial in trials:
                 response = 'R'
                 performance += 1
                 correct_side.append('R')
-                self.correct_trials.append(1)
+                rule.correct_trials.append(1)
                     
                 break
 
@@ -294,13 +294,13 @@ for trial in trials:
                     total_reward_L += reward_size
 
                 response = 'L'
-                self.correct_trials.append(0)
+                rule.correct_trials.append(0)
                     
                 break
 
         if response == 'N':
             tone_wrong.Play()
-            self.correct_trials.append(0)
+            rule.correct_trials.append(0)
 
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0]
@@ -385,8 +385,8 @@ for trial in trials:
     rule.check() # Check whether criterion was met or rule switch will occur.
 
     ITI_ = 0
-    while ITI_ > 12 or ITI_ < 8:
-        ITI_ = np.random.exponential(scale = 10)
+    while ITI_ > 30 or ITI_ < 10:
+        ITI_ = np.random.exponential(scale = 20)
 
     time.sleep(ITI_)
 
