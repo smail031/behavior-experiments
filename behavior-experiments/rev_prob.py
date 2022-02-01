@@ -198,6 +198,7 @@ for trial in trials:
                 if np.random.rand() < p_rew:
                     data.t_rew_l[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
+                    print('Delivering L reward for correct lick')
                     water_L.Reward()
                     data.v_rew_l[trial] = reward_size
                     total_reward_L += reward_size
@@ -223,6 +224,7 @@ for trial in trials:
                 else: 
                     data.t_rew_r[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
+                    print('Delivering R reward for incorrect lick')
                     water_R.Reward()
                     data.v_rew_r[trial] = reward_size
                     total_reward_R += reward_size
@@ -264,6 +266,7 @@ for trial in trials:
                 if np.random.rand() < p_rew: 
                     data.t_rew_r[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
+                    print('Delivering R reward for correct lick')
                     water_R.Reward()
                     data.v_rew_r[trial] = reward_size
                     total_reward_R += reward_size
@@ -289,6 +292,7 @@ for trial in trials:
                 else: 
                     data.t_rew_l[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
+                    print('Delivering L reward for incorrect lick')
                     water_L.Reward()
                     data.v_rew_l[trial] = reward_size
                     total_reward_L += reward_size
@@ -373,9 +377,9 @@ for trial in trials:
     elif correct_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         for i in range(2):
             if np.random.rand() < 0.5:        
-                L_tone.Play()
+                rule.L_tone.Play()
             else:
-                L_tone.Play()
+                rule.L_tone.Play()
                 
             water_L.Reward()
             supp_reward_L += reward_size
