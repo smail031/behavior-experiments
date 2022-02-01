@@ -51,7 +51,7 @@ syringe_check = input('Syringe check: ')
 
 yesterday = input('Use yesterdays rules? (y/n): ') 
 if yesterday == 'n':
-    left_port = int(input('Port assignment: L(1) or R(0): '))
+    prev_left_port = int(input('Port assignment: L(1) or R(0): '))
     countdown = np.nan
     
 response_window = 2000 # Time window(ms) for animals to respond after cue.
