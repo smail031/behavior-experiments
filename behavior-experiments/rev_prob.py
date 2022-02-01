@@ -358,7 +358,7 @@ for trial in trials:
         water_R.Reward()
         supp_reward_R += reward_size
         time.sleep(1)
-        correct_trials = []
+        rule.correct_trials = []
 
     # If 5 rewards from L port in a row, deliver rewards through R port.
     if correct_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
