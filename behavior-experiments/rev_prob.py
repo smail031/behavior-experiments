@@ -38,7 +38,7 @@ mouse_weight = float(input('mouse weight(g): '))
 
 fetch = input('Fetch previous data? (y/n) ')
 if fetch == 'y':
-    [prev_freq_rule, prev_left_port, countdown] = (
+    [freq_rule, left_port, countdown] = (
         core.get_previous_data(mouse_number, protocol_name))
 else:
     print('Warning: no previous data imported. Ensure that rule is correct, and'
@@ -51,7 +51,7 @@ syringe_check = input('Syringe check: ')
 
 yesterday = input('Use yesterdays rules? (y/n): ') 
 if yesterday == 'n':
-    prev_left_port = int(input('Port assignment: L(1) or R(0): '))
+    left_port = int(input('Port assignment: L(1) or R(0): '))
     countdown = np.nan
     
 response_window = 2000 # Time window(ms) for animals to respond after cue.
@@ -126,7 +126,7 @@ highfreq = core.tones(high_freq, sample_tone_length)
 tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 tone_end = core.tones(end_tone_freq, end_tone_length)
 
-rule = core.Rule([highfreq,lowfreq], prev_left_port, criterion,
+rule = core.Rule([highfreq,lowfreq], left_port, criterion,
                  countdown, countdown_start)
 
 if ttl_experiment == 'y':
