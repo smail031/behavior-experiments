@@ -334,7 +334,7 @@ for trial in trials:
         
     data.freq[trial] = tone.freq #store tone frequency
     data.loc[trial] = tone.loc #store whether multipulse(1) or single pulse(0)
-    data.left_port[trial] = left_port #store port assighment of tones
+    data.left_port[trial] = rule.rule #store port assighment of tones
     data.countdown[trial] = rule.countdown
     #if freq rule, left_port=1 means highfreq on left port
     #if pulse rule, left_port=1 means multipulse on left port
