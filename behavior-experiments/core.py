@@ -697,7 +697,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
 
     # Generate dictionary with a string listing all dates
     prev_dates = rclone.with_config(rclone_cfg).run_cmd(
-        command='lsf', extra_args=[data_path+mouse_number])
+        command='lsf', extra_args=[data_path+str(mouse_number)])
     # Get most recent date
     last_date = prev_dates['out'][-12:-2].decode()
     last_data_path = f'{data_path}{mouse_number}/{last_date}/'
