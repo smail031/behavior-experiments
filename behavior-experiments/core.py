@@ -714,7 +714,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         prev_freq_rule = f['rule']['freq_rule'][-1]
         prev_left_port = f['rule']['left_port'][-1]
         prev_countdown = f['rule']['countdown'][-1]
-        prev_water = f.atts['total_reward']
+        prev_water = f.attrs['total_reward']
         prev_water += np.nansum(f['rew_r']['volume'])
         prev_trials = len(f['t_start'])
         
