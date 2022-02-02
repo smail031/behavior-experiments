@@ -127,7 +127,7 @@ tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
 tone_end = core.tones(end_tone_freq, end_tone_length)
 
 rule = core.Rule([highfreq,lowfreq], left_port, criterion,
-                 countdown, countdown_start)
+                 countdown_start, countdown)
 
 if ttl_experiment == 'y':
     #set up ttl class instances triggers and marker TTL output
