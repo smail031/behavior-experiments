@@ -685,7 +685,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
     # Paths for rclone config file, data repo (on rclone) and a local directory
     # to temporarily store the fetched data.
     rclone_cfg_path = '/home/pi/.config/rclone/rclone.conf'
-    data_path = 'sharepoint: Data/Behaviour data/Sebastien/Dual_Lickport/Mice/'
+    data_path = 'sharepoint:Data/Behaviour data/Sebastien/Dual_Lickport/Mice/'
     temp_data_path = '/home/pi/Desktop/temp_rclone/' 
 
     # Empty the temporary data folder
