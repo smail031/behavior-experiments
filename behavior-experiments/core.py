@@ -266,7 +266,6 @@ class data():
         self.exp_quality = ''
         self.exp_msg = ''
         self.total_reward = 0
-        self.countdown = countdown
 
 
     def Store(self):
@@ -586,6 +585,7 @@ class Rule:
         self.correct_trials = []
         # Initialize tone-action mapping to the initial rule.
         self.map_tones()
+        print(f'initial countdown = {self.countdown}')
 
     def map_tones(self):
         '''
@@ -624,6 +624,7 @@ class Rule:
         has reached 0.
         '''
         # Check whether the countdown has begun.
+        print(self.countdown)
         if np.isnan(self.countdown):
             # If there is no countdown, check whether criterion has been met.
             if self.check_criterion():
