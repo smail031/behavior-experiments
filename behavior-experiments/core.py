@@ -87,6 +87,8 @@ class LocalizedTone(Tone):
         self.loc = loc
         self.vol = vol
         self.name = f'{self.freq}Hz_{self.loc}.wav'
+        self.generate_tone()
+        self.sound = mixer.Sound(self.name)
 
     def generate_tone(self):
         #Generate audible and silent channels
@@ -98,7 +100,7 @@ class LocalizedTone(Tone):
         if self.loc == 'L':
             # Merge with audible in L channel and silent in R channel.
             os.system(f'sox -M audible.wav silent.wav {self.name}')
-
+            
         elif self.loc == 'R':
             # Merge with silent in L channel and audible in R channel.
             os.system(f'sox -M silent.wav audible.wav {self.name}')
