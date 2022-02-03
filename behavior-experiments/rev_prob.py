@@ -222,7 +222,7 @@ for trial in trials:
                 # Reward delivery for incorrect lick
                 else: 
                     data.t_rew_r[trial] = (time.time()*1000
-                                           - data._t_start_abs[trial]
+                                           - data._t_start_abs[trial])
                     water_R.Reward()
                     data.v_rew_r[trial] = reward_size
                     total_reward_R += reward_size
