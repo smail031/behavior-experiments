@@ -337,14 +337,14 @@ for trial in trials:
 
     licks_detected = ''
     # Will indicate which ports recorded any licks in the entire trial.
-    if sum(lick_port_L._licks) == 0:
+    if sum(lick_port_L._licks) != 0:
         licks_detected += 'L'
-    if sum(lick_port_R._licks) == 0:
+    if sum(lick_port_R._licks) != 0:
         licks_detected += 'R'
         
     print(f'Tone:{tone.freq}, Resp:{response}, Licks:{licks_detected}, '
-          f'Rew:{sum([data.v_rew_l[trial],data.v_rew_r[trial]])}'
-          f'Corr:{rule.correct_trials[-1]}, Perf:{performance/(trial+1)}')
+          f'Rew:{sum([data.v_rew_l[trial],data.v_rew_r[trial]])} '
+          f'Corr:{rule.correct_trials[-1]}, Perf:{performance}/{(trial+1)}')
 
     #---------------------------------------------------------------------------
     # Deliver supplementary rewards:
