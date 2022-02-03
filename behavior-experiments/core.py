@@ -19,6 +19,93 @@ import rclone
 #Define some classes!
 #------------------------------------------------------------------------------
 
+class Tone:
+    '''
+    A parent class to handle auditory tones to be used during the task.
+
+    Attributes:
+    -----------
+    self.name: str
+        The filename of the corresponding wav file (e.g. '1000Hz.wav').
+
+    self.tone_length: float
+        The total duration (in seconds) of the tone.
+
+    self.sound: object
+        A pygame.mixer object corresponding to the tone.
+    '''
+    def __init__(self):
+        self.name = None
+        self.tone_length
+        self.sound = mixer.Sound(self.name)
+
+    def generate_tone(self):
+        '''
+        Use the sox library to generate a wav file corresponding to this tone.
+        '''
+        raise NotImplementedError
+
+    def play(self):
+        '''
+        Play the sound over the speakers.
+        '''
+        self.sound.play()
+        time.sleep(self.tone_length)
+
+    def delete(self):
+        '''
+        Delete the file from the local directory.
+        '''
+        os.system(f'rm {self.name}')
+        
+class PureTone(Tone):
+    '''
+    A tone with a single frequency, playing continuously from both channels for
+    a given amount of time.
+    '''
+    def __init__(self, frequency:int, tone_length:, vol=-5):
+        self.freq = frequency
+        self.tone_length = tone_length
+        self.loc = 'B'
+        self.vol = vol
+        self.name = f'{self.freq}Hz.wav'
+        self.generate_tone()
+        self.sound = mixer.Sound(self.name)
+
+    def generate_tone(self):
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 {self.name} '
+                  f'synth {self.tone_length} sin {self.freq} vol {self.vol}dB')
+
+class LocalizedTone(Tone):
+    '''
+    A tone with a single frequency, playing continuously from a single channel
+    (left or right) for a given amount of time.
+    '''
+    def __init__(self, frequency, tone_length, loc, vol=-5):
+        self.freq = frequency
+        self.tone_length = tone_length
+        self.loc = loc
+        self.vol = vol
+        self.name = f'{self.freq}Hz_{self.loc}.wav'
+
+    def generate_tone(self):
+        #Generate audible and silent channels
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 audible.wav '
+                  f'synth {self.tone_length} sin {self.freq} vol {self.vol}dB')
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin '
+                      '4000 vol -200dB')
+
+        if self.loc == 'L':
+            # Merge with audible in L channel and silent in R channel.
+            os.system(f'sox -M audible.wav silent.wav {self.name}')
+
+        elif self.loc == 'R':
+            # Merge with silent in L channel and audible in R channel.
+            os.system(f'sox -M silent.wav audible.wav {self.name}')
+
+        os.system(f'rm silent.wav')
+        os.system(f'rm audible.wav')
+        
 class tones():
 
     def __init__(self, frequency, tone_length, pulsing=False, loc='B'):
@@ -47,27 +134,29 @@ class tones():
 
         elif self.multi_pulse == True:
 
-            self.pulse_number = self.tone_length/(2*self.pulse_length) # 2 because of the interpulse interval
-            
+            self.pulse_number = self.tone_length/(2*self.pulse_length)
+            # 2 because of the interpulse interval
             #create an empty wav file that will be the inter-pulse interval
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 pulse.wav synth {self.pulse_length} sin {self.freq} vol -20dB') #tone
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 interpulse.wav synth {self.pulse_length} sin {self.freq} vol -150dB') #silent interpulse interval
-
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 pulse.wav synth '
+                      f'{self.pulse_length} sin {self.freq} vol -20dB')
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 interpulse.wav synth '
+                      '{self.pulse_length} sin {self.freq} vol -150dB') 
             #string with pulse/interpulse repeated for number of pulses
             concat_files = ' pulse.wav interpulse.wav' * int(self.pulse_number)
 
             os.system(f'sox{concat_files} {self.name}.wav')
-
-            os.system(f'rm pulse.wav') #delete the pulse and interpulse, no longer useful.
+            os.system(f'rm pulse.wav')
             os.system(f'rm interpulse.wav')
 
         if self.loc == 'L': #will create a tone coming from left speaker
 
             #create a silent channel called silent.wav 
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin 4000 vol -200dB')
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 '
+                      f'sin 4000 vol -200dB')
 
             #merge the two channels such that the silent is on the right
-            os.system(f'sox -M {str(self.freq)}Hz_B.wav silent.wav {self.name}.wav')
+            os.system(f'sox -M {str(self.freq)}Hz_B.wav silent.wav '
+                      '{self.name}.wav')
 
             os.system('rm silent.wav') #delete silent channel
             os.system(f'rm {str(self.freq)}Hz_B.wav') #delete sound channel
@@ -75,13 +164,13 @@ class tones():
         elif self.loc == 'R': #will create a tone coming from right speaker
 
             #create a silent channel called silent.wav 
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin 4000 vol -200dB')
+            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin '
+                      '4000 vol -200dB')
 
             #merge the two channels such that the silent is on the left
             os.system(f'sox -M silent.wav {str(self.freq)}Hz_B.wav {self.name}.wav')
-
-            os.system(f'rm silent.wav') #delete silent channel
-            os.system(f'rm {str(self.freq)}Hz_B.wav') #delete sound channel
+            os.system(f'rm silent.wav')
+            os.system(f'rm {str(self.freq)}Hz_B.wav')
 
         #elif self.loc == 'B': #will create a tone coming from both speakers
 
@@ -613,7 +702,6 @@ class Rule:
         '''
         if sum(self.correct_trials[-self.criterion[1]:]) >= self.criterion[0]:
             return True
-
         else:
             return False
 
