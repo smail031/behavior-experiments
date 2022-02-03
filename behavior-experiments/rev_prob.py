@@ -343,7 +343,7 @@ for trial in trials:
         licks_detected += 'R'
         
     print(f'Tone:{tone.freq}, Resp:{response}, Licks:{licks_detected}, '
-          f'Rew:{sum([data.v_rew_l[trial],data.v_rew_r[trial]])} '
+          f'Rew:{np.nansum([data.v_rew_l[trial],data.v_rew_r[trial]])} '
           f'Corr:{rule.correct_trials[-1]}, Perf:{performance}/{(trial+1)}')
 
     #---------------------------------------------------------------------------
