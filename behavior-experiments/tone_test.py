@@ -6,22 +6,22 @@ from pygame import mixer
 
 mixer.init(frequency = 44100)
 
-low_freq = 8000
-high_freq = 12000
+low_freq = 6000
+high_freq = 10000
 
 sample_tone_length = 2
 
-lowfreq_L = core.LocalizedTone(low_freq, sample_tone_length, loc='L')
-lowfreq_R = core.LocalizedTone(low_freq, sample_tone_length, loc='R') 
-highfreq_L = core.LocalizedTone(high_freq, sample_tone_length, loc='L')
-highfreq_R = core.LocalizedTone(high_freq, sample_tone_length, loc='R')
+lowfreq = core.LocalizedTone(low_freq, sample_tone_length)
+#lowfreq_R = core.LocalizedTone(low_freq, sample_tone_length) 
+highfreq = core.LocalizedTone(high_freq, sample_tone_length)
+#highfreq_R = core.LocalizedTone(high_freq, sample_tone_length)
 
 
 while True:
 
-    lowfreq_L.play()
-    lowfreq_R.play()
-    highfreq_L.play()
-    highfreq_R.play()
+    lowfreq.play()
+    #lowfreq_R.play()
+    highfreq.play()
+    #highfreq_R.play()
 
 
