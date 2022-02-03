@@ -34,11 +34,6 @@ class Tone:
     self.sound: object
         A pygame.mixer object corresponding to the tone.
     '''
-    def __init__(self):
-        self.name = None
-        self.tone_length
-        self.sound = mixer.Sound(self.name)
-
     def generate_tone(self):
         '''
         Use the sox library to generate a wav file corresponding to this tone.
@@ -46,16 +41,12 @@ class Tone:
         raise NotImplementedError
 
     def play(self):
-        '''
-        Play the sound over the speakers.
-        '''
+        '''Play the sound over the speakers.'''
         self.sound.play()
         time.sleep(self.tone_length)
 
     def delete(self):
-        '''
-        Delete the file from the local directory.
-        '''
+        ''' Delete the file from the local directory.'''
         os.system(f'rm {self.name}')
         
 class PureTone(Tone):
@@ -107,88 +98,33 @@ class LocalizedTone(Tone):
 
         os.system(f'rm silent.wav')
         os.system(f'rm audible.wav')
-        
-class tones():
 
-    def __init__(self, frequency, tone_length, pulsing=False, loc='B'):
-
-        #Create a string that will be the name of the .wav file
-        if pulsing:           
-            self.name = f'{frequency}Hz_{loc}_pulsing'
-
-        else:
-            self.name = f'{frequency}Hz_{loc}'
-            
+class PulsingTone(Tone):
+    '''
+    A tone of a given frequency pulsing on and off at a given frequency. 
+    (tone_length%pulse_length) should be equal to 0. 
+    '''
+    def __init__(self, frequency, tone_length, pulse_length, vol=-5):
         self.freq = frequency
         self.tone_length = tone_length
-        self.multi_pulse = pulsing
-        self.loc = loc
-        self.pulse_length = 0.2
+        self.pulse_length = pulse_length
+        self.vol = vol
+        self.name = f'{self.freq}Hz_pulsing.wav'
 
-        self.vol = -5
-        if self.freq >= 4000:
-            self.vol = -25
-
-        if self.multi_pulse == False:
-            #create a waveform called self.name from frequency and pulse_length
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 {str(self.freq)}Hz_B.wav '
-                      f'synth {self.tone_length} sin {self.freq} vol {self.vol}dB')
-
-        elif self.multi_pulse == True:
-
-            self.pulse_number = self.tone_length/(2*self.pulse_length)
-            # 2 because of the interpulse interval
-            #create an empty wav file that will be the inter-pulse interval
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 pulse.wav synth '
+    def generate_tone(self):
+        pulse_number = self.tone_length/(2*self.pulse_length)
+        # Multiplying pulse length by 2 because of the inter-pulse interval
+        # Generate wav files for pulse and silent inter-pulse interval
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 pulse.wav synth '
                       f'{self.pulse_length} sin {self.freq} vol -20dB')
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 interpulse.wav synth '
+        os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 interpulse.wav synth '
                       '{self.pulse_length} sin {self.freq} vol -150dB') 
-            #string with pulse/interpulse repeated for number of pulses
-            concat_files = ' pulse.wav interpulse.wav' * int(self.pulse_number)
-
-            os.system(f'sox{concat_files} {self.name}.wav')
-            os.system(f'rm pulse.wav')
-            os.system(f'rm interpulse.wav')
-
-        if self.loc == 'L': #will create a tone coming from left speaker
-
-            #create a silent channel called silent.wav 
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 '
-                      f'sin 4000 vol -200dB')
-
-            #merge the two channels such that the silent is on the right
-            os.system(f'sox -M {str(self.freq)}Hz_B.wav silent.wav '
-                      '{self.name}.wav')
-
-            os.system('rm silent.wav') #delete silent channel
-            os.system(f'rm {str(self.freq)}Hz_B.wav') #delete sound channel
-            
-        elif self.loc == 'R': #will create a tone coming from right speaker
-
-            #create a silent channel called silent.wav 
-            os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 silent.wav synth 2 sin '
-                      '4000 vol -200dB')
-
-            #merge the two channels such that the silent is on the left
-            os.system(f'sox -M silent.wav {str(self.freq)}Hz_B.wav {self.name}.wav')
-            os.system(f'rm silent.wav')
-            os.system(f'rm {str(self.freq)}Hz_B.wav')
-
-        #elif self.loc == 'B': #will create a tone coming from both speakers
-
-            #merge the tone with itself to get a sound from both speakers
-            #os.system(f'sox -M {self.name}.wav {self.name}.wav {self.name}.wav')
-
-        self.sound = mixer.Sound(f'{self.name}.wav')
-
-    def Play(self):
- 
-        self.sound.play() #play the .wav file
-        time.sleep(self.tone_length) #wait for it to end before continuing
-
-    def Delete(self):
-        # Delete the wav file
-        os.system(f'rm {self.name}.wav')
+        # Generate a string with sequence of pulses to be to the tone
+        concat_files = ' pulse.wav interpulse.wav' * int(self.pulse_number)
+        #Concatenate the pulse and IPI into a single file and delete originals.
+        os.system(f'sox{concat_files} {self.name}.wav')
+        os.system(f'rm pulse.wav')
+        os.system(f'rm interpulse.wav')
 
 
 class data():
