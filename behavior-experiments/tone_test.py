@@ -11,9 +11,9 @@ high_freq = 10000
 
 sample_tone_length = 2
 
-lowfreq = core.LocalizedTone(low_freq, sample_tone_length)
+lowfreq = core.PureTone(low_freq, sample_tone_length)
 #lowfreq_R = core.LocalizedTone(low_freq, sample_tone_length) 
-highfreq = core.LocalizedTone(high_freq, sample_tone_length)
+highfreq = core.PureTone(high_freq, sample_tone_length)
 #highfreq_R = core.LocalizedTone(high_freq, sample_tone_length)
 
 
