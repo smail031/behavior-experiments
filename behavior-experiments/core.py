@@ -623,7 +623,6 @@ class Rule:
         has reached 0.
         '''
         # Check whether the countdown has begun.
-        print(self.countdown)
         if np.isnan(self.countdown):
             # If there is no countdown, check whether criterion has been met.
             if self.check_criterion():
