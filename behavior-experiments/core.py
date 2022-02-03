@@ -63,7 +63,7 @@ class PureTone(Tone):
     A tone with a single frequency, playing continuously from both channels for
     a given amount of time.
     '''
-    def __init__(self, frequency:int, tone_length:, vol=-5):
+    def __init__(self, frequency:int, tone_length:float, vol=-5):
         self.freq = frequency
         self.tone_length = tone_length
         self.loc = 'B'
