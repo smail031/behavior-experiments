@@ -383,7 +383,6 @@ class data():
                       '/home/pi/Desktop/temporary-data')
 
         # Move current file to yesterday_data folder
-        print(self.filename)
         os.system(f'mv /home/pi/Desktop/behavior-experiments/'
                   f'behavior-experiments/{self.filename} '
                   f'/home/pi/Desktop/yesterday_data')
@@ -631,11 +630,11 @@ class Rule:
                 # Warn user that criterion was met, and begin trial countdown.
                 print('-----Performance criterion has been met.-----')
                 print(f'A rule reversal will occur in '
-                      '{self.countdown_start} trials.')
+                      f'{self.countdown_start} trials.')
                 self.countdown = self.countdown_start
 
         else:
-            print(f'Rule reversal countdown: {self.countdown}')
+            print(f'Rule reversal in {self.countdown} trials.')
             if self.countdown == 0:
                 # If countdown has reached 0, warn user and switch rule.
                 self.countdown = np.nan
@@ -725,6 +724,8 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         print(f'Previous protocol: {prev_protocol}')
         print(f'Previous rule: [{int(prev_left_port)}]')
         print(f'Previous water total: {prev_water}')
+        if not np.isnan(prev_countdown):
+            print(f'Reversal countdown: {prev_countdown}')
 
     # Verify that the protocol is the same as previous. If not, warn user.
     if prev_protocol != protocol_name: 

@@ -198,7 +198,6 @@ for trial in trials:
                 if np.random.rand() < p_rew:
                     data.t_rew_l[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
-                    print('Delivering L reward for correct lick')
                     water_L.Reward()
                     data.v_rew_l[trial] = reward_size
                     total_reward_L += reward_size
@@ -223,8 +222,7 @@ for trial in trials:
                 # Reward delivery for incorrect lick
                 else: 
                     data.t_rew_r[trial] = (time.time()*1000
-                                           - data._t_start_abs[trial])
-                    print('Delivering R reward for incorrect lick')
+                                           - data._t_start_abs[trial]
                     water_R.Reward()
                     data.v_rew_r[trial] = reward_size
                     total_reward_R += reward_size
@@ -266,7 +264,6 @@ for trial in trials:
                 if np.random.rand() < p_rew: 
                     data.t_rew_r[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
-                    print('Delivering R reward for correct lick')
                     water_R.Reward()
                     data.v_rew_r[trial] = reward_size
                     total_reward_R += reward_size
@@ -292,7 +289,6 @@ for trial in trials:
                 else: 
                     data.t_rew_l[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
-                    print('Delivering L reward for incorrect lick')
                     water_L.Reward()
                     data.v_rew_l[trial] = reward_size
                     total_reward_L += reward_size
@@ -339,11 +335,16 @@ for trial in trials:
     #if freq rule, left_port=1 means highfreq on left port
     #if pulse rule, left_port=1 means multipulse on left port
 
-    print(f'Performance: {performance}/{trial+1}')
+    licks_detected = ''
+    # Will indicate which ports recorded any licks in the entire trial.
     if sum(lick_port_L._licks) == 0:
-        print('No Left licks detected')
+        licks_detected += 'L'
     if sum(lick_port_R._licks) == 0:
-        print('No Right licks detected')
+        licks_detected += 'R'
+        
+    print(f'Tone:{tone.freq}, Resp:{response}, Licks:{licks_detected}, '
+          f'Rew:{sum([data.v_rew_l[trial],data.v_rew_r[trial]])'
+          f'Corr:{rule.correct_trials[-1]}, Perf:{performance/(trial+1)}'
 
     #---------------------------------------------------------------------------
     # Deliver supplementary rewards:
