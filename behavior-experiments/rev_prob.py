@@ -119,12 +119,12 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 # Create instruction tones
-lowfreq = core.tones(low_freq, sample_tone_length)
-highfreq = core.tones(high_freq, sample_tone_length)
+lowfreq = core.PureTone(low_freq, sample_tone_length)
+highfreq = core.PureTone(high_freq, sample_tone_length)
 
 # Create tone that is used as an error signal
-tone_wrong = core.tones(wrong_tone_freq, wrong_tone_length)
-tone_end = core.tones(end_tone_freq, end_tone_length)
+tone_wrong = core.PureTone(wrong_tone_freq, wrong_tone_length)
+tone_end = core.PureTone(end_tone_freq, end_tone_length)
 
 rule = core.Rule([highfreq,lowfreq], left_port, criterion,
                  countdown_start, countdown)
@@ -182,7 +182,7 @@ for trial in trials:
 
         data.sample_tone[trial] = 'L'
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone.Play()
+        tone.play()
         data.sample_tone_end[trial] = (time.time()*1000
                                        - data._t_start_abs[trial])
 
@@ -204,7 +204,7 @@ for trial in trials:
 
                 # Stochastic reward omission for correct lick
                 else: 
-                    tone_wrong.Play()
+                    tone_wrong.play()
 
                 response = 'L'
                 performance += 1
@@ -217,7 +217,7 @@ for trial in trials:
             elif sum(lick_port_R._licks[(length_R-1):]) > 0: 
                 # Reward omission for incorrect lick
                 if np.random.rand() < p_rew: 
-                    tone_wrong.Play()
+                    tone_wrong.play()
 
                 # Reward delivery for incorrect lick
                 else: 
@@ -233,7 +233,7 @@ for trial in trials:
                 break
 
         if response == 'N':
-            tone_wrong.Play()
+            tone_wrong.play()
             rule.correct_trials.append(0)
 
         data.response[trial] = response
@@ -248,7 +248,7 @@ for trial in trials:
 
         data.sample_tone[trial] = 'R'
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone.Play() #Play left tone
+        tone.play() #Play left tone
         data.sample_tone_end[trial] = (time.time()*1000
                                        - data._t_start_abs[trial])
 
@@ -270,7 +270,7 @@ for trial in trials:
 
                 # Stochastic reward omission
                 else:
-                    tone_wrong.Play()
+                    tone_wrong.play()
 
                 response = 'R'
                 performance += 1
@@ -283,7 +283,7 @@ for trial in trials:
             elif sum(lick_port_L._licks[(length_L-1):]) > 0: 
                 # Stochastic reward omission
                 if np.random.rand() < p_rew: 
-                    tone_wrong.Play()
+                    tone_wrong.play()
 
                 # Stochastic rew delivery for incorrect choice
                 else: 
@@ -299,7 +299,7 @@ for trial in trials:
                 break
 
         if response == 'N':
-            tone_wrong.Play()
+            tone_wrong.play()
             rule.correct_trials.append(0)
 
         data.response[trial] = response
@@ -343,7 +343,7 @@ for trial in trials:
         licks_detected += 'R'
         
     print(f'Tone:{tone.freq}, Resp:{response}, Licks:{licks_detected}, '
-          f'Rew:{np.nansum([data.v_rew_l[trial],data.v_rew_r[trial]])} '
+          f'Rew:{np.nansum([data.v_rew_l[trial],data.v_rew_r[trial]])}, '
           f'Corr:{rule.correct_trials[-1]}, Perf:{performance}/{(trial+1)}')
 
     #---------------------------------------------------------------------------
@@ -352,11 +352,11 @@ for trial in trials:
 
     # If 8 unrewarded trials in a row, deliver rewards through both ports.
     if len(rule.correct_trials) > 8 and sum(rule.correct_trials[-8:]) == 0:
-        rule.L_tone.Play()
+        rule.L_tone.play()
         water_L.Reward()
         supp_reward_L += reward_size
         time.sleep(1)
-        rule.R_tone.Play()
+        rule.R_tone.play()
         water_R.Reward()
         supp_reward_R += reward_size
         time.sleep(1)
@@ -366,9 +366,9 @@ for trial in trials:
     if correct_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
         for i in range(2):
             if np.random.rand() < 0.5:        
-                rule.R_tone.Play()
+                rule.R_tone.play()
             else:
-                rule.R_tone.Play()
+                rule.R_tone.play()
                 
             water_R.Reward()
             supp_reward_R += reward_size
@@ -379,9 +379,9 @@ for trial in trials:
     elif correct_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         for i in range(2):
             if np.random.rand() < 0.5:        
-                rule.L_tone.Play()
+                rule.L_tone.play()
             else:
-                rule.L_tone.Play()
+                rule.L_tone.play()
                 
             water_L.Reward()
             supp_reward_L += reward_size
@@ -396,7 +396,7 @@ for trial in trials:
 
     time.sleep(ITI_)
 
-tone_end.Play()
+tone_end.play()
 camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
@@ -416,7 +416,7 @@ data.Store()
 data.Rclone()
 
 #delete the .wav files created for the experiment
-lowfreq.Delete()
-highfreq.Delete()
-tone_wrong.Delete()
-tone_end.Delete()
+lowfreq.delete()
+highfreq.delete()
+tone_wrong.delete()
+tone_end.delete()
