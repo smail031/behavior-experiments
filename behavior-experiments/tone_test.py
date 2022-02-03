@@ -11,17 +11,17 @@ high_freq = 12000
 
 sample_tone_length = 2
 
-lowfreq_L = core.tones(low_freq, sample_tone_length, loc='L') #1000Hz single pulse
-lowfreq_R = core.tones(low_freq, sample_tone_length, loc='R') #1000Hz multi pulse
-highfreq_L = core.tones(high_freq, sample_tone_length, loc='L') #4000Hz single pulse
-highfreq_R = core.tones(high_freq, sample_tone_length, loc='R') #4000Hz multi pulse
+lowfreq_L = core.LocalizedTone(low_freq, sample_tone_length, loc='L')
+lowfreq_R = core.LocalizedTone(low_freq, sample_tone_length, loc='R') 
+highfreq_L = core.LocalizedTone(high_freq, sample_tone_length, loc='L')
+highfreq_R = core.LocalizedTone(high_freq, sample_tone_length, loc='R')
 
 
 while True:
 
-    lowfreq_L.Play()
-    lowfreq_R.Play()
-    highfreq_L.Play()
-    highfreq_R.Play()
+    lowfreq_L.play()
+    lowfreq_R.play()
+    highfreq_L.play()
+    highfreq_R.play()
 
 
