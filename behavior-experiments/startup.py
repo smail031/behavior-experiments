@@ -87,14 +87,14 @@ if refill == 'y':
 #initialize the mixer (for tones) at the proper sampling rate.
 mixer.init(frequency = 44100)
 
-test_tone = core.tones(1000,2) #generates a .wav file with a 2 second tone at 1000Hz
+test_tone = core.PureTone(1000,2) #generates a .wav file with a 2 second tone at 1000Hz
 
 print('Testing speakers.')
 
 speaker_test = 'a' #Initialize speaker_test variable to 'a'; see below
 while speaker_test == 'a':
 
-    test_tone.Play() #play the test tone
+    test_tone.play() #play the test tone
     speaker_test = input('Did you hear the tone? y:yes, a:again: ')
 
 test_tone.Delete() #delete the .wav file that was created
@@ -129,7 +129,7 @@ while left_works == False:
 
     if left_works == True:
         print('Left contact detected')
-        test_tone.Play()
+        test_tone.play()
     else:
         print('No contact detected')
 
@@ -157,7 +157,7 @@ while right_works == False:
 
     if right_works == True:
         print('Right contact detected')
-        test_tone.Play()
+        test_tone.play()
     else:
         print('No contact detected')
 
