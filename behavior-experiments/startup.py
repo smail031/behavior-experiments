@@ -97,8 +97,6 @@ while speaker_test == 'a':
     test_tone.play() #play the test tone
     speaker_test = input('Did you hear the tone? y:yes, a:again: ')
 
-test_tone.Delete() #delete the .wav file that was created
-
 #----------------------------
 #Test lick detection:
 #----------------------------
@@ -177,4 +175,4 @@ camera.start_preview(fullscreen = False, window = (0,-44,350,400))
 test_cam = input('Confirm that camera is working (ENTER)')
 #Nothing is stored, just waits for the user to hit ENTER before exiting the program.
 
-
+test_tone.delete() #delete the .wav file that was created
