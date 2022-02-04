@@ -72,7 +72,7 @@ class LocalizedTone(Tone):
     A tone with a single frequency, playing continuously from a single channel
     (left or right) for a given amount of time.
     '''
-    def __init__(self, frequency, tone_length, loc, vol=-5):
+    def __init__(self, frequency, tone_length, loc, vol=-20):
         self.freq = frequency
         self.tone_length = tone_length
         self.loc = loc
@@ -104,7 +104,7 @@ class PulsingTone(Tone):
     A tone of a given frequency pulsing on and off at a given frequency. 
     (tone_length%(pulse_length*2)) should be equal to 0. 
     '''
-    def __init__(self, frequency, tone_length, pulse_length, vol=-5):
+    def __init__(self, frequency, tone_length, pulse_length, vol=-20):
         self.freq = frequency
         self.tone_length = tone_length
         self.pulse_length = pulse_length
