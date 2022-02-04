@@ -10,12 +10,12 @@ high_freq = 10000
 
 sample_tone_length = 4
 
-lowfreq = core.tones(low_freq, sample_tone_length, loc='B') #1000Hz single pulse
-highfreq = core.tones(high_freq, sample_tone_length, loc='B') #1000Hz multi pulse
+lowfreq = core.PureTone(low_freq, sample_tone_length, vol=-20) #1000Hz single pulse
+highfreq = core.PureTone(high_freq, sample_tone_length, vol=-20) #1000Hz multi pulse
 
 while True:
 
-    lowfreq.Play()
-    highfreq.Play()
+    lowfreq.play()
+    highfreq.play()
 
 
