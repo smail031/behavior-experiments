@@ -92,7 +92,7 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 # Generate a tone to mark end of the experiment.
-tone_end = core.tones(end_tone_freq, end_tone_length)
+tone_end = core.PureTone(end_tone_freq, end_tone_length)
 
 if ttl_experiment == 'y':
     # Set up ttl class instances triggers and marker TTL output.
@@ -211,7 +211,7 @@ for trial in trials:
 
     time.sleep(ITI_) # Wait for the length of the inter-trial interval.
 
-tone_end.Play() # Play tone to signal the end of the experiment.
+tone_end.play() # Play tone to signal the end of the experiment.
 camera.stop_preview()
 
 print(f'Total L reward: {total_reward_L} uL')
@@ -229,4 +229,4 @@ if data.exp_quality == 'n':
 data.Store()
 data.Rclone()
 
-tone_end.Delete()
+tone_end.delete()
