@@ -329,7 +329,7 @@ class data():
             lick_r = f.create_group('lick_r')
 
             sample_tone = f.create_group('sample_tone')
-
+            
             rew_l = f.create_group('rew_l')
             rew_r = f.create_group('rew_r')
 
@@ -739,7 +739,6 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         prev_left_port = f['rule']['left_port'][-1]
         prev_countdown = f['rule']['countdown'][-1]
         prev_water = f.attrs['total_reward']
-        prev_water += np.nansum(f['rew_r']['volume'])
         prev_trials = len(f['t_start'])
         
         # Print some relevant information to the console
@@ -749,6 +748,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         print(f'Previous protocol: {prev_protocol}')
         print(f'Previous rule: [{int(prev_left_port)}]')
         print(f'Previous water total: {prev_water}')
+        print(f'Previous trial number: {prev_trials}')
         if not np.isnan(prev_countdown):
             print(f'Reversal countdown: {prev_countdown}')
 
