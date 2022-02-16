@@ -62,7 +62,7 @@ high_freq = 10000 # Frequency(Hz) of high frequency sample tone.
 
 wrong_tone_freq = 14000
 wrong_tone_length = 1
-end_tone_freq = 1000 # Tone to signal the end of the experiment.
+end_tone_freq = 2000 # Tone to signal the end of the experiment.
 end_tone_length = 8
 
 reward_size = 10 # Volume(uL) of water rewards.
