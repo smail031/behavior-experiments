@@ -740,10 +740,11 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         prev_countdown = f['rule']['countdown'][-1]
         prev_water = f.attrs['total_reward']
         prev_trials = len(f['t_start'])
-        prev_resp_decoded = f['response'].decoded('utf-8')
-        prev_L = np.sum(prev_resp_decoded == 'L') / prev_trials
-        prev_R = np.sum(prev_resp_decoded == 'R') / prev_trials
-        prev_N = np.sum(prev_resp_decoded == 'N') / prev_trials
+        prev_resp = f['response']
+        prev_resp_decoded = [i.decode('utf-8') for i in prev_resp]
+        prev_L = sum(prev_resp_decoded == 'L') / prev_trials
+        prev_R = sum(prev_resp_decoded == 'R') / prev_trials
+        prev_N = sum(prev_resp_decoded == 'N') / prev_trials
         
         # Print some relevant information to the console
         print(f'Date of last experiment: {last_date}')
