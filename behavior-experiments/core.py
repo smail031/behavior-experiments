@@ -740,6 +740,10 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         prev_countdown = f['rule']['countdown'][-1]
         prev_water = f.attrs['total_reward']
         prev_trials = len(f['t_start'])
+        prev_resp_decoded = f['response'].decoded('utf-8')
+        prev_L = np.sum(prev_resp_decoded == 'L') / prev_trials
+        prev_R = np.sum(prev_resp_decoded == 'R') / prev_trials
+        prev_N = np.sum(prev_resp_decoded == 'N') / prev_trials
         
         # Print some relevant information to the console
         print(f'Date of last experiment: {last_date}')
@@ -749,6 +753,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         print(f'Previous rule: [{int(prev_left_port)}]')
         print(f'Previous water total: {prev_water}')
         print(f'Previous trial number: {prev_trials}')
+        print(f'Previous response fraction: L:{prev_L}, R:{prev_R}, N:{prev_N}')
         if not np.isnan(prev_countdown):
             print(f'Reversal countdown: {prev_countdown}')
 
