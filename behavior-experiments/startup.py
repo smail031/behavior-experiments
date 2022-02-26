@@ -64,9 +64,8 @@ if refill == 'y':
     tube_connect = input('Reconnect water tubes (ENTER) ')
     #reminder to reconnect and manually spin the syringe pumps
 
-    tube_fill = True
-
-    while tube_fill:
+    print('Priming lickports.') 
+    while True:
         side = input('Which side? (L/R/Q): ')
 
         if side == 'L':
@@ -76,7 +75,7 @@ if refill == 'y':
             steps = input('How many steps?: ')
             water_R.Motor(1, steps)
         elif side == 'Q':
-            tube_fill = False
+            break
         else:
             print('Not recognized.')
 
@@ -87,7 +86,7 @@ if refill == 'y':
 #initialize the mixer (for tones) at the proper sampling rate.
 mixer.init(frequency = 44100)
 
-test_tone = core.PureTone(1000,2) #generates a .wav file with a 2 second tone at 1000Hz
+test_tone = core.PureTone(4000,2) #generates a .wav file with a 2 second tone at 1000Hz
 
 print('Testing speakers.')
 

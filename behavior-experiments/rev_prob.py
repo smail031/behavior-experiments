@@ -62,7 +62,7 @@ high_freq = 10000 # Frequency(Hz) of high frequency sample tone.
 
 wrong_tone_freq = 14000
 wrong_tone_length = 1
-end_tone_freq = 2000 # Tone to signal the end of the experiment.
+end_tone_freq = 4000 # Tone to signal the end of the experiment.
 end_tone_length = 8
 
 reward_size = 10 # Volume(uL) of water rewards.
@@ -77,7 +77,7 @@ countdown_start = 250
 servo_PWM = 17 #PWM pin for servo that adjusts lickport distance
 
 L_enablePIN = 23 #enable pin for left stepper motor
-L_directionPIN = 24 #direction pin for left stepper motor
+L_directionPIN = 24  # Direction pin for left stepper motor
 L_stepPIN = 25 #step pin for left stepper motor
 L_emptyPIN = 20 #empty switch pin for left stepper motor
 L_lickometer = 12 #input pin for lickometer (black wire)
@@ -104,11 +104,11 @@ GPIO.setwarnings(False)
 GPIO.setmode(GPIO.BCM)
 
 # Set the enable pins for L and R stepper motors to 1 to prevent overheating
-GPIO.setup(L_enablePIN, GPIO.OUT, initial = 1)
-GPIO.setup(R_enablePIN, GPIO.OUT, initial = 1)
+GPIO.setup(L_enablePIN, GPIO.OUT, initial=1)
+GPIO.setup(R_enablePIN, GPIO.OUT, initial=1)
 
 # Initialize the mixer (for tones) at the proper sampling rate.
-mixer.init(frequency = 44100)
+mixer.init(frequency=44100)
 
 # Create Stepper class instances for left and right reward delivery
 water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
@@ -124,7 +124,7 @@ highfreq = core.PureTone(high_freq, sample_tone_length)
 
 # Create tone that is used as an error signal
 tone_wrong = core.PureTone(wrong_tone_freq, wrong_tone_length)
-tone_end = core.PureTone(end_tone_freq, end_tone_length)
+tone_end = core.PureTone(end_tone_freq, end_tone_length, vol=-15)
 
 rule = core.Rule([highfreq,lowfreq], left_port, criterion,
                  countdown_start, countdown)
