@@ -742,9 +742,9 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         prev_trials = len(f['t_start'])
         prev_resp = f['response']
         prev_resp_decoded = np.array([i.decode('utf-8') for i in prev_resp])
-        prev_L = np.sum(prev_resp_decoded == 'L') / prev_trials
-        prev_R = np.sum(prev_resp_decoded == 'R') / prev_trials
-        prev_N = np.sum(prev_resp_decoded == 'N') / prev_trials
+        prev_L = round((np.sum(prev_resp_decoded == 'L') / prev_trials), 2)
+        prev_R = round((np.sum(prev_resp_decoded == 'R') / prev_trials), 2)
+        prev_N = round((np.sum(prev_resp_decoded == 'N') / prev_trials), 2)
         
         # Print some relevant information to the console
         print(f'Date of last experiment: {last_date}')
