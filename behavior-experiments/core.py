@@ -741,7 +741,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         prev_water = f.attrs['total_reward']
         prev_trials = len(f['t_start'])
         prev_resp = f['response']
-        prev_resp_decoded = np.arrray([i.decode('utf-8') for i in prev_resp])
+        prev_resp_decoded = np.array([i.decode('utf-8') for i in prev_resp])
         prev_L = np.sum(prev_resp_decoded == 'L') / prev_trials
         prev_R = np.sum(prev_resp_decoded == 'R') / prev_trials
         prev_N = np.sum(prev_resp_decoded == 'N') / prev_trials
