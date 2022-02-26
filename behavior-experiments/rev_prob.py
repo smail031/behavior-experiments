@@ -124,7 +124,7 @@ highfreq = core.PureTone(high_freq, sample_tone_length)
 
 # Create tone that is used as an error signal
 tone_wrong = core.PureTone(wrong_tone_freq, wrong_tone_length)
-tone_end = core.PureTone(end_tone_freq, end_tone_length, vol=-15)
+tone_end = core.PureTone(end_tone_freq, end_tone_length, vol=-25)
 
 rule = core.Rule([highfreq,lowfreq], left_port, criterion,
                  countdown_start, countdown)
