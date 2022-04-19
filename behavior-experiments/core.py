@@ -471,7 +471,7 @@ class stepper():
 
         print('the syringe is empty')
 
-        self.Motor(0, 60000) #Pull the syringe for 96000 steps, ~3mL.
+        self.Motor(0, 60000) #Pull the syringe for 60000 steps, ~3mL.
 
     def Disable(self):
 
@@ -486,6 +486,22 @@ class stepper():
                 
                 if GPIO.input(self.emptyPIN):
                     self.Motor(1,200)
+
+    def empty(self):
+        '''
+        Empties the syringe pump.
+        '''
+        while GPIO.input(self.emptyPIN): #Push syringe and check every 200
+                                        #whether the empty pin is activated.
+            self.Motor(1, 200)
+
+        print('the syringe is empty')
+
+    def fill(self):
+        '''
+        Fills the syringe pump.
+        '''
+        self.Motor(0, 60000) #Pull the syringe for 60000 steps, ~3mL.
                     
 
 class lickometer():
