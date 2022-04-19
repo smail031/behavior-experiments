@@ -51,15 +51,29 @@ if refill == 'y':
     water_L = core.stepper(L_enablePIN, L_directionPIN, L_stepPIN, L_emptyPIN)
     water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
     
-    syringe_test = input('Prepare syringes for refill (ENTER) ')
+    syringe_test = input('Prepare syringes for emptying (ENTER) ')
     #nothing is stored, just to make sure user is ready
     
-    left_thread = threading.Thread(target = water_L.Refill) #Initialize thread for L syringe
-    right_thread = threading.Thread(target = water_R.Refill) #Initialize thread for R syringe
+    left_thread = threading.Thread(target = water_L.empty) #Initialize thread for L syringe
+    right_thread = threading.Thread(target = water_R.empty) #Initialize thread for R syringe
     #The thread will run the stepper.Refill method, and can run several instances simultaneously
     
     left_thread.start() #start thread for L syringe
     right_thread.start() #start thread for R syringe
+    left_thread.join() # Join thread for L syringe
+    right_thread.join() # Join thread for R syringe
+
+    syringe_test = input('Prepare syringes for filling (ENTER) ')
+    #nothing is stored, just to make sure user is ready
+    
+    left_thread = threading.Thread(target = water_L.fill) #Initialize thread for L syringe
+    right_thread = threading.Thread(target = water_R.fill) #Initialize thread for R syringe
+    #The thread will run the stepper.Refill method, and can run several instances simultaneously
+    
+    left_thread.start() #start thread for L syringe
+    right_thread.start() #start thread for R syringe
+    left_thread.join() # Join thread for L syringe
+    right_thread.join() # Join thread for R syringe
     
     tube_connect = input('Reconnect water tubes (ENTER) ')
     #reminder to reconnect and manually spin the syringe pumps
