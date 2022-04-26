@@ -740,6 +740,11 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         command='lsf', extra_args=[data_path+str(mouse_number)])
     # Get most recent date
     last_date = prev_dates['out'][-12:-2].decode()
+    print(last_date)
+    inside = rclone.with_config(rclone_cfg).run_cmd(
+        command='lsf', extra_args=[f'{data_path}{mouse_number}/{last_date}/'])
+    print(inside)
+    
     last_data_path = f'{data_path}{mouse_number}/{last_date}/'
     # Copy all files from most recent date to the temp_data folder
     rclone.with_config(rclone_cfg).copy(
