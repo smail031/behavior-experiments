@@ -748,8 +748,10 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
     last_data_path = f'{data_path}{mouse_number}/{last_date}/'
     # Copy all files from most recent date to the temp_data folder
     print('Starting copy')
-    rclone.with_config(rclone_cfg).copy(
-        source=last_data_path, dest=temp_data_path, flags=['--progress'])
+    #rclone.with_config(rclone_cfg).copy(
+    #    source=last_data_path, dest=temp_data_path, flags=['--progress'])
+    rclone.with_config(rclone_cfg).run_cmd(
+        command='lsf', extra_args=[last_data_path, temp_data_path])
     last_file = sorted(os.listdir(temp_data_path))[-1] 
 
     with h5py.File(temp_data_path+last_file, 'r') as f:
