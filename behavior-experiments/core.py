@@ -754,7 +754,8 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
     #rclone.with_config(rclone_cfg).run_cmd(
     #    command='lsf', extra_args=[last_data_path, temp_data_path])
 
-    os.system(f'rclone copy {last_data_path} {temp_data_path} --progress')
+    os.system(f'rclone copy "{last_data_path}" {temp_data_path} --progress')
+    # Double quotes around last_data_path to make it a single argument.
     
     last_file = sorted(os.listdir(temp_data_path))[-1] 
 
