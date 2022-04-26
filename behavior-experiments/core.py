@@ -750,8 +750,12 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
     print('Starting copy')
     #rclone.with_config(rclone_cfg).copy(
     #    source=last_data_path, dest=temp_data_path, flags=['--progress'])
-    rclone.with_config(rclone_cfg).run_cmd(
-        command='lsf', extra_args=[last_data_path, temp_data_path])
+    
+    #rclone.with_config(rclone_cfg).run_cmd(
+    #    command='lsf', extra_args=[last_data_path, temp_data_path])
+
+    os.system(f'rclone copy last_data_path, temp_data_path, --progress')
+    
     last_file = sorted(os.listdir(temp_data_path))[-1] 
 
     with h5py.File(temp_data_path+last_file, 'r') as f:
