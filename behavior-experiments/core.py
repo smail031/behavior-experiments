@@ -436,7 +436,7 @@ class stepper():
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.stepPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
+m
     def Motor(self, direction, steps):
         GPIO.output(self.enablePIN, 0) #enable the stepper motor
         GPIO.output(self.directionPIN, direction) #set direction
@@ -744,7 +744,10 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
     last_data_path = f'{data_path}{mouse_number}/{last_date}/'
     # Copy all files from most recent date to the temp_data folder
 
-    os.system(f'rclone copy "{last_data_path}" {temp_data_path} --progress')
+    rclone.with_config(rclone_cfg).run_cmd(
+        command='copy', extra_args=[last_data_path, temp_data_path])
+
+    #os.system(f'rclone copy "{last_data_path}" {temp_data_path} --progress')
     # Double quotes around last_data_path to make it a single argument.
     
     last_file = sorted(os.listdir(temp_data_path))[-1] 
