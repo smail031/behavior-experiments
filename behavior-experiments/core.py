@@ -436,7 +436,7 @@ class stepper():
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.stepPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-m
+
     def Motor(self, direction, steps):
         GPIO.output(self.enablePIN, 0) #enable the stepper motor
         GPIO.output(self.directionPIN, direction) #set direction
@@ -786,3 +786,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
                         'Make sure this is intentional.')
 
     return [prev_freq_rule, prev_left_port, prev_countdown]
+
+def delete_tones():
+    tones = [i for i in os.listdir('.') if '.wav' in i]
+    print(tones)

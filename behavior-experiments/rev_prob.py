@@ -416,7 +416,4 @@ data.Store()
 data.Rclone()
 
 #delete the .wav files created for the experiment
-lowfreq.delete()
-highfreq.delete()
-tone_wrong.delete()
-tone_end.delete()
+core.delete_tones()
