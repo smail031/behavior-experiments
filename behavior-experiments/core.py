@@ -789,4 +789,5 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
 
 def delete_tones():
     tones = [i for i in os.listdir('.') if '.wav' in i]
-    print(tones)
+    for tone in tones:
+        os.remove(tone)
