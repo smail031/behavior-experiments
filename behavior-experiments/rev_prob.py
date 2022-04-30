@@ -53,6 +53,10 @@ yesterday = input('Use yesterdays rules? (y/n): ')
 if yesterday == 'n':
     left_port = int(input('Port assignment: L(1) or R(0): '))
     countdown = np.nan
+
+if input('Enter initial countdown (y/n)?: ') == 'y':
+    countdown = int(input('Enter initial countdown value: '))
+
     
 response_window = 2000 # Time window(ms) for animals to respond after cue.
 
