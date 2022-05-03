@@ -289,6 +289,7 @@ class data():
         self.freq_rule = np.empty(self.n_trials)
         self.left_port = np.empty(self.n_trials)
         self.countdown = np.empty(self.n_trials)
+        self.expert = np.empty(self.n_trials, dtype=bool)
         
         self.exp_quality = ''
         self.exp_msg = ''
@@ -367,6 +368,7 @@ class data():
             freq_rule = rule.create_dataset('freq_rule', data = self.freq_rule)
             left_port = rule.create_dataset('left_port', data = self.left_port)
             countdown = rule.create_dataset('countdown', data = self.countdown)
+            expert = rule.create_dataset('expert', data = self.expert)
 
             for trial in range(self.n_trials):
                 lick_l_t[trial] = self.lick_l[trial]['t']
@@ -618,12 +620,14 @@ class Rule:
     '''
 
     def __init__(self, tones: list, initial_rule: int,
-                 criterion: list, countdown_start: int, countdown:int = np.nan):
+                 criterion: list, countdown_start: int, expert: bool=False,
+                 countdown:int = np.nan):
         self.tones = tones
         self.rule = initial_rule
         self.criterion = criterion
         self.countdown = countdown
         self.countdown_start = countdown_start
+        self.expert = expert
         self.correct_trials = []
         # Initialize tone-action mapping to the initial rule.
         self.map_tones()
@@ -760,6 +764,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         prev_freq_rule = f['rule']['freq_rule'][-1]
         prev_left_port = f['rule']['left_port'][-1]
         prev_countdown = f['rule']['countdown'][-1]
+        prev_expert = f['rule']['expert'][-1]
         prev_water = f.attrs['total_reward']
         prev_trials = len(f['t_start'])
         prev_resp = f['response']
@@ -785,7 +790,7 @@ def get_previous_data(mouse_number:str, protocol_name:str, countdown=False):
         warning = input('--WARNING-- using a different protocol than last time.'
                         'Make sure this is intentional.')
 
-    return [prev_freq_rule, prev_left_port, prev_countdown]
+    return [prev_freq_rule, prev_left_port, prev_countdown, prev_expert]
 
 def delete_tones():
     tones = [i for i in os.listdir('.') if '.wav' in i]
