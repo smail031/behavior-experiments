@@ -12,7 +12,8 @@ protocol_description = ('In this protocol, one of 2 sample cues (differing based
                         'Correct responses trigger reward delivery from the '
                         'correct port with probability p_rew, while incorrect '
                         'or null responses are unrewarded. if 19/20 trials are '
-                        'correct, a set shift is triggered.')
+                        'correct, the mouse is considered an "expert", and a'
+                        'trial countdown to a rule switch is started.')
 
 import time
 import RPi.GPIO as GPIO
@@ -44,12 +45,12 @@ else:
     print('Warning: no previous data imported. Ensure that rule is correct, and'
           'that the performance criterion was not met recently.')
 
-block_number = input('block number: ' )
-n_trials = int(input('How many trials?: ' ))
+block_number = input('block number: ')
+n_trials = int(input('How many trials?: '))
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')
 syringe_check = input('Syringe check: ')
 
-yesterday = input('Use yesterdays rules? (y/n): ') 
+yesterday = input('Use yesterdays rules? (y/n): ')
 if yesterday == 'n':
     left_port = int(input('Port assignment: L(1) or R(0): '))
     countdown = np.nan
