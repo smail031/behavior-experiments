@@ -54,9 +54,8 @@ if yesterday == 'n':
     left_port = int(input('Port assignment: L(1) or R(0): '))
     countdown = np.nan
 
-if input('Enter initial countdown (y/n)?: ') == 'y':
-    countdown = int(input('Enter initial countdown value: '))
-
+if input('Manually add expert value? (y/n): ') == 'y':
+    expert = bool(input('Indicate whether expert(1) or not(0): '))
     
 response_window = 2000 # Time window(ms) for animals to respond after cue.
 
@@ -129,9 +128,6 @@ highfreq = core.PureTone(high_freq, sample_tone_length)
 # Create tone that is used as an error signal
 tone_wrong = core.PureTone(wrong_tone_freq, wrong_tone_length)
 tone_end = core.PureTone(end_tone_freq, end_tone_length, vol=-25)
-
-if input('Manually add expert value? (y/n): ') == 'y':
-    expert = bool(input('Indicate whether expert(1) or not(0): '))
 
 rule = core.Rule([highfreq,lowfreq], left_port, criterion,
                  countdown_start, expert, countdown)
