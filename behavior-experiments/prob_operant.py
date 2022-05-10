@@ -38,7 +38,7 @@ mouse_weight = float(input('mouse weight(g): '))
 
 fetch = input('Fetch previous data? (y/n) ')
 if fetch == 'y':
-    [freq_rule, left_port, countdown] = (
+    [freq_rule, left_port, countdown, expert] = (
         core.get_previous_data(mouse_number, protocol_name))
 else:
     print('Warning: no previous data imported. Ensure that rule is correct, and'
