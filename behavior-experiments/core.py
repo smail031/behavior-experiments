@@ -269,27 +269,24 @@ class data():
         self.t_sample_tone = np.empty(self.n_trials)
         self.sample_tone_end = np.empty(self.n_trials)
 
-        self.response = np.empty(self.n_trials, dtype = 'S1')
-        self.lick_r = np.empty(self.n_trials, dtype = dict)
-        self.lick_l = np.empty_like(self.lick_r) 
+        self.response = np.empty(self.n_trials, dtype='S1')
+        self.lick_r = np.empty(self.n_trials, dtype=dict)
+        self.lick_l = np.empty_like(self.lick_r)
 
-        self.v_rew_l = np.empty(self.n_trials)
-        self.v_rew_l.fill(np.nan)
-        self.t_rew_l = np.empty(self.n_trials)
-        self.t_rew_l.fill(np.nan)
-        self.v_rew_r = np.empty(self.n_trials)
-        self.v_rew_r.fill(np.nan)
-        self.t_rew_r = np.empty(self.n_trials) 
-        self.t_rew_r.fill(np.nan) 
+        self.v_rew_l = np.empty(self.n_trials) * np.nan
+        self.t_rew_l = np.empty(self.n_trials) * np.nan
+        self.v_rew_r = np.empty(self.n_trials) * np.nan
+        self.t_rew_r = np.empty(self.n_trials) * np.nan
 
         self.freq = np.empty(self.n_trials) 
-        self.loc = np.empty(self.n_trials, dtype='S1') 
+        self.loc = np.empty(self.n_trials, dtype='S1')
         self.multipulse = np.empty(self.n_trials)
         
         self.freq_rule = np.empty(self.n_trials)
         self.left_port = np.empty(self.n_trials)
-        self.countdown = np.empty(self.n_trials)
+        self.countdown = np.empty(self.n_trials, dtype=int)
         self.expert = np.empty(self.n_trials, dtype=bool)
+        self.rew_prob = np.empty(self.n_trials, dtype=np.double)
         
         self.exp_quality = ''
         self.exp_msg = ''
@@ -319,7 +316,6 @@ class data():
             # Predefine variable-length dtype for storing t, volt
             dtint = h5py.special_dtype(vlen = np.dtype('int32')) 
             dtfloat = h5py.special_dtype(vlen = np.dtype('float'))
-
             t_start = f.create_dataset('t_start', data = self.t_start)
             t_end = f.create_dataset('t_end', data = self.t_end)
 
@@ -341,11 +337,11 @@ class data():
             lick_l_t = lick_l.create_dataset('t', (self.n_trials,),
                                              dtype=dtfloat)
             lick_l_volt = lick_l.create_dataset('volt', (self.n_trials,),
-                                                dtype=dtint)
+                                                dtype=bool)
             lick_r_t = lick_r.create_dataset('t', (self.n_trials,),
                                              dtype=dtfloat)
             lick_r_volt = lick_r.create_dataset('volt', (self.n_trials,),
-                                                dtype=dtint)
+                                                dtype=bool)
 
             sample_tone_t = sample_tone.create_dataset('t',
                 data=self.t_sample_tone, dtype='f8')
@@ -360,15 +356,16 @@ class data():
             sample_tone_multipulse = sample_tone.create_dataset('multipulse',
                 data=self.multipulse)
 
-            rew_l_t = rew_l.create_dataset('t', data = self.t_rew_l)
-            rew_l_v = rew_l.create_dataset('volume', data = self.v_rew_l)
-            rew_r_t = rew_r.create_dataset('t', data = self.t_rew_r)
-            rew_r_v = rew_r.create_dataset('volume', data = self.v_rew_r)
+            rew_l_t = rew_l.create_dataset('t', data=self.t_rew_l)
+            rew_l_v = rew_l.create_dataset('volume', data=self.v_rew_l)
+            rew_r_t = rew_r.create_dataset('t', data=self.t_rew_r)
+            rew_r_v = rew_r.create_dataset('volume', data=self.v_rew_r)
 
-            freq_rule = rule.create_dataset('freq_rule', data = self.freq_rule)
-            left_port = rule.create_dataset('left_port', data = self.left_port)
-            countdown = rule.create_dataset('countdown', data = self.countdown)
-            expert = rule.create_dataset('expert', data = self.expert)
+            freq_rule = rule.create_dataset('freq_rule', data=self.freq_rule)
+            left_port = rule.create_dataset('left_port', data=self.left_port)
+            countdown = rule.create_dataset('countdown', data=self.countdown)
+            expert = rule.create_dataset('expert', data=self.expert)
+            rew_prob = rule.create_dataset('rew_prob', data=self.rew_prob)
 
             for trial in range(self.n_trials):
                 lick_l_t[trial] = self.lick_l[trial]['t']
@@ -531,12 +528,12 @@ class lickometer():
 
             if GPIO.input(self.pin):
                 #register lick
-                self._licks.append(1)
+                self._licks.append(True)
                 self._t_licks.append(time.time()*1000)
 
             else:
                 #register no lick
-                self._licks.append(0)
+                self._licks.append(False)
                 self._t_licks.append(time.time()*1000)
 
             #wait for next sample and update step

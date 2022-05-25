@@ -336,6 +336,7 @@ for trial in trials:
     data.left_port[trial] = rule.rule #store port assighment of tones
     data.countdown[trial] = rule.countdown
     data.expert[trial] = rule.expert
+    data.rew_prob[trial] = p_rew
     #if freq rule, left_port=1 means highfreq on left port
     #if pulse rule, left_port=1 means multipulse on left port
 
