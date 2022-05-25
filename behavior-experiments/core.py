@@ -314,7 +314,7 @@ class data():
             f.attrs['total_reward'] = self.total_reward
 
             # Predefine variable-length dtype for storing t, volt
-            dtint = h5py.special_dtype(vlen = np.dtype('int32')) 
+            dtbool = h5py.special_dtype(vlen = np.dtype('bool_')) 
             dtfloat = h5py.special_dtype(vlen = np.dtype('float'))
             t_start = f.create_dataset('t_start', data = self.t_start)
             t_end = f.create_dataset('t_end', data = self.t_end)
@@ -337,11 +337,11 @@ class data():
             lick_l_t = lick_l.create_dataset('t', (self.n_trials,),
                                              dtype=dtfloat)
             lick_l_volt = lick_l.create_dataset('volt', (self.n_trials,),
-                                                dtype=bool)
+                                                dtype=dtbool)
             lick_r_t = lick_r.create_dataset('t', (self.n_trials,),
                                              dtype=dtfloat)
             lick_r_volt = lick_r.create_dataset('volt', (self.n_trials,),
-                                                dtype=bool)
+                                                dtype=dtbool)
 
             sample_tone_t = sample_tone.create_dataset('t',
                 data=self.t_sample_tone, dtype='f8')
