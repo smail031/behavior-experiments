@@ -314,7 +314,7 @@ class data():
             f.attrs['total_reward'] = self.total_reward
 
             # Predefine variable-length dtype for storing t, volt
-            dtbool = h5py.special_dtype(vlen = np.dtype('bool_')) 
+            dtbool = h5py.special_dtype(vlen = np.dtype('bool')) 
             dtfloat = h5py.special_dtype(vlen = np.dtype('float'))
             t_start = f.create_dataset('t_start', data = self.t_start)
             t_end = f.create_dataset('t_end', data = self.t_end)
