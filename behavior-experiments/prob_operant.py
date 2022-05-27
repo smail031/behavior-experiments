@@ -44,12 +44,12 @@ else:
     print('Warning: no previous data imported. Ensure that rule is correct, and'
           'that the performance criterion was not met recently.')
 
-block_number = input('block number: ' )
-n_trials = int(input('How many trials?: ' ))
+block_number = input('block number: ')
+n_trials = int(input('How many trials?: '))
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')
 syringe_check = input('Syringe check: ')
 
-yesterday = input('Use yesterdays rules? (y/n): ') 
+yesterday = input('Use yesterdays rules? (y/n): ')
 if yesterday == 'n':
     left_port = int(input('Port assignment: L(1) or R(0): '))
     countdown = np.nan
@@ -73,9 +73,9 @@ p_rew = 0.9 # Probability of reward following correct choice
 criterion = [19,20] # Mouse must get [0] of [1] correct to reach criterion.
 countdown_start = 250
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 #Assign GPIO pins:
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 servo_PWM = 17 #PWM pin for servo that adjusts lickport distance
 
@@ -95,10 +95,10 @@ R_lickometer = 16 #input pin for lickometer (black wire)
 TTL_trigger_PIN = 15 # output for TTL pulse triggers to start/end laser scans
 TTL_marker_PIN = 27 # output for TTL pulse markers
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 # Initialize class instances for experiment:
 
-#-------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
 
 # Turn off the GPIO warnings
 GPIO.setwarnings(False)

@@ -284,7 +284,7 @@ class data():
         
         self.freq_rule = np.empty(self.n_trials)
         self.left_port = np.empty(self.n_trials)
-        self.countdown = np.empty(self.n_trials, dtype=int)
+        self.countdown = np.empty(self.n_trials, dtype=np.single)
         self.expert = np.empty(self.n_trials, dtype=bool)
         self.rew_prob = np.empty(self.n_trials, dtype=np.double)
         
