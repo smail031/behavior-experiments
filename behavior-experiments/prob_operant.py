@@ -315,9 +315,6 @@ for trial in trials:
     thread_L.join()
     thread_R.join()
 
-    if ttl_experiment == 'y':
-        TTL_trigger.pulse()  # Trigger the end of the scan
-
     lick_port_L._t_licks -= data._t_start_abs[trial]
     lick_port_R._t_licks -= data._t_start_abs[trial]
 
