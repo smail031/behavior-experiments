@@ -43,19 +43,14 @@ if fetch == 'y':
 else:
     print('Warning: no previous data imported. Ensure that rule is correct, and'
           'that the performance criterion was not met recently.')
+   
+    left_port = int(input('Enter tone-port mapping rule: 1 or 0: '))
+    expert = int(input('Indicate whether mouse is an expert(1) or not(0)'))
 
 block_number = input('block number: ')
 n_trials = int(input('How many trials?: '))
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')
 syringe_check = input('Syringe check: ')
-
-yesterday = input('Use yesterdays rules? (y/n): ')
-if yesterday == 'n':
-    left_port = int(input('Port assignment: L(1) or R(0): '))
-    countdown = np.nan
-
-if input('Manually add expert value? (y/n): ') == 'y':
-    expert = bool(input('Indicate whether expert(1) or not(0): '))
     
 response_window = 2000 # Time window(ms) for animals to respond after cue.
 
@@ -71,7 +66,6 @@ end_tone_length = 8
 reward_size = 10 # Volume(uL) of water rewards.
 p_rew = 0.9 # Probability of reward following correct choice
 criterion = [19,20] # Mouse must get [0] of [1] correct to reach criterion.
-countdown_start = 250
 
 #------------------------------------------------------------------------------
 #Assign GPIO pins:
@@ -157,6 +151,10 @@ correct_side = [] # Ports from which past rewards were received (to track bias)
 # Iterate through trials:
 #-------------------------------------------------------------------------------
 
+# Start imaging laser scanning
+if ttl_experiment == 'y':
+        TTL_trigger.pulse()
+        
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
@@ -166,22 +164,20 @@ for trial in trials:
     thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 8))
 
     left_trial_ = np.random.rand() < 0.5 # 50% chance of L trial
-    
-    if ttl_experiment == 'y':
-        TTL_trigger.pulse()
 
     # Start lick recording threads
     thread_L.start()
     thread_R.start()
 
     time.sleep(2)
+
+    # Mark the start of the trial
+    if ttl_experiment == 'y':
+        TTL_marker.pulse()
     
     #Left trial:----------------------------------------------------------------
     if left_trial_:
         tone = rule.L_tone
-        
-        if ttl_experiment == 'y':
-            TTL_marker.pulse()
 
         data.sample_tone[trial] = 'L'
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
@@ -245,9 +241,6 @@ for trial in trials:
     #Right trial:---------------------------------------------------------------
     else:
         tone = rule.R_tone
-        
-        if ttl_experiment == 'y':
-            TTL_marker.pulse() # Set a marker to align scans to trial start
 
         data.sample_tone[trial] = 'R'
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
@@ -331,9 +324,9 @@ for trial in trials:
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
         
-    data.freq[trial] = tone.freq #store tone frequency
-    data.loc[trial] = tone.loc #store whether multipulse(1) or single pulse(0)
-    data.left_port[trial] = rule.rule #store port assighment of tones
+    data.freq[trial] = tone.freq # Store tone frequency.
+    data.loc[trial] = tone.loc # Store whether multipulse(1) or single pulse(0).
+    data.left_port[trial] = rule.rule # Store port assighment of tones.
     data.countdown[trial] = rule.countdown
     data.expert[trial] = rule.expert
     data.rew_prob[trial] = p_rew
@@ -399,9 +392,13 @@ for trial in trials:
 
     ITI_ = 0
     while ITI_ > 30 or ITI_ < 10:
-        ITI_ = np.random.exponential(scale = 20)
+        ITI_ = np.random.exponential(scale=20)
 
     time.sleep(ITI_)
+
+# Stop imaging laser scanning.
+if ttl_experiment == 'y':
+        TTL_trigger.pulse()
 
 tone_end.play()
 camera.stop_preview()
