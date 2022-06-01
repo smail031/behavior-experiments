@@ -4,35 +4,33 @@
 Created on Tue Aug 12 11:47:22 2021
 @author: sebastienmaille
 """
-protocol_name = 'prob_operant'
-protocol_description = ('In this protocol, one of 2 sample cues (differing based'
-                        'on frequency) is immediately followed by a response '
-                        'period. During this period, the first lickport that '
-                        'registers a lick determines the animals response. '
-                        'Correct responses trigger reward delivery from the '
-                        'correct port with probability p_rew, while incorrect '
-                        'or null responses are unrewarded. if 19/20 trials are '
-                        'correct, the mouse is considered an "expert".')
-
 import time
 import RPi.GPIO as GPIO
 import numpy as np
-import os
 import threading
 import core
 from picamera import PiCamera
 from pygame import mixer
 
+protocol_name = 'prob_operant'
+protocol_description = ('In this protocol, 1 of 2 sample cues (differing based'
+                        'on frequency) is immediately followed by a response '
+                        'period. During this period, the first lickport that '
+                        'registers a lick determines the animals response. '
+                        'Correct responses trigger reward delivery from the '
+                        'correct port with probability p_rew, while incorrect '
+                        'or null responses are unrewarded. if 19/20 trials are'
+                        ' correct, the mouse is considered an "expert".')
 
-camera = PiCamera() #create camera object
-camera.start_preview(fullscreen = False, window = (0,-44,350,400))
+camera = PiCamera()  # Create camera object
+camera.start_preview(fullscreen=False, window=(0, -44, 350, 400))
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Set experimental parameters:
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 experimenter = input('Initials: ')
-mouse_number = input('mouse number: ' )
+mouse_number = input('mouse number: ')
 mouse_weight = float(input('mouse weight(g): '))
 
 
@@ -41,9 +39,9 @@ if fetch == 'y':
     [freq_rule, left_port, countdown, expert] = (
         core.get_previous_data(mouse_number, protocol_name))
 else:
-    print('Warning: no previous data imported. Ensure that rule is correct, and'
+    print('Warning: no previous data imported. Ensure that rule is correct and'
           'that the performance criterion was not met recently.')
-   
+
     left_port = int(input('Enter tone-port mapping rule: 1 or 0: '))
     expert = int(input('Indicate whether mouse is an expert(1) or not(0)'))
 
@@ -51,48 +49,49 @@ block_number = input('block number: ')
 n_trials = int(input('How many trials?: '))
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')
 syringe_check = input('Syringe check: ')
-    
-response_window = 2000 # Time window(ms) for animals to respond after cue.
 
-sample_tone_length = 2 # Length of sample tone (s)
-low_freq = 6000 # Frequency(Hz) of high frequency sample tone.
-high_freq = 10000 # Frequency(Hz) of high frequency sample tone.
+response_window = 2000  # Time window(ms) for animals to respond after cue.
+
+sample_tone_length = 2  # Length of sample tone (s)
+low_freq = 6000  # Frequency(Hz) of high frequency sample tone.
+high_freq = 10000  # Frequency(Hz) of high frequency sample tone.
 
 wrong_tone_freq = 14000
 wrong_tone_length = 1
-end_tone_freq = 4000 # Tone to signal the end of the experiment.
+end_tone_freq = 4000  # Tone to signal the end of the experiment.
 end_tone_length = 8
 
-reward_size = 10 # Volume(uL) of water rewards.
-p_rew = 0.9 # Probability of reward following correct choice
-criterion = [19,20] # Mouse must get [0] of [1] correct to reach criterion.
+reward_size = 10  # Volume(uL) of water rewards.
+p_rew = 0.9  # Probability of reward following correct choice
+criterion = [19, 20]  # Mouse must get [0] of [1] correct to reach criterion.
+countdown_start = 500 
 
-#------------------------------------------------------------------------------
-#Assign GPIO pins:
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
+# Assign GPIO pins:
+# ------------------------------------------------------------------------------
 
-servo_PWM = 17 #PWM pin for servo that adjusts lickport distance
+servo_PWM = 17  # PWM pin for servo that adjusts lickport distance
 
-L_enablePIN = 23 #enable pin for left stepper motor
+L_enablePIN = 23  # Enable pin for left stepper motor
 L_directionPIN = 24  # Direction pin for left stepper motor
-L_stepPIN = 25 #step pin for left stepper motor
-L_emptyPIN = 20 #empty switch pin for left stepper motor
-L_lickometer = 12 #input pin for lickometer (black wire)
+L_stepPIN = 25  # Step pin for left stepper motor
+L_emptyPIN = 20  # Empty switch pin for left stepper motor
+L_lickometer = 12  # Input pin for lickometer (black wire)
 
 
-R_enablePIN = 10 #enable pin for right stepper motor
-R_directionPIN = 9 #direction pin for right stepper motor
-R_stepPIN = 11 #step pin for right stepper motor
-R_emptyPIN = 21 #empty switch pin for right stepper motor
-R_lickometer = 16 #input pin for lickometer (black wire)
+R_enablePIN = 10  # Enable pin for right stepper motor
+R_directionPIN = 9  # Direction pin for right stepper motor
+R_stepPIN = 11  # Step pin for right stepper motor
+R_emptyPIN = 21  # Empty switch pin for right stepper motor
+R_lickometer = 16  # Input pin for lickometer (black wire)
 
-TTL_trigger_PIN = 15 # output for TTL pulse triggers to start/end laser scans
-TTL_marker_PIN = 27 # output for TTL pulse markers
+TTL_trigger_PIN = 15  # output for TTL pulse triggers to start/end laser scans
+TTL_marker_PIN = 27  # output for TTL pulse markers
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Initialize class instances for experiment:
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 # Turn off the GPIO warnings
 GPIO.setwarnings(False)
@@ -123,19 +122,19 @@ highfreq = core.PureTone(high_freq, sample_tone_length)
 tone_wrong = core.PureTone(wrong_tone_freq, wrong_tone_length)
 tone_end = core.PureTone(end_tone_freq, end_tone_length, vol=-25)
 
-rule = core.Rule([highfreq,lowfreq], left_port, criterion,
+rule = core.Rule([highfreq, lowfreq], left_port, criterion,
                  countdown_start, expert, countdown)
 
 if ttl_experiment == 'y':
-    #set up ttl class instances triggers and marker TTL output
+    # Set up ttl class instances triggers and marker TTL output
     TTL_trigger = core.ttl(TTL_trigger_PIN)
     TTL_marker = core.ttl(TTL_marker_PIN)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Initialize experiment:
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-#Set the time for the beginning of the block
+# Set the time for the beginning of the block
 trials = np.arange(n_trials)
 data = core.data(protocol_name, protocol_description, n_trials, mouse_number,
                  block_number, experimenter, mouse_weight)
@@ -144,26 +143,26 @@ total_reward_L = 0
 supp_reward_L = 0
 total_reward_R = 0
 supp_reward_R = 0
-performance = 0 # Total number of correct responses (to print at each trial)
-correct_side = [] # Ports from which past rewards were received (to track bias)
+performance = 0  # Total number of correct responses (to print at each trial)
+correct_side = []  # Where past rewards were received (to track bias)
 
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 # Iterate through trials:
-#-------------------------------------------------------------------------------
+# -------------------------------------------------------------------------------
 
 # Start imaging laser scanning
 if ttl_experiment == 'y':
-        TTL_trigger.pulse()
-        
+    TTL_trigger.pulse()
+
 for trial in trials:
-    data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
+    data._t_start_abs[trial] = time.time()*1000  # Time at beginning of trial
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     # Initialize thread objects for left and right lickport recording
-    thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 8))
-    thread_R = threading.Thread(target = lick_port_R.Lick, args = (1000, 8))
+    thread_L = threading.Thread(target=lick_port_L.Lick, args=(1000, 8))
+    thread_R = threading.Thread(target=lick_port_R.Lick, args=(1000, 8))
 
-    left_trial_ = np.random.rand() < 0.5 # 50% chance of L trial
+    left_trial_ = np.random.rand() < 0.5  # 50% chance of L trial
 
     # Start lick recording threads
     thread_L.start()
@@ -174,8 +173,8 @@ for trial in trials:
     # Mark the start of the trial
     if ttl_experiment == 'y':
         TTL_marker.pulse()
-    
-    #Left trial:----------------------------------------------------------------
+
+    # Left trial:--------------------------------------------------------------
     if left_trial_:
         tone = rule.L_tone
 
@@ -191,8 +190,8 @@ for trial in trials:
         resp_window_end = time.time()*1000 + response_window
 
         while time.time() * 1000 < resp_window_end:
-            #If first lick is L (correct)
-            if sum(lick_port_L._licks[(length_L-1):]) > 0: 
+            # If first lick is L (correct)
+            if sum(lick_port_L._licks[(length_L-1):]) > 0:
                 # Reward delivery for correct lick
                 if np.random.rand() < p_rew:
                     data.t_rew_l[trial] = (time.time()*1000
@@ -202,24 +201,24 @@ for trial in trials:
                     total_reward_L += reward_size
 
                 # Stochastic reward omission for correct lick
-                else: 
+                else:
                     tone_wrong.play()
 
                 response = 'L'
                 performance += 1
                 rule.correct_trials.append(1)
                 correct_side.append('L')
-                    
+
                 break
 
             # If first lick is R (incorrect)
-            elif sum(lick_port_R._licks[(length_R-1):]) > 0: 
+            elif sum(lick_port_R._licks[(length_R-1):]) > 0:
                 # Reward omission for incorrect lick
-                if np.random.rand() < p_rew: 
+                if np.random.rand() < p_rew:
                     tone_wrong.play()
 
                 # Reward delivery for incorrect lick
-                else: 
+                else:
                     data.t_rew_r[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
                     water_R.Reward()
@@ -228,7 +227,7 @@ for trial in trials:
 
                 response = 'R'
                 rule.correct_trials.append(0)
-                    
+
                 break
 
         if response == 'N':
@@ -238,13 +237,13 @@ for trial in trials:
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0]
 
-    #Right trial:---------------------------------------------------------------
+    # Right trial:-------------------------------------------------------------
     else:
         tone = rule.R_tone
 
         data.sample_tone[trial] = 'R'
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone.play() #Play left tone
+        tone.play()  # Play left tone
         data.sample_tone_end[trial] = (time.time()*1000
                                        - data._t_start_abs[trial])
 
@@ -254,10 +253,10 @@ for trial in trials:
         resp_window_end = time.time()*1000 + response_window
 
         while time.time() * 1000 < resp_window_end:
-            #If first lick is R (correct)
+            # If first lick is R (correct)
             if sum(lick_port_R._licks[(length_R-1):]) > 0:
                 # Stochastic reward delivery
-                if np.random.rand() < p_rew: 
+                if np.random.rand() < p_rew:
                     data.t_rew_r[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
                     water_R.Reward()
@@ -272,17 +271,17 @@ for trial in trials:
                 performance += 1
                 correct_side.append('R')
                 rule.correct_trials.append(1)
-                    
+
                 break
 
-            #If first lick is L (incorrect)
-            elif sum(lick_port_L._licks[(length_L-1):]) > 0: 
+            # If first lick is L (incorrect)
+            elif sum(lick_port_L._licks[(length_L-1):]) > 0:
                 # Stochastic reward omission
-                if np.random.rand() < p_rew: 
+                if np.random.rand() < p_rew:
                     tone_wrong.play()
 
                 # Stochastic rew delivery for incorrect choice
-                else: 
+                else:
                     data.t_rew_l[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
                     water_L.Reward()
@@ -291,7 +290,7 @@ for trial in trials:
 
                 response = 'L'
                 rule.correct_trials.append(0)
-                    
+
                 break
 
         if response == 'N':
@@ -301,16 +300,16 @@ for trial in trials:
         data.response[trial] = response
         data.t_end[trial] = time.time()*1000 - data._t_start_abs[0]
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Post-trial data storage
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     # Make sure the threads are finished
     thread_L.join()
     thread_R.join()
 
     if ttl_experiment == 'y':
-        TTL_trigger.pulse() #trigger the end of the scan
+        TTL_trigger.pulse()  # Trigger the end of the scan
 
     lick_port_L._t_licks -= data._t_start_abs[trial]
     lick_port_R._t_licks -= data._t_start_abs[trial]
@@ -323,15 +322,15 @@ for trial in trials:
         storage[trial] = {}
         storage[trial]['t'] = rawdata_list[ind]._t_licks
         storage[trial]['volt'] = rawdata_list[ind]._licks
-        
-    data.freq[trial] = tone.freq # Store tone frequency.
-    data.loc[trial] = tone.loc # Store whether multipulse(1) or single pulse(0).
-    data.left_port[trial] = rule.rule # Store port assighment of tones.
+
+    data.freq[trial] = tone.freq  # Store tone frequency.
+    data.loc[trial] = tone.loc  # Store multipulse(1) or single pulse(0).
+    data.left_port[trial] = rule.rule  # Store port assighment of tones.
     data.countdown[trial] = rule.countdown
     data.expert[trial] = rule.expert
     data.rew_prob[trial] = p_rew
-    #if freq rule, left_port=1 means highfreq on left port
-    #if pulse rule, left_port=1 means multipulse on left port
+    # If freq rule, left_port=1 means highfreq on left port
+    # If pulse rule, left_port=1 means multipulse on left port
 
     licks_detected = ''
     # Will indicate which ports recorded any licks in the entire trial.
@@ -339,14 +338,14 @@ for trial in trials:
         licks_detected += 'L'
     if sum(lick_port_R._licks) != 0:
         licks_detected += 'R'
-        
+
     print(f'Tone:{tone.freq}, Resp:{response}, Licks:{licks_detected}, '
           f'Rew:{np.nansum([data.v_rew_l[trial],data.v_rew_r[trial]])}, '
           f'Corr:{rule.correct_trials[-1]}, Perf:{performance}/{(trial+1)}')
 
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
     # Deliver supplementary rewards:
-    #---------------------------------------------------------------------------
+    # -------------------------------------------------------------------------
 
     # If 8 unrewarded trials in a row, deliver rewards through both ports.
     if len(rule.correct_trials) > 8 and sum(rule.correct_trials[-8:]) == 0:
@@ -363,11 +362,11 @@ for trial in trials:
     # If 5 rewards from L port in a row, deliver rewards through R port.
     if correct_side[-5:] == ['L', 'L', 'L', 'L', 'L']:
         for i in range(2):
-            if np.random.rand() < 0.5:        
+            if np.random.rand() < 0.5:
                 rule.R_tone.play()
             else:
                 rule.R_tone.play()
-                
+
             water_R.Reward()
             supp_reward_R += reward_size
             time.sleep(1)
@@ -376,17 +375,17 @@ for trial in trials:
     # If 5 rewards from R port in a row, deliver rewards through L port
     elif correct_side[-5:] == ['R', 'R', 'R', 'R', 'R']:
         for i in range(2):
-            if np.random.rand() < 0.5:        
+            if np.random.rand() < 0.5:
                 rule.L_tone.play()
             else:
                 rule.L_tone.play()
-                
+
             water_L.Reward()
             supp_reward_L += reward_size
             time.sleep(1)
         correct_side.append('L')
 
-    if ((rule.expert == False) & rule.check_criterion()):
+    if ((not rule.expert) & rule.check_criterion()):
         print('-----Performance criterion has been met.-----')
         rule.expert = True
 
@@ -398,7 +397,7 @@ for trial in trials:
 
 # Stop imaging laser scanning.
 if ttl_experiment == 'y':
-        TTL_trigger.pulse()
+    TTL_trigger.pulse()
 
 tone_end.play()
 camera.stop_preview()
@@ -411,7 +410,7 @@ print(f'Total reward: {data.total_reward}uL')
 
 # Ask the user if there were any problems with the experiment. If so, prompt
 # the user for an explanation that will be stored in the data file.
-data.exp_quality = input('Should this data be used? (y/n): ') 
+data.exp_quality = input('Should this data be used? (y/n): ')
 if data.exp_quality == 'n':
     data.exp_msg = input('What went wrong?: ')
 
@@ -419,5 +418,5 @@ if data.exp_quality == 'n':
 data.Store()
 data.Rclone()
 
-#delete the .wav files created for the experiment
+# Delete the .wav files created for the experiment
 core.delete_tones()
