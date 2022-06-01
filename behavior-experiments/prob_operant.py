@@ -42,8 +42,15 @@ else:
     print('Warning: no previous data imported. Ensure that rule is correct and'
           'that the performance criterion was not met recently.')
 
-    left_port = int(input('Enter tone-port mapping rule: 1 or 0: '))
-    expert = int(input('Indicate whether mouse is an expert(1) or not(0)'))
+    left_port = int(input('Enter tone-port mapping rule (1/0): '))
+    expert = int(input('Indicate whether mouse is an expert(1) or not(0): '))
+    countdown = input('Indicate starting countdown value (n for none): ')
+
+    if countdown == 'n':
+        countdown = np.nan
+        print(f'countdown = {countdown}')
+    else:
+        countdown = int(countdown)
 
 block_number = input('block number: ')
 n_trials = int(input('How many trials?: '))
@@ -64,7 +71,7 @@ end_tone_length = 8
 reward_size = 10  # Volume(uL) of water rewards.
 p_rew = 0.9  # Probability of reward following correct choice
 criterion = [19, 20]  # Mouse must get [0] of [1] correct to reach criterion.
-countdown_start = 500 
+countdown_start = 500
 
 # ------------------------------------------------------------------------------
 # Assign GPIO pins:
