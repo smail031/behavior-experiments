@@ -147,13 +147,13 @@ class Stepper():
         self.emptyPIN = emptyPIN
         self.steps = steps
 
-        self.generate_data()
-        self.disable()
-
         GPIO.setup(self.enablePIN, GPIO.OUT, initial=1)
         GPIO.setup(self.directionPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.stepPIN, GPIO.OUT, initial=0)
         GPIO.setup(self.emptyPIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+        self.generate_data()
+        self.disable()
 
     def generate_data(self):
         '''
@@ -692,10 +692,14 @@ def input_params(params):
     [print(key, ':', value) for key, value in params.items()]
 
     while True:
-        key = input('Enter the parameter you would like to change (n:none):')
+        key = input('Enter the parameter you would like to change '
+                    '(n:none, p:print):')
 
         if key == 'n':
             break
+
+        elif key == 'p':
+            [print(key, ':', value) for key, value in params.items()]
 
         elif key in params.keys():
             params[key] = input(f'Enter new value for {key}: ')
