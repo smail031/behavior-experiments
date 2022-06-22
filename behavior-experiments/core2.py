@@ -114,7 +114,9 @@ class PureTone(Tone):
         self.loc = 'B'
         self.vol = vol
         self.filename = f'{self.freq}Hz.wav'
+
         self.generate_tone()
+        self.generate_data()
         self.sound = mixer.Sound(self.filename)
 
     def generate_tone(self):
@@ -613,8 +615,8 @@ class LickDetect():
 
         diff_volt = np.diff(np.array(lick_voltage)*1)
         trial_start = self.trial.trial_start_time
-        onsets = (lick_timestamps[np.where(diff_volt == 1)[0]] - trial_start)
-        offsets = (lick_timestamps[np.where(diff_volt == -1)[0]] - trial_start)
+        onsets = np.array([lick_timestamps[np.where(diff_volt == 1)[0]]]) - trial_start
+        offsets = np.array([lick_timestamps[np.where(diff_volt == -1)[0]]]) - trial_start
         self.data['lick_onset'][self.trial.curr_t] = onsets
         self.data['lick_offset'][self.trial.curr_t] = offsets
 
