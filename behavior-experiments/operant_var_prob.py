@@ -117,7 +117,7 @@ lick_port_R = core2.LickDetect('right licks', trial_obj, R_lickometer)
 
 # Initialize instruction tones.
 lowfreq = core2.PureTone('6kHz tone', trial_obj, low_freq, sample_tone_length)
-highfreq = core2.PureTone('10kHz tone'. trial_obj, high_freq,
+highfreq = core2.PureTone('10kHz tone', trial_obj, high_freq,
                           sample_tone_length)
 
 # Initialize other tones.
