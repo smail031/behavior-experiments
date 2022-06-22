@@ -411,7 +411,7 @@ class ProbSwitchRule(Rule):
         Store relevant trial data in the self.data dictionary.
         '''
         trial = self.trial.curr_t
-        self.data['tone_freq'][trial] = tone
+        self.data['tone_freq'][trial] = tone.freq
         self.data['response'][trial] = action
         self.data['performance'][trial] = performance
         self.dara['corr_resp'][trial] = correct_choice
