@@ -400,7 +400,7 @@ class ProbSwitchRule(Rule):
         self.data['tone_freq'] = np.empty(n_trials, dtype=int)
         self.data['response'] = np.empty(n_trials, dtype=str)
         self.data['performance'] = np.empty(n_trials, dtype=bool)
-        self.data['corr_resp'] = np.empty(n_trials, dtype=float)
+        self.data['corr_resp'] = np.empty(n_trials, dtype=str)
         self.data['reward'] = np.empty(n_trials, dtype=bool)
         self.data['p_rew'] = np.empty(n_trials, dtype=float)
         self.data['p_rew_trial'] = np.empty(n_trials, dtype=float)
