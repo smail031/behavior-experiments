@@ -127,7 +127,7 @@ tone_end = core2.PureTone('end tone', trial_obj, end_tone_freq,
                           end_tone_length, vol=-25)
 
 # Initialize the rule.
-sample_tones = [lick_port_L, lick_port_R]
+sample_tones = [lowfreq, highfreq]
 rule = core2.ProbSwitchRule('rule', trial_obj, sample_tones, params)
 
 if ttl_experiment == 'y':
