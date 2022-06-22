@@ -416,6 +416,7 @@ class ProbSwitchRule(Rule):
         self.data['performance'][trial] = performance
         self.data['corr_resp'][trial] = correct_choice
         self.data['reward'][trial] = reward
+        print(rew_prob)
         self.data['p_rew_trial'][trial] = rew_prob
         self.data['mapping'][trial] = self.mapping
         self.data['expert'][trial] = self.expert
