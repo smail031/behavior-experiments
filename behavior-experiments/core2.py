@@ -370,7 +370,7 @@ class ProbSwitchRule(Rule):
         '''
         self.name = name
         self.trial = trial
-        self.tones = tones
+        self.tones = [tone.freq for tone in tones]
         self.actions = ['L', 'R', 'N']
         self.mapping = int(params['mapping'])
         self.criterion = [19, 20]
@@ -458,7 +458,7 @@ class ProbSwitchRule(Rule):
         was correct, and 2) whether a reward will be delivered.
         '''
         # Determine where the tone/action pair is in self.correct/probs.
-        tone_index = np.where(self.tones == tone)[0][0]
+        tone_index = np.where(self.tones == tone.freq)[0][0]
         action_index = np.where(self.actions == action)[0][0]
 
         # Determine whether response is "correct" and reward probability
