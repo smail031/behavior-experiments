@@ -414,7 +414,7 @@ class ProbSwitchRule(Rule):
         self.data['tone_freq'][trial] = tone.freq
         self.data['response'][trial] = action
         self.data['performance'][trial] = performance
-        self.dara['corr_resp'][trial] = correct_choice
+        self.data['corr_resp'][trial] = correct_choice
         self.data['reward'][trial] = reward
         self.data['p_rew_trial'][trial] = rew_prob
         self.data['mapping'][trial] = self.mapping
