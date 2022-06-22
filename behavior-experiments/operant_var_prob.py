@@ -32,7 +32,6 @@ keys = ['mapping', 'expert', 'countdown', 'p_index']
 params = dict.fromkeys(keys)
 
 params['protocol_name'] = protocol_name
-params['protocol_description'] = protocol_description
 params['experimenter'] = input('Initials: ')
 params['mouse_number'] = input('mouse number: ')
 params['mouse_weight'] = float(input('mouse weight(g): '))
@@ -42,6 +41,7 @@ if input('Fetch previous data? (y/n) ') == 'y':
                             data_path, temp_rclone_path)
 
 core2.input_params(params)
+params['protocol_description'] = protocol_description
 
 block_number = input('block number: ')
 n_trials = int(input('How many trials?: '))
@@ -169,8 +169,8 @@ for trial in range(n_trials):
     tone.play()
 
     response = 'N'
-    length_L = len(lick_port_L._licks)
-    length_R = len(lick_port_R._licks)
+    length_L = len(lick_port_L.lick_voltage)
+    length_R = len(lick_port_R.lick_voltage)
     resp_window_end = time.time()*1000 + response_window
 
     while time.time() * 1000 < resp_window_end:

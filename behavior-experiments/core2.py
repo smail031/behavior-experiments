@@ -139,6 +139,7 @@ class PureTone(Tone):
 class Stepper():
     def __init__(self, name, trial, enablePIN, directionPIN,
                  stepPIN, emptyPIN, steps=250):
+        self.name = name
         self.trial = trial
         self.enablePIN = enablePIN
         self.directionPIN = directionPIN
@@ -449,7 +450,7 @@ class ProbSwitchRule(Rule):
             self.mapping = np.random.choice([0, 1])
             self.map_tones()
 
-    def evaluate(self, tone, action) -> list:
+    def evaluate(self, tone, action) -> bool:
         '''
         Given a tone and an action, will determine 1)whether the response
         was correct, and 2) whether a reward will be delivered.
@@ -474,7 +475,7 @@ class ProbSwitchRule(Rule):
         self.store_data(tone, action, performance, correct_choice,
                         reward, rew_prob)
 
-        return [reward]
+        return reward
 
     def print_trial_stats(self, l_licks: object, r_licks: object):
         '''
@@ -686,7 +687,7 @@ def delete_tones():
 def input_params(params):
     for key, value in params.items():
         if value is None:
-            params[key] = input('Please enter value for {key}: ')
+            params[key] = input(f'Please enter value for {key}: ')
 
     [print(key, ':', value) for key, value in params.items()]
 
