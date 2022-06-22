@@ -605,18 +605,21 @@ class LickDetect():
         '''
         num_samples = int(sampling_duration * sampling_rate)
 
-        lick_voltage = []
-        lick_timestamps = []
+        self.lick_voltage = []
+        self.lick_timestamps = []
 
         for i in range(num_samples):
-            lick_voltage.append(GPIO.input(self.pin))
-            lick_timestamps.append(time.time()*1000)
+            self.lick_voltage.append(GPIO.input(self.pin))
+            self.lick_timestamps.append(time.time()*1000)
             time.sleep(1/sampling_rate)
 
-        diff_volt = np.diff(np.array(lick_voltage)*1)
+        diff_volt = np.diff(np.array(self.lick_voltage)*1)
         trial_start = self.trial.trial_start_time
-        onsets = np.array([lick_timestamps[np.where(diff_volt == 1)[0]]]) - trial_start
-        offsets = np.array([lick_timestamps[np.where(diff_volt == -1)[0]]]) - trial_start
+        print(np.where(diff_volt == 1)[0])
+        onsets = (self.lick_timestamps[np.where(diff_volt == 1)[0]]
+                  - trial_start)
+        offsets = (self.lick_timestamps[np.where(diff_volt == -1)[0]]
+                   - trial_start)
         self.data['lick_onset'][self.trial.curr_t] = onsets
         self.data['lick_offset'][self.trial.curr_t] = offsets
 
