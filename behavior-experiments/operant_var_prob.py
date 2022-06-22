@@ -102,13 +102,13 @@ trial_obj = core2.Trial('trial', n_trials)
 # Initialize reward delivery.
 water_L = core2.Stepper('left reward', trial_obj, L_enablePIN, L_directionPIN,
                         L_stepPIN, L_emptyPIN)
-water_R = core2.stepper('right reward', trial_obj, R_enablePIN, R_directionPIN,
+water_R = core2.Stepper('right reward', trial_obj, R_enablePIN, R_directionPIN,
                         R_stepPIN, R_emptyPIN)
 
 # Inialize supplementary reward delivery.
 supp_water_L = core2.Stepper('left reward', trial_obj, L_enablePIN,
                              L_directionPIN, L_stepPIN, L_emptyPIN)
-supp_water_R = core2.stepper('right reward', trial_obj, R_enablePIN,
+supp_water_R = core2.Stepper('right reward', trial_obj, R_enablePIN,
                              R_directionPIN, R_stepPIN, R_emptyPIN)
 
 # Initialize lick detection.
