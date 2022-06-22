@@ -615,13 +615,18 @@ class LickDetect():
 
         diff_volt = np.diff(np.array(self.lick_voltage)*1)
         trial_start = self.trial.trial_start_time
-        print(np.where(diff_volt == 1)[0])
-        onsets = (self.lick_timestamps[np.where(diff_volt == 1)[0]]
-                  - trial_start)
-        offsets = (self.lick_timestamps[np.where(diff_volt == -1)[0]]
-                   - trial_start)
-        self.data['lick_onset'][self.trial.curr_t] = onsets
-        self.data['lick_offset'][self.trial.curr_t] = offsets
+        t = self.trial.curr_t
+        onset_index = np.where(diff_volt == 1)[0]
+        offset_index = np.where(diff_volt == -1)[0]
+
+        if (len(onset_index) > 0) and (len(offset_index) > 0):
+            self.data['lick_onset'][t] = (self.lick_timestamps[onset_index]
+                                          - trial_start)
+            self.data['lick_offset'][t] = (self.lick_timestamps[offset_index]
+                                           - trial_start)
+        else:
+            self.data['lick_onset'][t] = []
+            self.data['lick_offset'][t] = []
 
 
 class Data():
