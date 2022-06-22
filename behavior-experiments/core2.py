@@ -461,6 +461,8 @@ class ProbSwitchRule(Rule):
         # Determine where the tone/action pair is in self.correct/probs.
         tone_index = np.where(self.tones == tone.freq)[0]
         action_index = np.where(self.actions == action)[0]
+        print(tone_index)
+        print(action_index)
 
         # Determine whether response is "correct" and reward probability
         performance = self.correct[tone_index, action_index]
