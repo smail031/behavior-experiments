@@ -175,13 +175,13 @@ for trial in range(n_trials):
 
     while time.time() * 1000 < resp_window_end:
         # Check for any lick on the left port
-        if sum(lick_port_L.lick[(length_L-1):]) > 0:
+        if sum(lick_port_L.lick_voltage[(length_L-1):]) > 0:
             response = 'L'
             reward_port = water_L
             break
 
         # Check for any lick on the right port
-        elif sum(lick_port_R._licks[(length_R-1):]) > 0:
+        elif sum(lick_port_R.lick_voltage[(length_R-1):]) > 0:
             response = 'R'
             reward_port = water_R
             break
