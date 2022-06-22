@@ -577,9 +577,10 @@ class LickDetect():
     def __init__(self, name, trial, pin):
         self.name = name
         self.trial = trial
+        self.pin = pin
         self.generate_data()
 
-        GPIO.setup(pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.setup(self.pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
     def generate_data(self):
         n_trials = self.trial.n_trials
