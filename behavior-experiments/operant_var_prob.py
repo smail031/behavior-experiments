@@ -146,7 +146,7 @@ data = core2.Data(objects, params)
 
 # Start imaging laser scanning
 if ttl_experiment == 'y':
-    TTL_trigger.pulse()
+    TTL_trigger.ttl_pulse()
 
 for trial in range(n_trials):
     # Initialize thread objects for left and right lickport recording
