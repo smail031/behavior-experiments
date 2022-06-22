@@ -631,7 +631,7 @@ class Data():
         self.params = params
         self.date_experiment = time.strftime("%Y-%m-%d",
                                              time.localtime(time.time()))
-        self.filename = ('ms' + self.mouse_number + '_'
+        self.filename = ('ms' + self.mouse + '_'
                          + self.date_experiment + '_' + 'block'
                          + str(self.params['block_number']) + '.hdf5')
 
