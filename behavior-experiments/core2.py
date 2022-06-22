@@ -623,17 +623,15 @@ class Data():
     Packages all relevant experimental data into an hdf5 file and uploads
     it using rclone.
     '''
-    def __init__(self, objects: list, mouse: str, params: dict):
+    def __init__(self, objects: list, params: dict):
         '''
         '''
         self.objects = objects
-        self.mouse = str(mouse)
-        self.params = params
         self.date_experiment = time.strftime("%Y-%m-%d",
                                              time.localtime(time.time()))
-        self.filename = ('ms' + self.mouse + '_'
+        self.filename = ('ms' + params['mouse_number'] + '_'
                          + self.date_experiment + '_' + 'block'
-                         + str(self.params['block_number']) + '.hdf5')
+                         + str(params['block_number']) + '.hdf5')
 
         self.hdf = h5py.File(self.filename, 'w')
 

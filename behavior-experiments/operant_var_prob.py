@@ -43,7 +43,7 @@ if input('Fetch previous data? (y/n) ') == 'y':
 core2.input_params(params)
 params['protocol_description'] = protocol_description
 
-block_number = input('block number: ')
+params['block_number'] = input('block number: ')
 n_trials = int(input('How many trials?: '))
 # Ask Kirk if we can omit the statement below (always send TTL)
 ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')
@@ -138,7 +138,7 @@ if ttl_experiment == 'y':
 # Initialize data collection
 objects = [trial_obj, water_L, water_R, lick_port_L, lick_port_R, lowfreq,
            highfreq, tone_wrong, rule, TTL_trigger, TTL_marker]
-data = core2.Data(objects, params['mouse_number'], params)
+data = core2.Data(objects, params)
 
 # -------------------------------------------------------------------------------
 # Iterate through trials:
