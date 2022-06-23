@@ -625,9 +625,6 @@ class LickDetect():
         onset_index = np.where(diff_volt == 1)[0]
         offset_index = np.where(diff_volt == -1)[0]
 
-        print(onset_index)
-        print(offset_index)
-
         if (len(onset_index) > 0) and (len(offset_index) > 0):
             self.lick_timestamps = np.array(self.lick_timestamps)
             self.data['lick_onset'][t] = list((self.lick_timestamps[onset_index]
