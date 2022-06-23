@@ -370,8 +370,8 @@ class ProbSwitchRule(Rule):
         '''
         self.name = name
         self.trial = trial
-        self.tones = [tone.freq for tone in tones]
-        self.actions = ['L', 'R', 'N']
+        self.tones = np.array([tone.freq for tone in tones])
+        self.actions = np.array(['L', 'R', 'N'])
         self.mapping = int(params['mapping'])
         self.criterion = [19, 20]
         self.expert = int(params['expert'])
