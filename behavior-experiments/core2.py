@@ -630,13 +630,13 @@ class LickDetect():
 
         if (len(onset_index) > 0) and (len(offset_index) > 0):
             self.lick_timestamps = np.array(self.lick_timestamps)
-            self.data['lick_onset'][t] = (self.lick_timestamps[onset_index]
-                                          - trial_start)
-            self.data['lick_offset'][t] = (self.lick_timestamps[offset_index]
-                                           - trial_start)
+            self.data['lick_onset'][t] = list((self.lick_timestamps[onset_index]
+                                               - trial_start))
+            self.data['lick_offset'][t] = list((self.lick_timestamps[offset_index]
+                                                - trial_start))
         else:
-            self.data['lick_onset'][t] = np.array([])
-            self.data['lick_offset'][t] = np.array([])
+            self.data['lick_onset'][t] = []
+            self.data['lick_offset'][t] = []
 
 
 class Data():
