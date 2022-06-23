@@ -215,8 +215,7 @@ class Stepper():
         '''
         trial = self.trial.curr_t
         trial_start_time = self.trial.trial_start_time
-        print(trial_start_time)
-        self.data['reward_time'][trial] = time.time*1000 - trial_start_time
+        self.data['reward_time'][trial] = (time.time()*1000) - trial_start_time
         self.motor(1, steps)
         self.data['steps'][trial] = steps
         self.data['volume'][trial] = volume
@@ -467,6 +466,7 @@ class ProbSwitchRule(Rule):
         rew_prob = self.probs[tone_index, action_index]
         correct_choice = self.actions[np.where(self.correct[tone_index]
                                                == 1)[0][0]]
+        print(self.correct[tone_index])
         print(correct_choice)
 
         # Determine whether the mouse will receive a reward.
