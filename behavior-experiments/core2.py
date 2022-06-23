@@ -192,20 +192,20 @@ class Stepper():
         GPIO.output(self.directionPIN, direction)
 
         step_countdown = steps
-        
 
         while step_countdown > 0:
             # Check whether the syringe is empty (limit switch)
             if GPIO.input(self.emptyPIN):
                 block_countdown = block
 
-                while block_countdown > 0:
+                while (block_countdown > 0) and (step_countdown > 0):
                     GPIO.output(self.stepPIN, 1)
                     time.sleep(0.0002)
                     GPIO.output(self.stepPIN, 0)
                     time.sleep(0.0002)
                     step_countdown -= 1
                     block_countdown -= 1
+                    print(step_countdown)
 
             else:
                 print('---The syringe is empty.---')

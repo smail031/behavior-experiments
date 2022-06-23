@@ -206,7 +206,8 @@ for trial in range(n_trials):
 
     rule.check_criterion()
 
-    trial_obj.inter_trial_interval()
+    if trial > n_trials:
+        trial_obj.inter_trial_interval()
 
 # Stop imaging laser scanning.
 if ttl_experiment == 'y':
