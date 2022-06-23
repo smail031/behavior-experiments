@@ -663,13 +663,16 @@ class Data():
         self.objects into an hdf5 file.
         '''
         # Store experimental parameters as hdf5 attributes.
+        print('Storing parameters')
         for key, item in self.params.items():
             self.hdf.attrs[key] = item
         # Create an hdf5 group for each object.
         for obj in self.objects:
+            print(f'Storing {obj.data["name"]}') 
             group = self.hdf.create_group(obj.data['name'])
             # Create an hdf5 dataset for each item in obj.data.
             for key, item in obj.data.items():
+                print(f'Storing {key}')
                 group.create_dataset(key, item)
 
     def rclone_upload(self, rclone_cfg_path, data_repo_path, temp_data_path):
