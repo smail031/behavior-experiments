@@ -464,8 +464,8 @@ class ProbSwitchRule(Rule):
         # Determine whether response is "correct" and reward probability
         performance = self.correct[tone_index, action_index]
         rew_prob = self.probs[tone_index, action_index]
-        correct_choice = self.actions[np.where(self.correct[tone_index]
-                                               == 1)[0]]
+        correct_choice = self.actions[np.where(self.correct[tone_index][0]
+                                               == 1)[0][0]]
         for i in self.correct[tone_index]:
             print(i)
         print(correct_choice)
