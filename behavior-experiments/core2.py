@@ -646,6 +646,7 @@ class Data():
         '''
         '''
         self.objects = objects
+        self.params = params
         self.date_experiment = time.strftime("%Y-%m-%d",
                                              time.localtime(time.time()))
         self.filename = ('ms' + params['mouse_number'] + '_'
