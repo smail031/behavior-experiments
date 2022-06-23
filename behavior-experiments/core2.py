@@ -461,6 +461,11 @@ class ProbSwitchRule(Rule):
         # Determine where the tone/action pair is in self.correct/probs.
         tone_index = np.where(self.tones == tone.freq)[0]
         action_index = np.where(self.actions == action)[0]
+
+        print(self.tones)
+        print(tone.freq)
+        print(self.actions)
+        print(action)
         print(tone_index)
         print(action_index)
 
