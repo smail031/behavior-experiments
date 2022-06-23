@@ -23,7 +23,7 @@ class Trial():
         '''
         '''
         self.data = {}
-        self.data['name'] = name
+        self.data['name'] = self.name
         self.data['n_trials'] = self.n_trials
         self.data['trial_start_time'] = np.empty(self.n_trials, dtype=float)
         self.data['trial_end_time'] = np.empty(self.n_trials, dtype=float)
