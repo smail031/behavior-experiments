@@ -635,8 +635,8 @@ class LickDetect():
             self.data['lick_offset'][t] = (self.lick_timestamps[offset_index]
                                            - trial_start)
         else:
-            self.data['lick_onset'][t] = []
-            self.data['lick_offset'][t] = []
+            self.data['lick_onset'][t] = np.array([])
+            self.data['lick_offset'][t] = np.array([])
 
 
 class Data():
