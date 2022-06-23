@@ -674,7 +674,7 @@ class Data():
             for key, item in obj.data.items():
                 print(f'Storing {key}')
                 if type(item) == np.ndarray:
-                    group.create_dataset(key, item)
+                    group.create_dataset(name=key, data=item)
 
                 else:
                     group.attrs[key] = item
