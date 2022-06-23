@@ -205,9 +205,11 @@ class Stepper():
                     time.sleep(0.0002)
                     step_countdown -= 1
                     block_countdown -= 1
+
             else:
                 print('---The syringe is empty.---')
                 break
+            print('block')
         self.disable()
 
     def reward(self, steps: int = 250, volume: float = 10):
@@ -217,6 +219,7 @@ class Stepper():
         trial_start_time = self.trial.trial_start_time
         self.data['reward_time'][trial] = (time.time()*1000) - trial_start_time
         self.motor(1, steps)
+        print('motor')
         self.data['steps'][trial] = steps
         self.data['volume'][trial] = volume
 
