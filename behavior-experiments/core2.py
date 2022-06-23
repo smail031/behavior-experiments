@@ -668,12 +668,16 @@ class Data():
             self.hdf.attrs[key] = item
         # Create an hdf5 group for each object.
         for obj in self.objects:
-            print(f'Storing {obj.data["name"]}') 
+            print(f'Storing {obj.data["name"]}')
             group = self.hdf.create_group(obj.data['name'])
             # Create an hdf5 dataset for each item in obj.data.
             for key, item in obj.data.items():
                 print(f'Storing {key}')
-                group.create_dataset(key, item)
+                if type(item) == str:
+                    group.attrs[key] = item
+
+                else:
+                    group.create_dataset(key, item)
 
     def rclone_upload(self, rclone_cfg_path, data_repo_path, temp_data_path):
         '''
