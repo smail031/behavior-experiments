@@ -465,14 +465,16 @@ class ProbSwitchRule(Rule):
         performance = self.correct[tone_index, action_index]
         rew_prob = self.probs[tone_index, action_index]
         correct_choice = self.actions[np.where(self.correct[tone_index]
-                                               == 1)[0][0]]
-        print(self.correct[tone_index])
+                                               == 1)[0]]
+        for i in self.correct[tone_index]:
+            print(i)
         print(correct_choice)
 
         # Determine whether the mouse will receive a reward.
         if np.random.rand() < rew_prob:
             reward = True
             self.rewarded_side.append(action)
+            print('Reward delivered')
         else:
             reward = False
 
@@ -527,7 +529,7 @@ class ProbSwitchRule(Rule):
         # If there are no rewards in the last 8 trials, deliver a reward
         # from each port.
         if self.supp_rew_counter > 8:
-            if sum(self.data['rewards'][trial-8:trial]) == 0:
+            if sum(self.data['reward'][trial-8:trial]) == 0:
                 self.left_rewards.reward()
                 print('Delivering supplementary reward from L port.')
                 self.right_rewards.reward()
