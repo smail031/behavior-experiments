@@ -205,13 +205,10 @@ class Stepper():
                     time.sleep(0.0002)
                     step_countdown -= 1
                     block_countdown -= 1
-                    print(step_countdown)
 
             else:
                 print('---The syringe is empty.---')
                 break
-            print('block')
-            print(step_countdown)
         self.disable()
 
     def reward(self, steps: int = 250, volume: float = 10):
