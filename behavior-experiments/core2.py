@@ -416,7 +416,6 @@ class ProbSwitchRule(Rule):
         self.data['performance'][trial] = performance
         self.data['corr_resp'][trial] = correct_choice
         self.data['reward'][trial] = reward
-        print(rew_prob)
         self.data['p_rew_trial'][trial] = rew_prob
         self.data['mapping'][trial] = self.mapping
         self.data['expert'][trial] = self.expert
@@ -462,17 +461,12 @@ class ProbSwitchRule(Rule):
         tone_index = np.where(self.tones == tone.freq)[0]
         action_index = np.where(self.actions == action)[0]
 
-        print(self.tones)
-        print(tone.freq)
-        print(self.actions)
-        print(action)
-        print(tone_index)
-        print(action_index)
-
         # Determine whether response is "correct" and reward probability
         performance = self.correct[tone_index, action_index]
         rew_prob = self.probs[tone_index, action_index]
-        correct_choice = self.actions[np.where(self.correct[0] == 1)[0][0]]
+        correct_choice = self.actions[np.where(self.correct[tone_index]
+                                               == 1)[0][0]]
+        print(correct_choice)
 
         # Determine whether the mouse will receive a reward.
         if np.random.rand() < rew_prob:
@@ -500,7 +494,7 @@ class ProbSwitchRule(Rule):
         trial = self.trial.curr_t
         tone = self.data['tone_freq'][trial]
         resp = self.data['response'][trial]
-        rew = int(self.data['reward'])
+        rew = int(self.data['reward'][trial])
         corr = self.data['performance'][trial]
         perf = f'{sum(self.data["performance"])}/{trial}'
         countdown = self.countdown
