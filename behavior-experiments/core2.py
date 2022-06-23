@@ -173,7 +173,7 @@ class Stepper():
         '''
         GPIO.output(self.enablePIN, 1)
 
-    def motor(self, direction: int, steps: int, block: int = 100):
+    def motor(self, direction: int, steps: int, block: int = 50):
         '''
         Turn the stepper motor in a given direction for a given
         number of steps.
@@ -192,11 +192,12 @@ class Stepper():
         GPIO.output(self.directionPIN, direction)
 
         step_countdown = steps
-        block_countdown = block
+        
 
         while step_countdown > 0:
             # Check whether the syringe is empty (limit switch)
             if GPIO.input(self.emptyPIN):
+                block_countdown = block
 
                 while block_countdown > 0:
                     GPIO.output(self.stepPIN, 1)
