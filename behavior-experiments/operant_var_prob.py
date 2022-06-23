@@ -188,6 +188,7 @@ for trial in range(n_trials):
 
     if rule.evaluate(tone, response):
         reward_port.reward()
+        print('1')
 
     else:
         tone_wrong.play()
@@ -195,9 +196,10 @@ for trial in range(n_trials):
     # Wait until the lick detection threads are finished.
     thread_L.join()
     thread_R.join()
-
+    print('2')
     # Print some trial data for to the console for the experimenter.
     rule.print_trial_stats(lick_port_L, lick_port_R)
+    print('3')
 
     # Deliver supplementary rewards if needed.
     rule.supplementary_rewards(supp_water_L, supp_water_R)

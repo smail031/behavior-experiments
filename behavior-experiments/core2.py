@@ -466,9 +466,6 @@ class ProbSwitchRule(Rule):
         rew_prob = self.probs[tone_index, action_index]
         correct_choice = self.actions[np.where(self.correct[tone_index][0]
                                                == 1)[0][0]]
-        for i in self.correct[tone_index]:
-            print(i)
-        print(correct_choice)
 
         # Determine whether the mouse will receive a reward.
         if np.random.rand() < rew_prob:
