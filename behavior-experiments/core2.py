@@ -638,6 +638,8 @@ class LickDetect():
             self.data['lick_onset'][t] = []
             self.data['lick_offset'][t] = []
 
+        print(self.data['lick_onset'][t]
+
 
 class Data():
     '''

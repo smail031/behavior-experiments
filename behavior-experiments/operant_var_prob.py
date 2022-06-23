@@ -124,7 +124,7 @@ highfreq = core2.PureTone('10kHz tone', trial_obj, high_freq,
 tone_wrong = core2.PureTone('error tone', trial_obj, wrong_tone_freq,
                             wrong_tone_length)
 tone_end = core2.PureTone('end tone', trial_obj, end_tone_freq,
-                          end_tone_length, vol=-25)
+                          end_tone_length, vol=-30)
 
 # Initialize the rule.
 sample_tones = [lowfreq, highfreq]
