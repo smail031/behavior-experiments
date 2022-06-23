@@ -215,6 +215,7 @@ class Stepper():
         '''
         trial = self.trial.curr_t
         trial_start_time = self.trial.trial_start_time
+        print(trial_start_time)
         self.data['reward_time'][trial] = time.time*1000 - trial_start_time
         self.motor(1, steps)
         self.data['steps'][trial] = steps
@@ -620,6 +621,9 @@ class LickDetect():
         t = self.trial.curr_t
         onset_index = np.where(diff_volt == 1)[0]
         offset_index = np.where(diff_volt == -1)[0]
+
+        print(onset_index)
+        print(offset_index)
 
         if (len(onset_index) > 0) and (len(offset_index) > 0):
             self.data['lick_onset'][t] = (self.lick_timestamps[onset_index]
