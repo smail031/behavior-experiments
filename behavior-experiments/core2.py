@@ -594,8 +594,8 @@ class LickDetect():
         n_trials = self.trial.n_trials
         self.data = {}
         self.data['name'] = self.name
-        self.data['lick_onset'] = np.empty(n_trials, dtype=np.ndarray)
-        self.data['lick_offset'] = np.empty(n_trials, dtype=np.ndarray)
+        self.data['lick_onset'] = np.empty(n_trials, dtype=list)
+        self.data['lick_offset'] = np.empty(n_trials, dtype=list)
 
     def lick_detection(self, sampling_rate=1000, sampling_duration=8):
         '''
