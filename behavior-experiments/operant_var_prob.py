@@ -205,7 +205,7 @@ for trial in range(n_trials):
     rule.check_criterion()
     print(trial_obj.curr_t)
 
-    if trial <= n_trials:
+    if trial <= n_trials-1:
         trial_obj.inter_trial_interval()
         print('iti')
 
