@@ -673,11 +673,11 @@ class Data():
             # Create an hdf5 dataset for each item in obj.data.
             for key, item in obj.data.items():
                 print(f'Storing {key}')
-                if type(item) == str:
-                    group.attrs[key] = item
+                if type(item) == np.ndarray:
+                    group.create_dataset(key, item)
 
                 else:
-                    group.create_dataset(key, item)
+                    group.attrs[key] = item
 
     def rclone_upload(self, rclone_cfg_path, data_repo_path, temp_data_path):
         '''
