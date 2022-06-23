@@ -23,6 +23,7 @@ class Trial():
         '''
         '''
         self.data = {}
+        self.data['name'] = name
         self.data['n_trials'] = self.n_trials
         self.data['trial_start_time'] = np.empty(self.n_trials, dtype=float)
         self.data['trial_end_time'] = np.empty(self.n_trials, dtype=float)
@@ -80,6 +81,7 @@ class Tone:
         '''
         n_trials = self.trial.n_trials
         self.data = {}
+        self.data['name'] = self.name
         self.data['tone_start'] = np.empty(n_trials, dtype=float)*np.nan
         self.data['tone_end'] = np.empty(n_trials, dtype=float)*np.nan
 
