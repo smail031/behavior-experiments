@@ -203,12 +203,9 @@ for trial in range(n_trials):
     rule.supplementary_rewards(supp_water_L, supp_water_R)
 
     rule.check_criterion()
-    print(trial_obj.curr_t)
-    print(n_trials)
 
-    if trial <= n_trials-2:
+    if trial < n_trials-1:
         trial_obj.inter_trial_interval()
-        print('iti')
 
 # Stop imaging laser scanning.
 print(trial_obj.curr_t)
