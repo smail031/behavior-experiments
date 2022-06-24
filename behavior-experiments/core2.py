@@ -848,4 +848,4 @@ def infer_hdf5_dtype(val):
     elif 'bool' in dtype:
         return 'bool'
     elif 'numpy' in dtype:
-        return h5py.vlen_dtype(np.dtype(infer_hdf5_dtype(val[0])))
+        return h5py.special_dtype(vlen=np.dtype(infer_hdf5_dtype(val[0])))
