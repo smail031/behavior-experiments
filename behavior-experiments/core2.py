@@ -675,7 +675,8 @@ class Data():
                 dtype = infer_hdf5_dtype(item)
                 print(str(dtype))
                 if type(item) == np.ndarray:
-                    group.create_dataset(name=key, data=item, dtype=dtype)
+                    group.create_dataset(name=key, data=item,
+                                         dtype=infer_hdf5_dtype(item))
 
                 else:
                     group.attrs[key] = item
