@@ -33,7 +33,7 @@ class Trial():
         '''
         '''
         self.trial_start_time = float(time.time()*1000)
-        self.data['trial_start_time'][self.curr_t] = self.trial_start_time
+        self.data['trial_start_time'][self.curr_t] = self.trial_start_time*1
 
     def inter_trial_interval(self):
         '''
