@@ -823,7 +823,7 @@ def get_previous_data(params: dict, rclone_cfg_path: str,
         params['countdown'] = prev_countdown
         params['p_index'] = prev_p_index
 
-        
+
 def infer_hdf5_dtype(val):
     """Infers a hdf5-compatible dtype from a python value
     Parameters
@@ -840,7 +840,7 @@ def infer_hdf5_dtype(val):
     dtype = str(type(val))
 
     if 'str' in dtype:
-        return h5py.string_dtype(encoding='utf-8')
+        return 'S1'
     elif 'float' in dtype:
         return 'f'
     elif 'int' in dtype:
