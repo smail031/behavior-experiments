@@ -215,8 +215,7 @@ if ttl_experiment == 'y':
 tone_end.play()
 camera.stop_preview()
 
-print(lick_port_L.data['lick_onset'])
-print(type(lick_port_L.data['lick_onset']))
+print(trial_obj.data['trial_start_time'])
 
 reward_L = np.nansum(water_L.data['volume'])
 supp_reward_L = np.nansum(supp_water_L.data['volume'])
