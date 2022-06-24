@@ -33,7 +33,7 @@ class Trial():
         '''
         '''
         self.trial_start_time = float(time.time()*1000)
-        self.data['trial_start_time'][self.curr_t] = self.trial_start_time*1
+        self.data['trial_start_time'][self.curr_t] = self.trial_start_time
 
     def inter_trial_interval(self):
         '''
@@ -848,4 +848,4 @@ def infer_hdf5_dtype(val):
     elif 'bool' in dtype:
         return 'bool'
     elif 'numpy' in dtype:
-        return h5py.special_dtype(vlen=np.dtype(infer_hdf5_dtype(val[0])))
+        return h5py.special_dtype(vlen=val[0].dtype)
