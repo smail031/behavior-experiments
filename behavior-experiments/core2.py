@@ -672,8 +672,10 @@ class Data():
             # Create an hdf5 dataset for each item in obj.data.
             for key, item in obj.data.items():
                 print(f'Storing {key}')
+                dtype = infer_hdf5_dtype(item)
+                print(str(dtype))
                 if type(item) == np.ndarray:
-                    group.create_dataset(name=key, data=item)
+                    group.create_dataset(name=key, data=item, dtype=dtype)
 
                 else:
                     group.attrs[key] = item
@@ -819,3 +821,30 @@ def get_previous_data(params: dict, rclone_cfg_path: str,
         params['expert'] = prev_expert
         params['countdown'] = prev_countdown
         params['p_index'] = prev_p_index
+
+        
+def infer_hdf5_dtype(val):
+    """Infers a hdf5-compatible dtype from a python value
+    Parameters
+    -----------
+    val
+        Any python object, within reason.
+    Returns
+    -----------
+    dtype_hdf5
+        String or object to be passed directly to 'dtype' kwarg when
+        calling .create_dataset() in h5py.
+    """
+
+    dtype = str(type(val))
+
+    if 'str' in dtype:
+        return h5py.string_dtype(encoding='utf-8')
+    elif 'float' in dtype:
+        return 'f'
+    elif 'int' in dtype:
+        return 'i8'
+    elif 'bool' in dtype:
+        return 'bool'
+    elif 'numpy' in dtype:
+        return h5py.vlen_dtype(np.dtype(infer_hdf5_dtype(val[0])))
