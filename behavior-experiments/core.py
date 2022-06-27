@@ -742,7 +742,7 @@ class ProbSwitchRule():
             if self.check_criterion():
                 # Warn user that criterion was met, and begin trial countdown.
                 print('-----Performance criterion has been met.-----')
-                print(f'A rule reversal will occur in '
+                print(f'A probability switch will occur in '
                       f'{self.countdown_start} trials.')
                 self.countdown = self.countdown_start
                 self.expert = True
