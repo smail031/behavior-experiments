@@ -703,7 +703,7 @@ class ProbSwitchRule():
         self.criterion = criterion
         self.countdown = countdown
         self.countdown_start = countdown_start
-        self.expert = expert
+        self.expert = bool(expert)
         self.correct_trials = []
         # Initialize tone-action mapping to the initial rule.
         self.map_tones()
@@ -745,6 +745,7 @@ class ProbSwitchRule():
                 print(f'A rule reversal will occur in '
                       f'{self.countdown_start} trials.')
                 self.countdown = self.countdown_start
+                self.expert = True
 
         else:
             if self.countdown == 0:

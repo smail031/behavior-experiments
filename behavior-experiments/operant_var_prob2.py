@@ -347,12 +347,12 @@ for trial in trials:
     if len(rule.correct_trials) > 8 and sum(rule.correct_trials[-8:]) == 0:
         rule.L_tone.play()
         water_L.Reward()
-        data.t_rew_l_supp[trial] = time.time()*1000 - data.t_start_abs[trial]
+        data.t_rew_l_supp[trial] = time.time()*1000 - data._t_start_abs[trial]
         data.v_rew_l_supp[trial] = reward_size
         time.sleep(1)
         rule.R_tone.play()
         water_R.Reward()
-        data.t_rew_l_supp[trial] = time.time()*1000 - data.t_start_abs[trial]
+        data.t_rew_l_supp[trial] = time.time()*1000 - data._t_start_abs[trial]
         data.v_rew_l_supp[trial] = reward_size
         time.sleep(1)
         rule.correct_trials = []
@@ -364,7 +364,7 @@ for trial in trials:
 
             water_R.Reward()
             data.t_rew_r_supp[trial] = (time.time()*1000
-                                        - data.t_start_abs[trial])
+                                        - data._t_start_abs[trial])
             time.sleep(1)
 
         data.v_rew_r_supp[trial] = reward_size * 2
@@ -377,7 +377,7 @@ for trial in trials:
 
             water_L.Reward()
             data.t_rew_l_supp[trial] = (time.time()*1000
-                                        - data.t_start_abs[trial])
+                                        - data._t_start_abs[trial])
             time.sleep(1)
 
         data.v_rew_l_supp[trial] = reward_size * 2
