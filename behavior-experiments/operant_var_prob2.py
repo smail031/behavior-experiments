@@ -323,6 +323,7 @@ for trial in trials:
     data.left_port[trial] = rule.rule  # Store port assighment of tones.
     data.countdown[trial] = rule.countdown
     data.expert[trial] = rule.expert
+    data.p_index[trial] = rule.p_index
     data.rew_prob[trial] = rule.p_rew
     # If freq rule, left_port=1 means highfreq on left port
     # If pulse rule, left_port=1 means multipulse on left port
@@ -403,10 +404,10 @@ if ttl_experiment == 'y':
 tone_end.play()
 camera.stop_preview()
 
-total_reward_L = np.sum(data.v_rew_l)
-supp_reward_L = np.sum(data.v_rew_l_supp)
-total_reward_R = np.sum(data.v_rew_r)
-supp_reward_R = np.sum(data.v_rew_r_supp)
+total_reward_L = np.nansum(data.v_rew_l)
+supp_reward_L = np.nansum(data.v_rew_l_supp)
+total_reward_R = np.nansum(data.v_rew_r)
+supp_reward_R = np.nansum(data.v_rew_r_supp)
 print(f'Total L reward: {total_reward_L} uL + {supp_reward_L}')
 print(f'Total R reward: {total_reward_R} uL + {supp_reward_R}')
 data.total_reward = (total_reward_L + supp_reward_L
