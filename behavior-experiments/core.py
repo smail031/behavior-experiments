@@ -885,7 +885,6 @@ class Rule():
                 self.countdown -= 1
 
 
-
 def get_previous_data(mouse_number: str, protocol_name: str, countdown=True):
     '''
     Uses rclone to get the most recent experimental data available for this

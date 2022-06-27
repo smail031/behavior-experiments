@@ -337,7 +337,7 @@ for trial in trials:
     print(f'Tone:{tone.freq}, Resp:{response}, Licks:{licks_detected}, '
           f'Rew:{np.nansum([data.v_rew_l[trial],data.v_rew_r[trial]])}, '
           f'Corr:{rule.correct_trials[-1]}, Count: {rule.countdown}, '
-          'Perf:{performance}/{(trial+1)}')
+          f'Perf:{performance}/{(trial+1)}')
 
     # -------------------------------------------------------------------------
     # Deliver supplementary rewards:
@@ -382,6 +382,8 @@ for trial in trials:
 
         data.v_rew_l_supp[trial] = reward_size * 2
         correct_side.append('L')
+
+    rule.check()
 
     if ((not rule.expert) & rule.check_criterion()):
         print('-----Performance criterion has been met.-----')
