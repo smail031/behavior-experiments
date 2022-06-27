@@ -39,7 +39,7 @@ else:
     left_port = int(input('Enter tone-port mapping rule (1/0): '))
     expert = int(input('Indicate whether mouse is an expert(1) or not(0): '))
     countdown = input('Indicate starting countdown value (n for none): ')
-    p_index = input('Enter p_index value')
+    p_index = input('Enter p_index value: ')
 
     if countdown == 'n':
         countdown = np.nan
@@ -123,8 +123,8 @@ highfreq = core.PureTone(high_freq, sample_tone_length)
 tone_wrong = core.PureTone(wrong_tone_freq, wrong_tone_length)
 tone_end = core.PureTone(end_tone_freq, end_tone_length, vol=-25)
 
-rule = core.Rule([highfreq, lowfreq], left_port, p_index, criterion,
-                 countdown_start, expert, countdown)
+rule = core.ProbSwitchRule([highfreq, lowfreq], left_port, p_index, criterion,
+                           countdown_start, expert, countdown)
 
 if ttl_experiment == 'y':
     # Set up ttl class instances triggers and marker TTL output
