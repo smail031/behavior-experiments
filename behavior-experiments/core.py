@@ -298,6 +298,8 @@ class data():
         self.t_end = np.empty(self.n_trials)
         self._t_start_abs = np.empty(self.n_trials)
 
+        self.t_ttl = np.empty(self.n_trials)
+
         self.sample_tone = np.empty(self.n_trials, dtype='S1')
         self.t_sample_tone = np.empty(self.n_trials)
         self.sample_tone_end = np.empty(self.n_trials)
@@ -308,18 +310,24 @@ class data():
 
         self.v_rew_l = np.empty(self.n_trials) * np.nan
         self.t_rew_l = np.empty(self.n_trials) * np.nan
+        self.v_rew_l_supp = np.empty(self.n_trials) * np.nan
+        self.t_rew_l_supp = np.empty(self.n_trials) * np.nan
         self.v_rew_r = np.empty(self.n_trials) * np.nan
         self.t_rew_r = np.empty(self.n_trials) * np.nan
+        self.v_rew_r_supp = np.empty(self.n_trials) * np.nan
+        self.t_rew_r_supp = np.empty(self.n_trials) * np.nan
 
         self.freq = np.empty(self.n_trials)
         self.loc = np.empty(self.n_trials, dtype='S1')
         self.multipulse = np.empty(self.n_trials)
 
-        self.freq_rule = np.empty(self.n_trials)
+        self.p_index = np.empty(self.n_trials)
         self.left_port = np.empty(self.n_trials)
         self.countdown = np.empty(self.n_trials, dtype=np.single)
         self.expert = np.empty(self.n_trials, dtype=bool)
         self.rew_prob = np.empty(self.n_trials, dtype=np.double)
+
+        self.iti_length = np.empty(self.n_trials)
 
         self.exp_quality = ''
         self.exp_msg = ''
@@ -350,12 +358,15 @@ class data():
             dtfloat = h5py.special_dtype(vlen=np.dtype('float'))
             t_start = f.create_dataset('t_start', data=self.t_start)
             t_end = f.create_dataset('t_end', data=self.t_end)
+            f.create_dataset('iti_length', data=self.iti_length)
 
             f.create_dataset('response', data=self.response,
                              dtype='S1')
             # Create HDF5 groups for licks, tones and rewards.
             lick_l = f.create_group('lick_l')
             lick_r = f.create_group('lick_r')
+
+            ttl = f.create_group('ttl_marker')
 
             sample_tone = f.create_group('sample_tone')
 
@@ -375,6 +386,8 @@ class data():
             lick_r_volt = lick_r.create_dataset('volt', (self.n_trials,),
                                                 dtype=dtbool)
 
+            ttl.create_dataset('t_ttl', data=self.t_ttl)
+
             sample_tone.create_dataset('t', data=self.t_sample_tone,
                                        dtype='f8')
             sample_tone.create_dataset('type', data=self.sample_tone,
@@ -387,10 +400,14 @@ class data():
 
             rew_l.create_dataset('t', data=self.t_rew_l)
             rew_l.create_dataset('volume', data=self.v_rew_l)
+            rew_l.create_dataset('supp_t', data=self.t_rew_l_supp)
+            rew_l.create_dataset('supp_volume', data=self.v_rew_l_supp)
             rew_r.create_dataset('t', data=self.t_rew_r)
             rew_r.create_dataset('volume', data=self.v_rew_r)
+            rew_r.create_dataset('supp_t', data=self.t_rew_r_supp)
+            rew_r.create_dataset('supp_volume', data=self.v_rew_r_supp)
 
-            rule.create_dataset('freq_rule', data=self.freq_rule)
+            rule.create_dataset('p_index', data=self.p_index)
             rule.create_dataset('left_port', data=self.left_port)
             rule.create_dataset('countdown', data=self.countdown)
             rule.create_dataset('expert', data=self.expert)
@@ -642,7 +659,7 @@ class ttl():
         GPIO.output(self.pin, False)
 
 
-class Rule():
+class ProbSwitchRule():
     '''
     The rule maps the association between tones, actions and associated
     outcomes.
@@ -673,6 +690,124 @@ class Rule():
         Keeps a running count of the performance on recent trials. May be
         emptied after rule switch or supplementary rewards.
     '''
+
+    def __init__(self, tones: list, initial_rule: int, p_index: int,
+                 criterion: list, countdown_start: int, expert: bool,
+                 countdown: int = np.nan):
+        self.tones = tones
+        self.actions = ['L', 'R', 'N']
+        self.rule = initial_rule
+        self.p_index = p_index
+        self.p_series = [0.9, 0.7, 0.8, 1.0, 0.9]
+        self.p_rew = self.p_series[self.p_index]
+        self.criterion = criterion
+        self.countdown = countdown
+        self.countdown_start = countdown_start
+        self.expert = expert
+        self.correct_trials = []
+        # Initialize tone-action mapping to the initial rule.
+        self.map_tones()
+        print(f'countdown = {self.countdown}, p_index = {self.p_index}, '
+              f'p_rew = {self.p_rew}')
+
+    def map_tones(self):
+        '''
+        Given a rule, maps tones to their associated rewarded outcomes.
+        '''
+        print(f'Rule = [{int(self.rule)}]')
+        # High frequency -> L port; Low frequency -> R port
+        if self.rule == 1:
+            self.L_tone = self.tones[0]
+            self.R_tone = self.tones[1]
+
+        elif self.rule == 0:
+            # High frequency -> R port; Low frequency -> L port
+            self.L_tone = self.tones[1]
+            self.R_tone = self.tones[0]
+
+        # If user inputs rule as 9, a random rule is selected.
+        elif self.rule == 9:
+            print('Selecting random rule.')
+            self.rule = np.random.choice([0, 1])
+            self.map_tones()
+
+    def check(self):
+        '''
+        Checks to see if the criterion has been met, or if the trial countdown
+        has reached 0.
+        '''
+        # Check whether the countdown has begun.
+        if not self.expert:
+            # If there is no countdown, check whether criterion has been met.
+            if self.check_criterion():
+                # Warn user that criterion was met, and begin trial countdown.
+                print('-----Performance criterion has been met.-----')
+                print(f'A rule reversal will occur in '
+                      f'{self.countdown_start} trials.')
+                self.countdown = self.countdown_start
+
+        else:
+            if self.countdown == 0:
+                self.countdown_end()
+
+            else:
+                self.countdown -= 1
+
+    def check_criterion(self) -> bool:
+        '''
+        Checks to see if the criterion has been met.
+        '''
+        if sum(self.correct_trials[-self.criterion[1]:]) >= self.criterion[0]:
+            return True
+        else:
+            return False
+
+    def countdown_end(self):
+        '''
+        Determines what occurs when the trial countdown reaches 0.
+        '''
+        if self.p_index == len(self.p_series):
+            # If the mouse has gone through all p_rew values, switch rule.
+            self.countdown = np.nan
+            self.correct_trials = []
+            self.rule = int(1-self.rule)
+            self.map_tones()
+            print('-------------------RULE SWITCH-------------------')
+            print(f'Rule = {self.rule}')
+
+        else:
+            # Switch the reward probabilities.
+            self.p_index += 1
+            self.p_rew = self.p_series[self.p_index]
+            self.countdown = self.countdown_start
+            print('-------------------PROBABILITY SWITCH-------------------')
+            print(f'Reward probability = {self.p_rew}')
+
+     
+class Rule():
+    '''
+    With this rule, the mouse will train at p_rew = 0.9 until they reach
+    criterion for the first time. At this point, p_rew will change to a
+    different value and start a trial countdown. Once that countdown reaches
+    0, p_rew will change again and a new p_rew.
+    '''
+    def __init__(self, n_trials, tones: list, actions: list, mapping: int,
+                 criterion: list, countdown_start: int, p_rew: float,
+                 expert: bool = False, countdown: int = np.nan):
+        '''
+        '''
+        self.n_trials = n_trials
+        self.tones = tones
+        self.actions = ['L', 'R', 'N']
+        self.rule = mapping
+        self.criterion = criterion
+        self.countdown = countdown
+        self.countdown_start = countdown_start
+        self.expert = expert
+        self.p_rew = p_rew
+        # Initialize tone-action mapping to the initial rule.
+        self.map_tones()
+        print(f'initial countdown = {self.countdown}')
 
     def __init__(self, tones: list, initial_rule: int,
                  criterion: list, countdown_start: int, expert: bool = False,
@@ -750,34 +885,8 @@ class Rule():
                 self.countdown -= 1
 
 
-class ProbSwitchRule():
-    '''
-    With this rule, the mouse will train at p_rew = 0.9 until they reach
-    criterion for the first time. At this point, p_rew will change to a
-    different value and start a trial countdown. Once that countdown reaches
-    0, p_rew will change again and a new p_rew.
-    '''
-    def __init__(self, n_trials, tones: list, actions: list, mapping: int,
-                 criterion: list, countdown_start: int, p_rew: float,
-                 expert: bool = False, countdown: int = np.nan):
-        '''
-        '''
-        self.n_trials = n_trials
-        self.tones = tones
-        self.actions = ['L', 'R', 'N']
-        self.rule = mapping
-        self.criterion = criterion
-        self.countdown = countdown
-        self.countdown_start = countdown_start
-        self.expert = expert
-        self.p_rew = p_rew
-        # Initialize tone-action mapping to the initial rule.
-        self.map_tones()
-        print(f'initial countdown = {self.countdown}')
 
-
-
-def get_previous_data(mouse_number: str, protocol_name: str, countdown=False):
+def get_previous_data(mouse_number: str, protocol_name: str, countdown=True):
     '''
     Uses rclone to get the most recent experimental data available for this
     mouse. Prints some relevant information to the console for the experimenter
@@ -845,9 +954,9 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=False):
         prev_protocol = f.attrs['protocol_name']
         prev_user = f.attrs['experimenter']
         prev_weight = f.attrs['mouse_weight']
-        prev_freq_rule = f['rule']['freq_rule'][-1]
-        prev_left_port = f['rule']['left_port'][-1]
         prev_countdown = f['rule']['countdown'][-1]
+        prev_left_port = f['rule']['left_port'][-1]
+        prev_p_index = f['rule']['p_index'][-1]
         prev_expert = f['rule']['expert'][-1]
         prev_water = f.attrs['total_reward']
         prev_trials = len(f['t_start'])
@@ -863,6 +972,7 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=False):
         print(f'Previous weight: {prev_weight}')
         print(f'Previous protocol: {prev_protocol}')
         print(f'Previous rule: [{int(prev_left_port)}]')
+        print(f'Previous p_index: {prev_p_index}')
         print(f'Previous water total: {prev_water}')
         print(f'Previous trial number: {prev_trials}')
         print(f'Previous resp fraction: L:{prev_L}, R:{prev_R}, N:{prev_N}')
@@ -874,7 +984,7 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=False):
         input('--WARNING-- using a different protocol than last time.'
               'Make sure this is intentional.')
 
-    return [prev_freq_rule, prev_left_port, prev_countdown, prev_expert]
+    return [prev_p_index, prev_left_port, prev_countdown, prev_expert]
 
 
 def delete_tones():
