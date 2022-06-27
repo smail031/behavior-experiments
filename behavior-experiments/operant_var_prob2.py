@@ -173,7 +173,7 @@ for trial in trials:
 
     # Mark the start of the trial
     if ttl_experiment == 'y':
-        data.t_ttl[trial] = time.time()*1000 - data.t_start_abs[trial]
+        data.t_ttl[trial] = time.time()*1000 - data._t_start_abs[trial]
         TTL_marker.pulse()
 
     # Left trial:--------------------------------------------------------------
