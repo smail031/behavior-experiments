@@ -64,8 +64,8 @@ end_tone_freq = 4000  # Tone to signal the end of the experiment.
 end_tone_length = 8
 
 reward_size = 10  # Volume(uL) of water rewards.
-criterion = [19, 20]  # Mouse must get [0] of [1] correct to reach criterion.
-countdown_start = 499
+criterion = [1, 1]  # Mouse must get [0] of [1] correct to reach criterion.
+countdown_start = 2
 
 # ------------------------------------------------------------------------------
 # Assign GPIO pins:
