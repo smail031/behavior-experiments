@@ -754,8 +754,6 @@ class ProbSwitchRule():
             else:
                 self.countdown -= 1
 
-        print(self.p_index)
-
     def check_criterion(self) -> bool:
         '''
         Checks to see if the criterion has been met.
