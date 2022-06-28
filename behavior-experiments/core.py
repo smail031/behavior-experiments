@@ -754,6 +754,8 @@ class ProbSwitchRule():
             else:
                 self.countdown -= 1
 
+        print(self.p_index)
+
     def check_criterion(self) -> bool:
         '''
         Checks to see if the criterion has been met.
@@ -767,7 +769,7 @@ class ProbSwitchRule():
         '''
         Determines what occurs when the trial countdown reaches 0.
         '''
-        if self.p_index == len(self.p_series):
+        if self.p_index == len(self.p_series)-1:
             # If the mouse has gone through all p_rew values, switch rule.
             self.countdown = np.nan
             self.correct_trials = []
