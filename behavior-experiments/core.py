@@ -459,13 +459,13 @@ class data():
                   f'behavior-experiments/{self.filename} '
                   f'/home/pi/Desktop/yesterday_data')
         # Create remote folder for today's data and copy file into that folder
-        os.system(f'rclone mkdir sharepoint:"Data/Behaviour data/Sebastien/'
-                  f'Dual_Lickport/Mice/{self.mouse_number}"')
-        os.system(f'rclone mkdir sharepoint:"Data/Behaviour data/Sebastien/'
-                  f'Dual_Lickport/Mice/{self.mouse_number}/{self.date_experiment}"')
-        os.system(f'rclone copy /home/pi/Desktop/yesterday_data/{self.filename}'
-                  f' sharepoint:"Data/Behaviour data/Sebastien/Dual_Lickport/'
-                  f'Mice/{self.mouse_number}/{self.date_experiment}"')
+        os.system(f'rclone mkdir data1:"Data/Behaviour data/Jennifer/'
+                  f'all mice/{self.mouse_number}"')
+        os.system(f'rclone mkdir data1t:"Data/Behaviour data/Jennifer/'
+                  f'all mice/{self.mouse_number}/{self.date_experiment}"')
+        os.system(f'rclone copy /home/pi/Desktop/yesterday_data_jennifer/{self.filename}'
+                  f' data1:"Data/Behaviour data/Jennifer/all mice/'
+                  f'all mice/{self.mouse_number}/{self.date_experiment}"')
 
 class Stepper():
     def __init__(self, n_trials, enablePIN, directionPIN, stepPIN, emptyPIN, side):
