@@ -465,7 +465,7 @@ class data():
                   f'all mice/{self.mouse_number}/{self.date_experiment}"')
         os.system(f'rclone copy /home/pi/Desktop/yesterday_data/{self.filename}'
                   f' data1:"Behaviour data/Jennifer/all mice/'
-                  f'all mice/{self.mouse_number}/{self.date_experiment}"')
+                  f'{self.mouse_number}/{self.date_experiment}"')
 
 class Stepper():
     def __init__(self, n_trials, enablePIN, directionPIN, stepPIN, emptyPIN, side):
