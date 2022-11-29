@@ -303,8 +303,6 @@ class data():
         # Initialize some empty attributes that will store experimental data
         self.t_start = np.empty(self.n_trials)
         self.t_end = np.empty(self.n_trials)
-        self.opto_start = np.empty(self.n_trials)* np.nan
-        self.opto_end = np.empty(self.n_trials)* np.nan
         self._t_start_abs = np.empty(self.n_trials)
 
         self.t_ttl = np.empty(self.n_trials)
@@ -333,6 +331,8 @@ class data():
         self.p_index = np.empty(self.n_trials)
         self.left_port = np.empty(self.n_trials)
         self.countdown = np.empty(self.n_trials, dtype=np.single)
+        self.opto_start = np.empty(self.n_trials) * np.nan
+        self.opto_end = np.empty(self.n_trials) * np.nan
         self.expert = np.empty(self.n_trials, dtype=bool)
         self.rew_prob = np.empty(self.n_trials, dtype=np.double)
 
