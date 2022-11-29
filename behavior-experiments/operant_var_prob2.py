@@ -86,8 +86,7 @@ R_stepPIN = 11  # Step pin for right stepper motor
 R_emptyPIN = 21  # Empty switch pin for right stepper motor
 R_lickometer = 16  # Input pin for lickometer (black wire)
 
-TTL_trigger_PIN = 15  # output for TTL pulse triggers to start/end laser scans
-TTL_marker_PIN = 27  # output for TTL pulse markers
+TTL_opto_PIN = 15  # output for TTL pulse for opto stim
 
 # ------------------------------------------------------------------------------
 # Initialize class instances for experiment:
@@ -127,9 +126,8 @@ rule = core.ProbSwitchRule([highfreq, lowfreq], left_port, p_index, criterion,
                            countdown_start, expert, countdown)
 
 if ttl_experiment == 'y':
-    # Set up ttl class instances triggers and marker TTL output
-    TTL_trigger = core.ttl(TTL_trigger_PIN)
-    TTL_marker = core.ttl(TTL_marker_PIN)
+    # Set up ttl class instances opto stim TTL output
+    TTL_opto = core.ttl(TTL_opto_PIN, stim_length = 0.01, ISI_length = 0.04, total_length = 2.00)
 
 # ------------------------------------------------------------------------------
 # Initialize experiment:
@@ -152,8 +150,6 @@ correct_side = []  # Where past rewards were received (to track bias)
 # -------------------------------------------------------------------------------
 
 # Start imaging laser scanning
-if ttl_experiment == 'y':
-    TTL_trigger.pulse()
 
 for trial in trials:
     data._t_start_abs[trial] = time.time()*1000  # Time at beginning of trial
@@ -170,11 +166,6 @@ for trial in trials:
     thread_R.start()
 
     time.sleep(2)
-
-    # Mark the start of the trial
-    if ttl_experiment == 'y':
-        data.t_ttl[trial] = time.time()*1000 - data._t_start_abs[trial]
-        TTL_marker.pulse()
 
     # Left trial:--------------------------------------------------------------
     if left_trial_:
@@ -199,6 +190,11 @@ for trial in trials:
                     data.t_rew_l[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
                     water_L.Reward()
+                    if ttl_experiment == 'y':
+                        TTL_opto.pulse()
+                        data.opto.start[trial] = time.time()
+                        data.opto.end[trial] = time.time()
+
                     data.v_rew_l[trial] = reward_size
 
                 # Stochastic reward omission for correct lick
@@ -223,6 +219,8 @@ for trial in trials:
                     data.t_rew_r[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
                     water_R.Reward()
+                    if ttl_experiment == 'y':
+                        TTL_opto.pulse()
                     data.v_rew_r[trial] = reward_size
 
                 response = 'R'
@@ -260,6 +258,8 @@ for trial in trials:
                     data.t_rew_r[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
                     water_R.Reward()
+                    if ttl_experiment == 'y':
+                        TTL_opto.pulse()
                     data.v_rew_r[trial] = reward_size
 
                 # Stochastic reward omission
@@ -284,6 +284,8 @@ for trial in trials:
                     data.t_rew_l[trial] = (time.time()*1000
                                            - data._t_start_abs[trial])
                     water_L.Reward()
+                    if ttl_experiment == 'y':
+                        TTL_opto.pulse()
                     data.v_rew_l[trial] = reward_size
 
                 response = 'L'
@@ -396,10 +398,6 @@ for trial in trials:
 
     data.iti_length[trial] = ITI_
     time.sleep(ITI_)
-
-# Stop imaging laser scanning.
-if ttl_experiment == 'y':
-    TTL_trigger.pulse()
 
 tone_end.play()
 camera.stop_preview()

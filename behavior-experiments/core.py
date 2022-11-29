@@ -103,25 +103,25 @@ class LocalizedTone(Tone):
 class PulsingTone(Tone):
     '''
     A tone of a given frequency pulsing on and off at a given frequency.
-    (tone_length%(pulse_length*2)) should be equal to 0.
+    (tone_length%(stim_length*2)) should be equal to 0.
     '''
-    def __init__(self, frequency, tone_length, pulse_length, vol=-20):
+    def __init__(self, frequency, tone_length, stim_length, vol=-20):
         self.freq = frequency
         self.tone_length = tone_length
-        self.pulse_length = pulse_length
+        self.stim_length = stim_length
         self.vol = vol
         self.name = f'{self.freq}Hz_pulsing.wav'
 
     def generate_tone(self):
-        pulse_number = self.tone_length/(2*self.pulse_length)
+        pulse_number = self.tone_length/(2*self.stim_length)
         # Multiplying pulse length by 2 because of the inter-pulse interval
         # Generate wav files for pulse and silent inter-pulse interval
         os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 pulse.wav synth '
-                  f'{self.pulse_length} sin {self.freq} vol -20dB')
+                  f'{self.stim_length} sin {self.freq} vol -20dB')
         os.system('sox -V0 -r 44100 -n -b 8 -c 1 interpulse.wav synth '
-                  '{self.pulse_length} sin {self.freq} vol -150dB')
+                  '{self.stim_length} sin {self.freq} vol -150dB')
         # Generate a string with sequence of pulses to be to the tone
-        concat_files = ' pulse.wav interpulse.wav' * int(self.pulse_number)
+        concat_files = ' pulse.wav interpulse.wav' * int(self.stim_number)
         # Concatenate the pulse and IPI into a single file and delete originals
         os.system(f'sox{concat_files} {self.name}.wav')
         os.system('rm pulse.wav')
@@ -164,7 +164,7 @@ class data():
 
     def __init__(self, protocol_name, protocol_description, n_trials,
                  mouse_number, block_number, experimenter, mouse_weight,
-                 countdown=np.nan):
+                 countdown=np.nan, opto_start, opto_end):
         '''
         Tracks relevant experimental parameters and data, to be stored in an
         HDF5 file and uploaded to a remote drive.
@@ -274,6 +274,13 @@ class data():
 
         self.total_reward: float
             Total volume (uL) of water received during the session.
+
+        self.opto_start: np.ndarray
+            time stamp of when opto stimulation begins
+
+        self.opto_end: np.ndarray
+            time stamp of when opto stimulation ends
+
         '''
 
         # Store method parameters as attributes
@@ -296,6 +303,8 @@ class data():
         # Initialize some empty attributes that will store experimental data
         self.t_start = np.empty(self.n_trials)
         self.t_end = np.empty(self.n_trials)
+        self.opto_start = np.empty(self.n_trials)* np.nan
+        self.opto_end = np.empty(self.n_trials)* np.nan
         self._t_start_abs = np.empty(self.n_trials)
 
         self.t_ttl = np.empty(self.n_trials)
@@ -358,6 +367,8 @@ class data():
             dtfloat = h5py.special_dtype(vlen=np.dtype('float'))
             t_start = f.create_dataset('t_start', data=self.t_start)
             t_end = f.create_dataset('t_end', data=self.t_end)
+            opto_start = f.create_dataset('opto_start', data=self.opto_start)
+            opto_end = f.create_dataset('opto_end', data=self.opto_end)
             f.create_dataset('iti_length', data=self.iti_length)
 
             f.create_dataset('response', data=self.response,
@@ -434,6 +445,8 @@ class data():
                                     'delivered to the left lickport')
             t_start.attrs['title'] = 'Start time for each trial (s)'
             t_end.attrs['title'] = 'End time for each trial (s)'
+            opto_start.attrs['title'] = 'time stamp of when opto stimulation begins'
+            opto_end.attrs['title'] = 'time stamp of when opto stimulation ends'
             rule.attrs['title'] = ('Rule and port assignment. '
                                    'Freq_rule(1) -> freq rule; '
                                    'freq_rule(0) -> pulse rule. If freq rule, '
@@ -640,12 +653,20 @@ class ttl():
     self.pin: int
         The GPIO pin through which pulses will be sent.
 
-    self.pulse_length: float
+    self.stim_length: float
         The length(sec) of TTL pulses.
+
+    self.stim_length: float
+        The length(sec) of inter-opto-stimulus-interval.
+
+    self.total_length: float
+        The length(sec) of total duration of opto per trial.
     '''
-    def __init__(self, pin, pulse_length=0.01):
+    def __init__(self, pin, stim_length, ISI_length, total_length):
         self.pin = pin
-        self.pulse_length = pulse_length
+        self.stim_length = stim_length
+        self.ISI_length = ISI_length
+        self.total_length = total_length
         # Setup GPIO pins for TTL pulses.
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin, False)
@@ -654,9 +675,13 @@ class ttl():
         '''
         Send a TTL pulse.
         '''
-        GPIO.output(self.pin, True)
-        time.sleep(self.pulse_length)
-        GPIO.output(self.pin, False)
+        start = time.time()
+        while (time.time() - start) < self.total_length:
+            GPIO.output(self.pin, True)
+            time.sleep(self.stim_length)
+            GPIO.output(self.pin, False)
+            time.sleep(self.ISI_length)
+
 
 
 class ProbSwitchRule():
