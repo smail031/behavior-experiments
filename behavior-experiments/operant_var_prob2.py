@@ -220,9 +220,9 @@ for trial in trials:
                                            - data._t_start_abs[trial])
                     water_R.Reward()
                     if ttl_experiment == 'y':
+                        data.opto_start[trial] = time.time() - data._t_start_abs[trial]
                         TTL_opto.pulse()
-                        data.opto_start[trial] = time.time()
-                        data.opto_end[trial] = time.time()
+                        data.opto_end[trial] = time.time() - data._t_start_abs[trial]
                     data.v_rew_r[trial] = reward_size
 
                 response = 'R'
@@ -261,9 +261,9 @@ for trial in trials:
                                            - data._t_start_abs[trial])
                     water_R.Reward()
                     if ttl_experiment == 'y':
+                        data.opto_start[trial] = time.time() - data._t_start_abs[trial]
                         TTL_opto.pulse()
-                        data.opto_start[trial] = time.time()
-                        data.opto_end[trial] = time.time()
+                        data.opto_end[trial] = time.time() - data._t_start_abs[trial]
                     data.v_rew_r[trial] = reward_size
 
                 # Stochastic reward omission
@@ -289,9 +289,9 @@ for trial in trials:
                                            - data._t_start_abs[trial])
                     water_L.Reward()
                     if ttl_experiment == 'y':
+                        data.opto_start[trial] = time.time() - data._t_start_abs[trial]
                         TTL_opto.pulse()
-                        data.opto_start[trial] = time.time()
-                        data.opto_end[trial] = time.time()
+                        data.opto_end[trial] = time.time() - data._t_start_abs[trial]
                     data.v_rew_l[trial] = reward_size
 
                 response = 'L'
