@@ -164,7 +164,7 @@ class data():
 
     def __init__(self, protocol_name, protocol_description, n_trials,
                  mouse_number, block_number, experimenter, mouse_weight,
-                 countdown=np.nan, opto_start, opto_end):
+                 countdown=np.nan):
         '''
         Tracks relevant experimental parameters and data, to be stored in an
         HDF5 file and uploaded to a remote drive.
@@ -275,11 +275,6 @@ class data():
         self.total_reward: float
             Total volume (uL) of water received during the session.
 
-        self.opto_start: np.ndarray
-            time stamp of when opto stimulation begins
-
-        self.opto_end: np.ndarray
-            time stamp of when opto stimulation ends
 
         '''
 
