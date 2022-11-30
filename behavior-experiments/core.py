@@ -652,7 +652,7 @@ class ttl():
         The length(sec) of TTL pulses.
 
     self.stim_length: float
-        The length(sec) of inter-opto-stimulus-interval.
+        The length(sec) of inter-stimulus-interval.
 
     self.total_length: float
         The length(sec) of total duration of opto per trial.
