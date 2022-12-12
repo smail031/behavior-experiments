@@ -48,7 +48,7 @@ else:
 
 block_number = input('block number: ')
 n_trials = int(input('How many trials?: '))
-ttl_experiment = input('Send trigger pulses to imaging laser? (y/n): ')
+ttl_experiment = input('Send trigger pulses to opto-stim? (y/n): ')
 syringe_check = input('Syringe check: ')
 
 response_window = 2000  # Time window(ms) for animals to respond after cue.
@@ -186,16 +186,15 @@ for trial in trials:
         while time.time() * 1000 < resp_window_end:
             # If first lick is L (correct)
             if sum(lick_port_L._licks[(length_L - 1):]) > 0:
+                if ttl_experiment == 'y':
+                    data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
+                    TTL_opto.pulse()
+                    data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                 # Reward delivery for correct lick
                 if np.random.rand() < rule.p_rew:
                     data.t_rew_l[trial] = (time.time() * 1000
                                            - data._t_start_abs[trial])
                     water_L.Reward()
-                    if ttl_experiment == 'y':
-                        data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-                        TTL_opto.pulse()
-                        data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
-
                     data.v_rew_l[trial] = reward_size
 
                 # Stochastic reward omission for correct lick
@@ -211,6 +210,10 @@ for trial in trials:
 
             # If first lick is R (incorrect)
             elif sum(lick_port_R._licks[(length_R - 1):]) > 0:
+                if ttl_experiment == 'y':
+                    data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
+                    TTL_opto.pulse()
+                    data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                 # Reward omission for incorrect lick
                 if np.random.rand() < rule.p_rew:
                     tone_wrong.play()
@@ -220,10 +223,6 @@ for trial in trials:
                     data.t_rew_r[trial] = (time.time() * 1000
                                            - data._t_start_abs[trial])
                     water_R.Reward()
-                    if ttl_experiment == 'y':
-                        data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-                        TTL_opto.pulse()
-                        data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                     data.v_rew_r[trial] = reward_size
 
                 response = 'R'
@@ -256,15 +255,15 @@ for trial in trials:
         while time.time() * 1000 < resp_window_end:
             # If first lick is R (correct)
             if sum(lick_port_R._licks[(length_R - 1):]) > 0:
+                if ttl_experiment == 'y':
+                    data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
+                    TTL_opto.pulse()
+                    data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                 # Stochastic reward delivery
                 if np.random.rand() < rule.p_rew:
                     data.t_rew_r[trial] = (time.time() * 1000
                                            - data._t_start_abs[trial])
                     water_R.Reward()
-                    if ttl_experiment == 'y':
-                        data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-                        TTL_opto.pulse()
-                        data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                     data.v_rew_r[trial] = reward_size
 
                 # Stochastic reward omission
@@ -280,6 +279,10 @@ for trial in trials:
 
             # If first lick is L (incorrect)
             elif sum(lick_port_L._licks[(length_L - 1):]) > 0:
+                if ttl_experiment == 'y':
+                    data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
+                    TTL_opto.pulse()
+                    data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                 # Stochastic reward omission
                 if np.random.rand() < rule.p_rew:
                     tone_wrong.play()
@@ -289,10 +292,6 @@ for trial in trials:
                     data.t_rew_l[trial] = (time.time() * 1000
                                            - data._t_start_abs[trial])
                     water_L.Reward()
-                    if ttl_experiment == 'y':
-                        data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-                        TTL_opto.pulse()
-                        data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                     data.v_rew_l[trial] = reward_size
 
                 response = 'L'
