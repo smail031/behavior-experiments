@@ -657,7 +657,7 @@ class ttl():
     self.total_length: float
         The length(sec) of total duration of opto per trial.
     '''
-    def __init__(self, pin, opto_stim_length=0.01, ISI_length=0.04, total_length=2.00):
+    def __init__(self, pin, opto_stim_length, ISI_length, total_length):
         self.pin = pin
         self.opto_stim_length = opto_stim_length
         self.ISI_length = ISI_length
