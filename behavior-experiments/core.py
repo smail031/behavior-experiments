@@ -648,18 +648,18 @@ class ttl():
     self.pin: int
         The GPIO pin through which pulses will be sent.
 
-    self.stim_length: float
+    self.opto_stim_length: float
         The length(sec) of TTL pulses.
 
-    self.stim_length: float
+    self.ISI_length: float
         The length(sec) of inter-stimulus-interval.
 
     self.total_length: float
         The length(sec) of total duration of opto per trial.
     '''
-    def __init__(self, pin, stim_length=0.01, ISI_length=0.04, total_length=2.00):
+    def __init__(self, pin, opto_stim_length=0.01, ISI_length=0.04, total_length=2.00):
         self.pin = pin
-        self.stim_length = stim_length
+        self.opto_stim_length = opto_stim_length
         self.ISI_length = ISI_length
         self.total_length = total_length
         # Setup GPIO pins for TTL pulses.
@@ -673,7 +673,7 @@ class ttl():
         start = time.time()
         while (time.time() - start) < self.total_length:
             GPIO.output(self.pin, True)
-            time.sleep(self.stim_length)
+            time.sleep(self.opto_stim_length)
             GPIO.output(self.pin, False)
             time.sleep(self.ISI_length)
 
