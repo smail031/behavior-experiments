@@ -126,9 +126,6 @@ rule = core.ProbSwitchRule([highfreq, lowfreq], left_port, p_index, criterion,
 if ttl_experiment == 'y':
     # Set up ttl class instances opto stim TTL output
     TTL_opto = core.ttl(TTL_opto_PIN, stim_length, ISI_length, total_length)
-    stim_length = 0.01
-    ISI_length = 0.04
-    total_length = 2.00
 
 # ------------------------------------------------------------------------------
 # Initialize experiment:
@@ -186,10 +183,6 @@ for trial in trials:
         while time.time() * 1000 < resp_window_end:
             # If first lick is L (correct)
             if sum(lick_port_L._licks[(length_L - 1):]) > 0:
-                if ttl_experiment == 'y':
-                    data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-                    TTL_opto.pulse()
-                    data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                 # Reward delivery for correct lick
                 if np.random.rand() < rule.p_rew:
                     data.t_rew_l[trial] = (time.time() * 1000
@@ -210,10 +203,6 @@ for trial in trials:
 
             # If first lick is R (incorrect)
             elif sum(lick_port_R._licks[(length_R - 1):]) > 0:
-                if ttl_experiment == 'y':
-                    data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-                    TTL_opto.pulse()
-                    data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                 # Reward omission for incorrect lick
                 if np.random.rand() < rule.p_rew:
                     tone_wrong.play()
@@ -255,10 +244,6 @@ for trial in trials:
         while time.time() * 1000 < resp_window_end:
             # If first lick is R (correct)
             if sum(lick_port_R._licks[(length_R - 1):]) > 0:
-                if ttl_experiment == 'y':
-                    data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-                    TTL_opto.pulse()
-                    data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                 # Stochastic reward delivery
                 if np.random.rand() < rule.p_rew:
                     data.t_rew_r[trial] = (time.time() * 1000
@@ -279,10 +264,6 @@ for trial in trials:
 
             # If first lick is L (incorrect)
             elif sum(lick_port_L._licks[(length_L - 1):]) > 0:
-                if ttl_experiment == 'y':
-                    data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-                    TTL_opto.pulse()
-                    data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
                 # Stochastic reward omission
                 if np.random.rand() < rule.p_rew:
                     tone_wrong.play()
@@ -305,11 +286,14 @@ for trial in trials:
 
         data.response[trial] = response
         data.t_end[trial] = time.time() * 1000 - data._t_start_abs[0]
+    if ttl_experiment == 'y' and response != 'N':
+        data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
+        TTL_opto.pulse()
+        data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
 
     # -------------------------------------------------------------------------
     # Post-trial data storage
     # -------------------------------------------------------------------------
-
     # Make sure the threads are finished
     thread_L.join()
     thread_R.join()
