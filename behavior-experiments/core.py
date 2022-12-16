@@ -718,7 +718,7 @@ class ProbSwitchRule():
         self.actions = ['L', 'R', 'N']
         self.rule = initial_rule
         self.p_index = int(p_index)
-        self.p_series = [0.9, 0.7, 0.8, 1.0, 0.9]
+        self.p_series = [0.9, 0.6, 1.0]
         self.p_rew = self.p_series[self.p_index]
         self.criterion = criterion
         self.countdown = countdown
