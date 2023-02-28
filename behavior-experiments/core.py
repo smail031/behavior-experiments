@@ -666,7 +666,7 @@ class ttl():
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin, False)
 
-    def pulse(self):
+    def pulsedata(self):
         '''
         Send a TTL pulse.
         '''

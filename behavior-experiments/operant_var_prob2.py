@@ -64,7 +64,7 @@ end_tone_length = 8
 
 reward_size = 10  # Volume(uL) of water rewards.
 criterion = [19, 20]  # Mouse must get [0] of [1] correct to reach criterion.
-countdown_start = 2500
+countdown_start = 850
 
 # ------------------------------------------------------------------------------
 # Assign GPIO pins:
