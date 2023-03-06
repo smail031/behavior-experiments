@@ -288,7 +288,7 @@ for trial in trials:
         data.t_end[trial] = time.time() * 1000 - data._t_start_abs[0]
     if ttl_experiment == 'y' and response != 'N':
         data.opto_start[trial] = time.time() * 1000 - data._t_start_abs[trial]
-        TTL_opto()
+        TTL_opto.pulse()
         data.opto_end[trial] = time.time() * 1000 - data._t_start_abs[trial]
 
     # -------------------------------------------------------------------------
