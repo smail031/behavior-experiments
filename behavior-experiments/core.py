@@ -662,7 +662,6 @@ class ttl():
         self.opto_stim_length = opto_stim_length
         self.ISI_length = ISI_length
         self.total_length = total_length
-        self.pulsedata()
         # Setup GPIO pins for TTL pulses.
         GPIO.setup(self.pin, GPIO.OUT)
         GPIO.output(self.pin, False)
