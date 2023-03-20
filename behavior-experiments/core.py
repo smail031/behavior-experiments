@@ -946,7 +946,7 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=True):
     temp_data_path = '/home/pi/Desktop/temp_rclone/'
 
     # Empty the temporary data folder
-    for item in os.listfile(temp_data_path):
+    for item in os.listdir(temp_data_path):
         os.remove(temp_data_path + item)
     # Read rclone config file
     with open(rclone_cfg_path) as f:
