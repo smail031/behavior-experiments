@@ -943,7 +943,8 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=True):
     # to temporarily store the fetched data.
     rclone_cfg_path = '/home/pi/.config/rclone/rclone.conf'
     data_path = 'data1:Behaviour Data/Jennifer/all mice/'
-    temp_data_path = '/home/pi/Desktop/temp_rclone/'
+    temp_rclone_path = '/home/pi/Desktop/temp_rclone/'
+    temp_data_path = '/home/pi/Desktop/temporary_data/'
 
     # Empty the temporary data folder
     for item in os.listdir(temp_data_path):
