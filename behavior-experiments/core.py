@@ -549,7 +549,7 @@ class stepper():
 
         print('the syringe is empty')
 
-        self.Motor(0, 60000)  # Pull the syringe for 60000 steps, ~3mL.
+        self.Motor(0, 6000)  # Pull the syringe for 60000 steps, ~3mL.
 
     def Disable(self):
 
@@ -928,7 +928,7 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=True):
     Returns:
     --------
     A list, containing the following:
-
+rff
     prev_freq_rule: int
         The value of freq_rule for the last trial of the previous session.
 
