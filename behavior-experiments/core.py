@@ -549,7 +549,7 @@ class stepper():
 
         print('the syringe is empty')
 
-        self.Motor(0, 20)  # Pull the syringe for 60000 steps, ~3mL.
+        self.Motor(0, 200)  # Pull the syringe for 60000 steps, ~3mL.
 
     def Disable(self):
 
