@@ -545,7 +545,7 @@ class stepper():
 
         while GPIO.input(self.emptyPIN):  # Push syringe and check every 200
             # whether the empty pin is activated.
-            self.Motor(1, 200)
+            self.Motor(1, 20)
 
         print('the syringe is empty')
 
