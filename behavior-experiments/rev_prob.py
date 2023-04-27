@@ -303,9 +303,6 @@ for trial in trials:
     thread_L.join()
     thread_R.join()
 
-    if ttl_experiment == 'y':
-        TTL_trigger.pulse()  # Trigger the end of the scan
-
     lick_port_L._t_licks -= data._t_start_abs[trial]
     lick_port_R._t_licks -= data._t_start_abs[trial]
 
@@ -361,6 +358,7 @@ for trial in trials:
                 rule.R_tone.play()
 
             water_R.Reward()
+            print('Delivering supplementary R reward')
             supp_reward_R += reward_size
             time.sleep(1)
         correct_side.append('R')
@@ -374,6 +372,7 @@ for trial in trials:
                 rule.L_tone.play()
 
             water_L.Reward()
+            print('Delivering supplementary L reward')
             supp_reward_L += reward_size
             time.sleep(1)
         correct_side.append('L')
@@ -385,6 +384,9 @@ for trial in trials:
         ITI_ = np.random.exponential(scale=20)
 
     time.sleep(ITI_)
+
+if ttl_experiment == 'y':
+    TTL_trigger.pulse()  # Trigger the end of the scan
 
 tone_end.play()
 camera.stop_preview()
