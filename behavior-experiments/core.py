@@ -113,7 +113,7 @@ class PulsingTone(Tone):
         self.name = f'{self.freq}Hz_pulsing.wav'
 
     def generate_tone(self):
-        pulse_number = self.tone_length/(2*self.pulse_length)
+        # pulse_number = self.tone_length/(2*self.pulse_length)
         # Multiplying pulse length by 2 because of the inter-pulse interval
         # Generate wav files for pulse and silent inter-pulse interval
         os.system(f'sox -V0 -r 44100 -n -b 8 -c 1 pulse.wav synth '
@@ -126,6 +126,7 @@ class PulsingTone(Tone):
         os.system(f'sox{concat_files} {self.name}.wav')
         os.system('rm pulse.wav')
         os.system('rm interpulse.wav')
+
 
 class PureTone2(Tone):
     '''
@@ -156,10 +157,11 @@ class PureTone2(Tone):
         self.data['frequency'] = self.frequency
         self.data['duration'] = self.tone_length
         self.data['location'] = self.loc
-        
+
         self.data['tone_onset'] = np.empty(self.n_trials, dtype=float)*np.nan
         self.data['tone_offset'] = np.empty(self.n_trials, dtype=float)*np.nan
- 
+
+
 class data():
 
     def __init__(self, protocol_name, protocol_description, n_trials,
@@ -784,7 +786,7 @@ class ProbSwitchRule():
             print('-------------------PROBABILITY SWITCH-------------------')
             print(f'Reward probability = {self.p_rew}')
 
-     
+
 class Rule():
     '''
     With this rule, the mouse will train at p_rew = 0.9 until they reach
@@ -956,7 +958,7 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=True):
         prev_weight = f.attrs['mouse_weight']
         prev_countdown = f['rule']['countdown'][-1]
         prev_left_port = f['rule']['left_port'][-1]
-        prev_p_index = f['rule']['p_index'][-1]
+        # prev_p_index = f['rule']['p_index'][-1]
         prev_expert = f['rule']['expert'][-1]
         prev_water = f.attrs['total_reward']
         prev_trials = len(f['t_start'])
@@ -972,7 +974,7 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=True):
         print(f'Previous weight: {prev_weight}')
         print(f'Previous protocol: {prev_protocol}')
         print(f'Previous rule: [{int(prev_left_port)}]')
-        print(f'Previous p_index: {prev_p_index}')
+        # print(f'Previous p_index: {prev_p_index}')
         print(f'Previous water total: {prev_water}')
         print(f'Previous trial number: {prev_trials}')
         print(f'Previous resp fraction: L:{prev_L}, R:{prev_R}, N:{prev_N}')
@@ -984,7 +986,7 @@ def get_previous_data(mouse_number: str, protocol_name: str, countdown=True):
         input('--WARNING-- using a different protocol than last time.'
               'Make sure this is intentional.')
 
-    return [prev_p_index, prev_left_port, prev_countdown, prev_expert]
+    return [prev_left_port, prev_countdown, prev_expert]
 
 
 def delete_tones():

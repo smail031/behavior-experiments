@@ -31,7 +31,7 @@ mouse_weight = float(input('mouse weight(g): '))
 
 fetch = input('Fetch previous data? (y/n) ')
 if fetch == 'y':
-    [freq_rule, left_port, countdown] = (
+    [left_port, countdown, expert] = (
         core.get_previous_data(mouse_number, protocol_name))
 else:
     print('Warning: no previous data imported. Ensure rule is correct, and'
@@ -64,7 +64,7 @@ end_tone_length = 8
 reward_size = 10  # Volume(uL) of water rewards.
 p_rew = 0.9  # Probability of reward following correct choice
 criterion = [19, 20]  # Mouse must get [0] of [1] correct to reach criterion.
-countdown_start = 250
+countdown_start = 500
 
 # -----------------------------------------------------------------------------
 # Assign GPIO pins:
