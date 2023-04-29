@@ -794,7 +794,7 @@ class Rule():
     different value and start a trial countdown. Once that countdown reaches
     0, p_rew will change again and a new p_rew.
     '''
-    def __init__(self, n_trials, tones: list, actions: list, mapping: int,
+    def __init__(self, n_trials, tones: list, mapping: int,
                  criterion: list, countdown_start: int, p_rew: float,
                  expert: bool = False, countdown: int = np.nan):
         '''
