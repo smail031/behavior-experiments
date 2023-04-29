@@ -121,9 +121,9 @@ highfreq = core.PureTone(high_freq, sample_tone_length)
 tone_wrong = core.PureTone(wrong_tone_freq, wrong_tone_length)
 tone_end = core.PureTone(end_tone_freq, end_tone_length, vol=-25)
 
-rule = core.Rule(n_trials=n_trials, tones=[highfreq, lowfreq], mapping=left_port,
+rule = core.Rule(tones=[highfreq, lowfreq], initial_rule=left_port,
                  criterion=criterion, countdown_start=countdown_start,
-                 p_reward=p_rew, expert=expert, countdown=countdown)
+                 expert=expert, countdown=countdown)
 
 if ttl_experiment == 'y':
     # Set up ttl class instances triggers and marker TTL output
