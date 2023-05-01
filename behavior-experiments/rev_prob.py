@@ -28,7 +28,7 @@ experimenter = input('Initials: ')
 mouse_number = input('mouse number: ')
 mouse_weight = float(input('mouse weight(g): '))
 
-
+expert = False
 fetch = input('Fetch previous data? (y/n) ')
 if fetch == 'y':
     [left_port, countdown, expert] = (
@@ -48,6 +48,7 @@ if yesterday == 'n':
     countdown = np.nan
 
 if input('Enter initial countdown (y/n)?: ') == 'y':
+    expert = True
     countdown = int(input('Enter initial countdown value: '))
 
 response_window = 2000  # Time window(ms) for animals to respond after cue.
