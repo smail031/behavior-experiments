@@ -152,10 +152,10 @@ lick_port_L = core.lickometer(L_lickometer)
 lick_port_R = core.lickometer(R_lickometer)
 
 #create instruction tones
-lowfreq = core.tones(low_freq, sample_tone_length) #1000Hz tone
-highfreq = core.tones(high_freq, sample_tone_length) #4000Hz tone
+lowfreq = core.PureTone(low_freq, sample_tone_length) #1000Hz tone
+highfreq = core.PureTone(high_freq, sample_tone_length) #4000Hz tone
 
-tone_end = core.tones(end_tone_freq, end_tone_length)
+tone_end = core.PureTone(end_tone_freq, end_tone_length)
 
 if ttl_experiment == 'y':
     #set up ttl class instances triggers and marker TTL output
