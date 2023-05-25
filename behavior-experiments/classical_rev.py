@@ -204,7 +204,7 @@ for trial in trials:
     print(f'Trial {trial}, total reward: {total_reward_L+total_reward_R}')
     
     data._t_start_abs[trial] = time.time()*1000 #Set time at beginning of trial
-    data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
+    data.t_start[trial] = data._t_start_abscore[trial] - data._t_start_abs[0]
 
     #create thread objects for left and right lickports
     thread_L = threading.Thread(target = lick_port_L.Lick, args = (1000, 8))
@@ -233,7 +233,7 @@ for trial in trials:
 
         data.sample_tone[trial] = 'L' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone.Play() #Play left tone
+        tone.play() #Play left tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         time.sleep(trace_period)
@@ -255,7 +255,7 @@ for trial in trials:
 
         data.sample_tone[trial] = 'R' #Assign data type
         data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-        tone.Play() #Play left tone
+        tone.play() #Play right tone
         data.sample_tone_end[trial] = time.time()*1000 - data._t_start_abs[trial]
 
         time.sleep(trace_period)
@@ -310,7 +310,7 @@ for trial in trials:
 
     time.sleep(ITI_) #wait for the length of the inter-trial interval
 
-tone_end.Play() #Play 8s tone to signal the end of the experiment.
+tone_end.play() #Play 8s tone to signal the end of the experiment.
 
 camera.stop_preview()
 
