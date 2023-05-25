@@ -93,8 +93,8 @@ delay_length = 0 #length of delay between sample tone and go cue, in sec
 
 sample_tone_length = 2 #length of sample tone
 
-low_freq = 8000 #frequency of sample tone in left lick trials
-high_freq = 12000 #frequency of sample tone in right lick trials
+low_freq = 6000 #frequency of sample tone in left lick trials
+high_freq = 10000 #frequency of sample tone in right lick trials
 
 wrong_tone_freq = 14000
 wrong_tone_length = 1
