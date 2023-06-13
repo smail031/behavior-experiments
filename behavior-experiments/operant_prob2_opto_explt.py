@@ -88,7 +88,6 @@ TTL_opto_PIN = 15  # output for TTL pulse for opto stim
 
 # ------------------------------------------------------------------------------
 # Initialize class instances for experiment:
-
 # ------------------------------------------------------------------------------
 
 # Turn off the GPIO warnings
@@ -211,6 +210,7 @@ for trial in trials:
                 else:
                     data.t_rew_r[trial] = (time.time() * 1000
                                            - data._t_start_abs[trial])
+
                     water_R.Reward()
                     data.v_rew_r[trial] = reward_size
 
@@ -248,6 +248,7 @@ for trial in trials:
                 if np.random.rand() < rule.p_rew:
                     data.t_rew_r[trial] = (time.time() * 1000
                                            - data._t_start_abs[trial])
+                    time.sleep(0.7)
                     water_R.Reward()
                     data.v_rew_r[trial] = reward_size
 
@@ -272,6 +273,7 @@ for trial in trials:
                 else:
                     data.t_rew_l[trial] = (time.time() * 1000
                                            - data._t_start_abs[trial])
+                    time.sleep(0.7)
                     water_L.Reward()
                     data.v_rew_l[trial] = reward_size
 
