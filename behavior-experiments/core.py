@@ -494,7 +494,7 @@ class Stepper():
         self.data['steps'] = np.empty(self.n_trials, dtype=float)*np.nan
         self.data['']
 
-        
+
 class stepper():
 
     def __init__(self, enablePIN, directionPIN, stepPIN, emptyPIN):
@@ -526,11 +526,10 @@ class stepper():
             # print('the syringe is empty')
         self.Disable()  # disable stepper (to prevent overheating)
 
-    def Reward(self,):
-        steps = 250  # Calculate the number of steps needed to deliver
+    def Reward(self, steps=250):
         # volume. 400 steps gives 8.2uL
         if GPIO.input(self.emptyPIN):
-            self.Motor(1, steps)  # push syringe for "steps" until empty pin
+            self.Motor(1, steps)  # push syringe for `steps` until empty pin
             # is activated.
         else:
             print('the syringe is empty')
