@@ -32,7 +32,7 @@ sample_tone_length = 1  # Length of sample tone (s)
 low_freq = 3000  # Frequency(Hz) of high frequency sample tone.
 high_freq = 6000  # Frequency(Hz) of high frequency sample tone.
 
-end_tone_freq = 2000
+end_tone_freq = 2500
 end_tone_length = 8
 
 reward_size = 10  # Volume(uL) of water rewards.
@@ -105,6 +105,7 @@ trial_steps = [steps[i] for i in trial_types]
 # Set reward delays.
 if random_delay:
     delays = np.random.normal(loc=2, scale=4, size=len(trials))
+    delays[delays < 0.5] = 0.5
 else:
     delays = np.full(shape=len(trials), fill_value=2)
 
@@ -177,8 +178,8 @@ for trial, tone, vol, step, delay in zip(trials, trial_tone, trial_vol,
     # -------------------------------------------------------------------------
 
     ITI_ = 0
-    while ITI_ > 30 or ITI_ < 10:
-        ITI_ = np.random.exponential(scale=20)
+    while ITI_ > 14 or ITI_ < 2:
+        ITI_ = np.random.exponential(scale=5)
 
     time.sleep(ITI_)
 
