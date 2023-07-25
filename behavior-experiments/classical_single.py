@@ -125,7 +125,7 @@ for trial, tone, vol, step, delay in zip(trials, trial_tone, trial_vol,
 
     # Tone delivery.
     data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-    tone.Play()  # Play left tone
+    tone.play()  # Play left tone
     data.sample_tone_end[trial] = (time.time()*1000
                                    - data._t_start_abs[trial])
 
