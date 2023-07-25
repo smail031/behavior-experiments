@@ -49,6 +49,9 @@ R_stepPIN = 11  # Step pin for right stepper motor
 R_emptyPIN = 21  # Empty switch pin for right stepper motor
 R_lickometer = 16  # Input pin for lickometer (black wire)
 
+L_lickometer = 12  # Input pin for lickometer (black wire)
+
+
 TTL_trigger_PIN = 15  # Output for TTL pulse triggers to start/end laser scans
 TTL_marker_PIN = 27  # Output for TTL pulse markers
 
@@ -73,6 +76,7 @@ water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 
 # Create lickometer class instances for left and right lickometers
 lick_port_R = core.lickometer(R_lickometer)
+lick_port_L = core.lickometer(L_lickometer)
 
 # Create instruction tones
 lowfreq_tone = core.PureTone(low_freq, sample_tone_length)
@@ -119,6 +123,7 @@ for trial, tone, vol, step, delay in zip(trials, trial_tone, trial_vol,
 
     # Start lick recording
     lick_port_R.Lick(1000, 11)
+    lick_port_L.Lick(1000, 11)
 
     # Baseline licking.
     time.sleep(4)
@@ -147,10 +152,16 @@ for trial, tone, vol, step, delay in zip(trials, trial_tone, trial_vol,
 
     # Process and store lick data.
     lick_port_R._t_licks -= data._t_start_abs[trial]
+    lick_port_L._t_licks -= data._t_start_abs[trial]
 
-    data.lick_r[trial] = {}
-    data.lick_r[trial]['t'] = lick_port_R._t_licks
-    data.lick_r[trial]['volt'] = lick_port_R._licks
+    # Store and process the data
+    storage_list = [data.lick_l, data.lick_r]
+    rawdata_list = [lick_port_L, lick_port_R]
+
+    for ind, storage in enumerate(storage_list):
+        storage[trial] = {}
+        storage[trial]['t'] = rawdata_list[ind]._t_licks
+        storage[trial]['volt'] = rawdata_list[ind]._licks
 
     data.freq[trial] = tone.freq  # Store tone frequency
 
