@@ -75,8 +75,8 @@ water_R = core.stepper(R_enablePIN, R_directionPIN, R_stepPIN, R_emptyPIN)
 lick_port_R = core.lickometer(R_lickometer)
 
 # Create instruction tones
-lowfreq = core.PureTone(low_freq, sample_tone_length)
-highfreq = core.PureTone(high_freq, sample_tone_length)
+lowfreq_tone = core.PureTone(low_freq, sample_tone_length)
+highfreq_tone = core.PureTone(high_freq, sample_tone_length)
 
 # Create tone that is used as an error signal
 tone_end = core.PureTone(end_tone_freq, end_tone_length, vol=-25)
@@ -89,9 +89,9 @@ trials = np.arange(n_trials)
 data = core.data(protocol_name, protocol_description, n_trials, mouse_number,
                  block_number, experimenter, mouse_weight)
 
-tones = [low_freq, high_freq]
+tones = [lowfreq_tone, highfreq_tone]
 volumes = [10, 5]
-steps = [125, 250]
+steps = [250, 125]
 
 trial_types = np.random.choice([0, 1], len(trials))
 trial_tone = [tones[i] for i in trial_types]
@@ -125,7 +125,7 @@ for trial, tone, vol, step, delay in zip(trials, trial_tone, trial_vol,
 
     # Tone delivery.
     data.t_sample_tone[trial] = time.time()*1000 - data._t_start_abs[trial]
-    tone.play()  # Play left tone
+    tone.Play()  # Play left tone
     data.sample_tone_end[trial] = (time.time()*1000
                                    - data._t_start_abs[trial])
 
