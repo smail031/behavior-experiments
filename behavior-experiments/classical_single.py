@@ -24,7 +24,7 @@ mouse_number = input('mouse number: ')
 mouse_weight = float(input('mouse weight(g): '))
 
 block_number = input('Block number: ')
-n_trials = input('How many trials?: ')
+n_trials = int(input('How many trials?: '))
 random_delay = input('Random delays?: ') == 'y'
 syringe_check = input('Syringe check: ')
 
