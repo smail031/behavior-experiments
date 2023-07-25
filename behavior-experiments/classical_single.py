@@ -118,7 +118,7 @@ for trial, tone, vol, step, delay in zip(trials, trial_tone, trial_vol,
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     # Start lick recording
-    lick_port_R.lick(1000, 11)
+    lick_port_R.Lick(1000, 11)
 
     # Baseline licking.
     time.sleep(4)
