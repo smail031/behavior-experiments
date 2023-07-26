@@ -25,9 +25,10 @@ class Trial():
         self.data = {}
         self.data['name'] = self.name
         self.data['n_trials'] = self.n_trials
-        self.data['trial_start_time'] = np.empty(self.n_trials, dtype=float)
-        self.data['trial_end_time'] = np.empty(self.n_trials, dtype=float)
-        self.data['iti_length'] = np.empty(self.n_trials, dtype=float)
+        self.data['trial_start_time'] = np.empty(self.n_trials,
+                                                 dtype=np.float32)
+        self.data['trial_end_time'] = np.empty(self.n_trials, dtype=np.float32)
+        self.data['iti_length'] = np.empty(self.n_trials, dtype=np.float32)
 
     def trial_start(self):
         '''
