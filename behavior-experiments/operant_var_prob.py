@@ -237,7 +237,7 @@ if params['exp_quality'] == 'n':
     params['exp_msg'] = input('What went wrong?: ')
 
 # Store the data in an HDF5 file and upload this file to a remote drive.
-print(trial_obj.data['trial_start_time'])
+print(type(trial_obj.data['trial_start_time']))
 data.package_data()
 data.rclone_upload(rclone_cfg_path, data_path, temp_data_path)
 
