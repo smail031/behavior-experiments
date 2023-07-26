@@ -4,6 +4,7 @@ import numpy as np
 import core
 from picamera import PiCamera
 from pygame import mixer
+import threading
 
 protocol_name = 'classical_single'
 protocol_description = ('In this protocol, one of 2 tones (differing based'
