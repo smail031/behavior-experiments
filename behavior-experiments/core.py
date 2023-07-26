@@ -344,7 +344,7 @@ class data():
                              + self.filename):
             print(f'File {self.filename} already exists. Increasing block',
                   'number by 1.')
-            self.block_number += 1
+            self.block_number = int(self.block_number) + 1
             self.filename = ('ms' + str(self.mouse_number) + '_'
                              + str(self.date_experiment) + '_' + 'block'
                              + str(self.block_number) + '.hdf5')
