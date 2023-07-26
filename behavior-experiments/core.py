@@ -339,8 +339,12 @@ class data():
         '''
         Stores all relevant experimental data and parameters in an HDF5 file.
         '''
+        path_to_test = '~/Desktop/temporary-data/' + self.filename
 
-        while os.path.exists('/home/pi/Desktop/temporary-data/'
+        print('does the path exist?' + os.path.exists(path_to_test))
+        print(f'{path_to_test=}')
+
+        while os.path.exists('~/Desktop/temporary-data/'
                              + self.filename):
             print(f'File {self.filename} already exists. Increasing block',
                   'number by 1.')

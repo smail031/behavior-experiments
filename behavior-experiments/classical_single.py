@@ -123,8 +123,11 @@ for trial, tone, vol, step, delay in zip(trials, trial_tone, trial_vol,
     data.t_start[trial] = data._t_start_abs[trial] - data._t_start_abs[0]
 
     # Start lick recording
-    lick_port_R.Lick(1000, 11)
-    lick_port_L.Lick(1000, 11)
+    thread_L = threading.Thread(target=lick_port_L.Lick, args=(1000, 11))
+    thread_R = threading.Thread(target=lick_port_R.Lick, args=(1000, 11))
+
+    thread_L.start()
+    thread_R.start()
 
     # Baseline licking.
     time.sleep(4)
@@ -150,6 +153,10 @@ for trial, tone, vol, step, delay in zip(trials, trial_tone, trial_vol,
     # -------------------------------------------------------------------------
     # Post-trial data storage
     # -------------------------------------------------------------------------
+
+    # Make sure the threads are finished
+    thread_L.join()
+    thread_R.join()
 
     # Process and store lick data.
     lick_port_R._t_licks -= data._t_start_abs[trial]
