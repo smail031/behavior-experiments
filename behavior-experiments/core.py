@@ -340,8 +340,13 @@ class data():
         Stores all relevant experimental data and parameters in an HDF5 file.
         '''
 
-        if os.path.exists(self.filename):
-            raise IOError(f'File {self.filename} already exists.')
+        while os.path.exists(self.filename):
+            print(f'File {self.filename} already exists. Increasing block
+                  number by 1.')
+            self.block_number += 1
+            self.filename = ('ms' + str(self.mouse_number) + '_'
+                         + str(self.date_experiment) + '_' + 'block'
+                         + str(self.block_number) + '.hdf5')
 
         with h5py.File(self.filename, 'w') as f:
             # Set experimental parameters as HDF% attributes
