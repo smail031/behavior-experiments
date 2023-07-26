@@ -130,14 +130,18 @@ tone_end = core2.PureTone('end tone', trial_obj, end_tone_freq,
 sample_tones = [lowfreq, highfreq]
 rule = core2.ProbSwitchRule('rule', trial_obj, sample_tones, params)
 
+# Initialize data collection
+objects = [trial_obj, water_L, water_R, lick_port_L, lick_port_R, lowfreq,
+           highfreq, tone_wrong, rule]
+
 if ttl_experiment == 'y':
     # Initialize TTL trigger and marker for imaging.
     TTL_trigger = core2.ImagingTTL('trigger TTL', trial_obj, TTL_trigger_PIN)
     TTL_marker = core2.ImagingTTL('marker TTL', trial_obj, TTL_marker_PIN)
+    objects.append(TTL_trigger)
+    objects.append(TTL_marker)
 
-# Initialize data collection
-objects = [trial_obj, water_L, water_R, lick_port_L, lick_port_R, lowfreq,
-           highfreq, tone_wrong, rule, TTL_trigger, TTL_marker]
+
 data = core2.Data(objects, params)
 
 # -------------------------------------------------------------------------------
