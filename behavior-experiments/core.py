@@ -342,7 +342,7 @@ class data():
         path_to_test = '~/Desktop/temporary-data/' + self.filename
 
         print('does the path exist?' + os.path.exists(path_to_test))
-        print(f'{path_to_test=}')
+        print(f'path_to_test={path_to_test}')
 
         while os.path.exists('~/Desktop/temporary-data/'
                              + self.filename):
